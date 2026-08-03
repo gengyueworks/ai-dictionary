@@ -1,0 +1,2353 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>AI 祛魅词典</title>
+  <style>
+    :root {
+      --paper: #f3efe4;
+      --paper-2: #fffaf0;
+      --ink: #17130d;
+      --muted: #6d665a;
+      --line: #d8cbb5;
+      --blue: #002fa7;
+      --red: #bd2f20;
+      --green: #2f6d55;
+      --card: #fbf7ec;
+      --dark: #191d22;
+      --serif: Georgia, "Songti SC", "STSong", serif;
+      --sans: "Avenir Next", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      --condensed: "Arial Narrow", "Avenir Next Condensed", "Roboto Condensed", var(--sans);
+      --mono: "SFMono-Regular", Menlo, Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.5;
+      background:
+        linear-gradient(90deg, rgba(23, 19, 13, 0.035) 1px, transparent 1px),
+        linear-gradient(rgba(23, 19, 13, 0.026) 1px, transparent 1px),
+        var(--paper);
+      background-size: 34px 34px;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 16% 8%, rgba(255, 255, 255, 0.62), transparent 30vw),
+        linear-gradient(115deg, transparent 0 44%, rgba(255, 255, 255, 0.34) 45% 49%, transparent 50%);
+      mix-blend-mode: soft-light;
+    }
+
+    button,
+    input { font: inherit; }
+    button { color: inherit; cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .shell {
+      width: min(1180px, calc(100vw - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 2px solid var(--ink);
+      background: rgba(243, 239, 228, 0.92);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav {
+      min-height: 56px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      font-weight: 820;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      color: var(--paper-2);
+      background: var(--blue);
+      font-family: var(--mono);
+      font-size: 11px;
+      box-shadow: inset 0 0 0 4px rgba(255, 250, 240, 0.24);
+    }
+
+    .nav-stats {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      overflow-x: auto;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-color: var(--blue);
+      color: var(--paper-2);
+      background: var(--blue);
+      font-weight: 800;
+      box-shadow: 3px 3px 0 var(--ink);
+    }
+
+    .back-link.show { display: inline-flex; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      min-height: 36px;
+      padding: 7px 12px;
+      background: rgba(255, 250, 240, 0.7);
+      white-space: nowrap;
+    }
+
+    .pill.back-link {
+      border-color: var(--blue);
+      color: var(--paper-2);
+      background: var(--blue);
+    }
+
+    .translate-mini {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .translate-mini button {
+      min-width: 38px;
+      min-height: 34px;
+      border: 1px solid rgba(23, 19, 13, 0.32);
+      border-radius: 999px;
+      padding: 7px 9px;
+      color: var(--muted);
+      background: rgba(255, 250, 240, 0.44);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1;
+      opacity: 0.68;
+      transition: opacity 150ms ease, border-color 150ms ease, color 150ms ease, background 150ms ease;
+    }
+
+    .translate-mini button:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      background: rgba(255, 250, 240, 0.78);
+      opacity: 1;
+    }
+
+    #google_translate_element {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .goog-te-banner-frame,
+    .goog-te-balloon-frame,
+    .skiptranslate iframe {
+      display: none !important;
+    }
+
+    body { top: 0 !important; }
+
+    .hero {
+      display: none;
+      padding: 34px 0 18px;
+    }
+
+    .kicker {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--red);
+      font-family: var(--condensed);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .kicker::before {
+      content: "";
+      width: 38px;
+      height: 5px;
+      background: var(--red);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 310px;
+      gap: 30px;
+      align-items: end;
+      margin-top: 13px;
+    }
+
+    h1 {
+      max-width: 780px;
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(32px, 4.8vw, 58px);
+      line-height: 1;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .lead {
+      max-width: 690px;
+      margin: 15px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .ledger {
+      border: 2px solid var(--ink);
+      background: var(--paper-2);
+      box-shadow: 7px 7px 0 var(--blue);
+    }
+
+    .ledger-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 11px 13px;
+      border-bottom: 2px solid var(--ink);
+      font-family: var(--condensed);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .stat {
+      min-height: 74px;
+      padding: 12px;
+      border-right: 1px solid var(--line);
+    }
+
+    .stat:last-child { border-right: 0; }
+
+    .stat strong {
+      display: block;
+      font-family: var(--mono);
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(280px, 340px) minmax(0, 760px);
+      gap: 18px;
+      align-items: start;
+      justify-content: center;
+      padding: 18px 0 86px;
+    }
+
+    .dictionary {
+      order: 1;
+      position: sticky;
+      top: 76px;
+      border: 2px solid var(--ink);
+      background: rgba(255, 250, 240, 0.76);
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 13px;
+      border-bottom: 2px solid var(--ink);
+      background: rgba(255, 250, 240, 0.72);
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-family: var(--condensed);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .panel-count {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+
+    .panel-body {
+      display: grid;
+      gap: 12px;
+      padding: 13px;
+    }
+
+    .search-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .sort-stack {
+      display: grid;
+      gap: 8px;
+      padding: 0;
+    }
+
+    .sort-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .sort-head strong {
+      color: var(--ink);
+      font-family: var(--condensed);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .sort-map {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .sort-chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      min-height: 38px;
+      padding: 8px 12px;
+      color: var(--muted);
+      background: rgba(255, 250, 240, 0.88);
+      font-size: 11px;
+      font-weight: 760;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .sort-chip.active {
+      border-color: var(--blue);
+      color: var(--paper-2);
+      background: var(--blue);
+      box-shadow: 2px 2px 0 var(--ink);
+    }
+
+    .search {
+      width: 100%;
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: var(--ink);
+      background: rgba(255, 250, 240, 0.88);
+      outline: none;
+      font-size: 12px;
+    }
+
+    .search:focus { box-shadow: 0 0 0 3px rgba(0, 47, 167, 0.16); }
+
+    .filter-drawer {
+      display: block;
+      min-width: 0;
+      margin-top: 2px;
+      overflow: hidden;
+    }
+
+    .filter-drawer summary {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 13px;
+      color: var(--ink);
+      background: rgba(255, 250, 240, 0.9);
+      font-size: 12px;
+      font-weight: 850;
+      list-style: none;
+      transition: transform 150ms ease, border-color 150ms ease, color 150ms ease;
+    }
+
+    .filter-drawer summary::-webkit-details-marker { display: none; }
+
+    .filter-drawer summary:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      transform: translateY(-1px);
+    }
+
+    .filter-drawer summary::after {
+      content: "展开";
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 780;
+    }
+
+    .filter-drawer[open] summary::after { content: "收起"; }
+
+    .filter-drawer[open] {
+      border: 1px solid rgba(0, 47, 167, 0.18);
+      border-radius: 14px;
+      margin-top: 8px;
+      padding: 10px;
+      background: rgba(0, 47, 167, 0.04);
+    }
+
+    .topic-map {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
+      gap: 7px 8px;
+      width: 100%;
+      max-width: 100%;
+      margin: 10px 0 0;
+      overflow: visible;
+      padding: 0;
+    }
+
+    .type-map {
+      display: none;
+    }
+
+    .topic {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      min-height: 34px;
+      padding: 6px 9px;
+      color: var(--muted);
+      background: rgba(255, 250, 240, 0.62);
+      font-size: 11px;
+      font-weight: 760;
+      line-height: 1.2;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      text-align: left;
+      max-width: 100%;
+    }
+
+    .topic.active,
+    .topic:hover {
+      border-color: var(--blue);
+      color: var(--paper-2);
+      background: var(--blue);
+    }
+
+    .type-chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 13px;
+      color: var(--muted);
+      background: rgba(255, 250, 240, 0.58);
+      font-size: 12px;
+      line-height: 1.2;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      flex: 0 1 auto;
+      max-width: 100%;
+    }
+
+    .type-chip.active,
+    .type-chip:hover {
+      border-color: var(--blue);
+      color: var(--paper-2);
+      background: var(--blue);
+    }
+
+    .dict-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      max-height: min(560px, calc(100vh - 286px));
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .dict-row {
+      width: 100%;
+      border: 1px solid transparent;
+      border-radius: 0;
+      min-height: 74px;
+      padding: 10px 11px;
+      background: transparent;
+      text-align: left;
+      color: var(--muted);
+    }
+
+    .dict-row:hover,
+    .dict-row.active {
+      color: var(--ink);
+      border-color: var(--line);
+      background: rgba(255, 250, 240, 0.72);
+    }
+
+    .dict-row strong {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 14px;
+    }
+
+    .dict-row span {
+      display: block;
+      margin-top: 2px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .card-status,
+    .entry-status {
+      display: none;
+    }
+
+    .stage {
+      order: 2;
+      display: grid;
+      gap: 16px;
+      width: 100%;
+      max-width: 760px;
+    }
+
+    .deck {
+      position: relative;
+      border: 2px solid var(--ink);
+      background:
+        linear-gradient(135deg, rgba(255, 250, 240, 0.84), rgba(243, 239, 228, 0.82)),
+        var(--paper-2);
+      box-shadow: 9px 9px 0 var(--blue);
+      padding: clamp(14px, 2vw, 24px);
+    }
+
+    .deck::before {
+      content: "";
+      position: absolute;
+      inset: 13px;
+      border: 1px solid rgba(23, 19, 13, 0.16);
+      pointer-events: none;
+    }
+
+    .flashcard {
+      position: relative;
+      min-height: 360px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 18px;
+      border: 2px solid var(--ink);
+      padding: clamp(22px, 3vw, 34px);
+      color: var(--paper-2);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 28%),
+        radial-gradient(circle at 86% 16%, rgba(255, 250, 240, 0.14), transparent 24%),
+        var(--dark);
+      box-shadow: 0 18px 42px rgba(23, 19, 13, 0.18);
+      transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+    }
+
+    .flashcard.is-back {
+      color: var(--ink);
+      background:
+        linear-gradient(135deg, rgba(0, 47, 167, 0.08), transparent 30%),
+        var(--card);
+    }
+
+    .flash-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: rgba(255, 250, 240, 0.66);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .flashcard.is-back .flash-meta { color: var(--muted); }
+
+    .question {
+      display: grid;
+      align-content: center;
+      gap: 14px;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .badge {
+      border: 1px solid rgba(255, 250, 240, 0.22);
+      border-radius: 999px;
+      padding: 4px 8px;
+      color: rgba(255, 250, 240, 0.72);
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 11px;
+    }
+
+    .flashcard.is-back .badge {
+      color: var(--muted);
+      border-color: var(--line);
+      background: rgba(255, 250, 240, 0.72);
+    }
+
+    .question h2 {
+      margin: 0;
+      max-width: 680px;
+      font-family: var(--serif);
+      font-size: clamp(28px, 3vw, 42px);
+      line-height: 1.08;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .answer {
+      display: none;
+      max-width: 660px;
+      margin: 0;
+      color: #2f2a21;
+      font-size: clamp(18px, 1.8vw, 24px);
+      line-height: 1.46;
+    }
+
+    .flashcard.is-back .answer { display: block; }
+    .flashcard.is-back .prompt { display: none; }
+
+    .hint {
+      justify-self: center;
+      border: 0;
+      color: rgba(255, 250, 240, 0.62);
+      background: transparent;
+      font-size: 14px;
+      pointer-events: none;
+    }
+
+    .flashcard.is-back .hint { color: var(--muted); }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .control {
+      min-height: 44px;
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      padding: 0 16px;
+      color: var(--ink);
+      background: rgba(255, 250, 240, 0.88);
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .control.icon {
+      width: 48px;
+      padding: 0;
+      color: var(--blue);
+      background: var(--paper-2);
+      font-size: 20px;
+    }
+
+    .control.primary {
+      color: var(--paper-2);
+      background: var(--blue);
+    }
+
+    .control.no { color: var(--red); }
+    .control.yes { color: var(--green); }
+
+    .entry {
+      border: 2px solid var(--ink);
+      background: rgba(255, 250, 240, 0.76);
+    }
+
+    .entry-body {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+    }
+
+    .entry h3 {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(26px, 3.2vw, 38px);
+      line-height: 1.05;
+    }
+
+    .entry-head {
+      display: grid;
+      gap: 8px;
+      padding-bottom: 4px;
+    }
+
+    .entry-kicker {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .related {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .related button {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 8px;
+      color: var(--muted);
+      background: rgba(255, 250, 240, 0.72);
+      font-size: 12px;
+    }
+
+    .related button:hover {
+      border-color: var(--ink);
+      color: var(--paper-2);
+      background: var(--blue);
+    }
+
+    .related-more {
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .related-more summary {
+      cursor: pointer;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+      list-style: none;
+    }
+
+    .related-more summary::-webkit-details-marker { display: none; }
+
+    .related-more .related {
+      margin-top: 8px;
+    }
+
+    .learning-hint {
+      border: 1px solid rgba(35, 31, 25, 0.16);
+      background: rgba(255, 250, 240, 0.62);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .learning-hint {
+      padding: 8px 10px;
+    }
+
+    .list-more {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      justify-self: center;
+      width: min(380px, calc(100% - 48px));
+      min-width: 220px;
+      min-height: 44px;
+      margin: 14px auto 4px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 250, 240, 0.8);
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 800;
+      text-align: center;
+      padding: 0 22px;
+    }
+
+    .list-more:hover {
+      border-color: var(--blue);
+      background: rgba(0, 47, 167, 0.08);
+    }
+
+    .list-end {
+      justify-self: center;
+      width: min(380px, calc(100% - 48px));
+      margin: 14px auto 4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+      opacity: 0.78;
+    }
+
+    .section-label {
+      margin: 0 0 8px;
+      color: var(--red);
+      font-family: var(--condensed);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .read-card {
+      border: 1px solid var(--line);
+      background: rgba(255, 250, 240, 0.72);
+      padding: 16px 17px;
+    }
+
+    .read-card.primary {
+      border-color: rgba(0, 47, 167, 0.32);
+      background:
+        linear-gradient(90deg, rgba(0, 47, 167, 0.08), transparent 36%),
+        rgba(255, 250, 240, 0.82);
+    }
+
+    .read-card.expandable {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .read-card.expandable summary {
+      min-height: 48px;
+      padding: 14px 17px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .read-card.expandable summary::-webkit-details-marker { display: none; }
+
+    .read-card.expandable .expand-label {
+      margin: 0;
+    }
+
+    .read-card.expandable .expand-action {
+      flex: 0 0 auto;
+      color: #002fa7;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .read-card.expandable .when-open { display: none; }
+
+    .read-card.expandable[open] .when-open { display: inline; }
+
+    .read-card.expandable[open] .when-closed { display: none; }
+
+    .read-card.expandable .expand-body {
+      padding: 0 17px 16px;
+    }
+
+    .detail-text {
+      margin: 0;
+      color: #322d24;
+      font-size: 14px;
+      line-height: 1.82;
+      max-width: 74ch;
+    }
+
+    .detail-text + .detail-text { margin-top: 12px; }
+
+    .takeaway {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: clamp(18px, 2.1vw, 24px);
+      line-height: 1.35;
+    }
+
+    .empty {
+      padding: 20px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      z-index: 40;
+      transform: translateX(-50%) translateY(14px);
+      opacity: 0;
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      padding: 9px 13px;
+      color: var(--ink);
+      background: rgba(255, 250, 240, 0.94);
+      pointer-events: none;
+      transition: opacity 160ms ease, transform 160ms ease;
+      font-size: 13px;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 760px) {
+      .workspace { grid-template-columns: 1fr; }
+      .dictionary { order: 2; position: static; }
+      .stage { order: 1; }
+      .hero-grid { grid-template-columns: 1fr; }
+      .dict-list { max-height: 300px; }
+      .search-row { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 700px) {
+      .shell { width: min(100% - 20px, 1180px); }
+      .nav { padding: 10px 0; }
+      .brand span:last-child { white-space: normal; }
+      .nav-stats {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        overflow-x: visible;
+      }
+      .hero { display: none; }
+      .workspace { padding-top: 12px; }
+      .stats { grid-template-columns: 1fr; }
+      .stat { min-height: 58px; border-right: 0; border-bottom: 1px solid var(--line); }
+      .stat:last-child { border-bottom: 0; }
+      .deck { padding: 10px; box-shadow: 6px 6px 0 var(--blue); }
+      .deck::before { display: none; }
+      .flashcard { min-height: 380px; padding: 20px; }
+      .question h2 { font-size: 31px; }
+      .answer { font-size: 20px; }
+      .control { min-height: 42px; padding: 0 12px; }
+    }
+
+    /* ===== 公开版分层样式 ===== */
+    .full-version-cta {
+      border-color: var(--blue);
+      color: var(--paper-2);
+      background: var(--blue);
+      font-weight: 800;
+      box-shadow: 3px 3px 0 var(--ink);
+      text-decoration: none;
+    }
+    .full-version-cta:hover { text-decoration: none; transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink); }
+
+    .edition-badge {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      border-radius: 999px;
+      border: 1px solid var(--ink);
+    }
+    .edition-badge.sample {
+      color: var(--paper-2);
+      background: var(--green);
+      border-color: var(--green);
+    }
+    .edition-badge.free {
+      color: var(--muted);
+      background: rgba(255, 250, 240, 0.6);
+    }
+
+    .locked-section {
+      position: relative;
+      overflow: hidden;
+      min-height: 110px;
+    }
+    .locked-body {
+      filter: blur(4px);
+      opacity: 0.5;
+      user-select: none;
+      pointer-events: none;
+    }
+    .locked-text {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+      margin: 0 0 6px;
+    }
+    .locked-veil {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(243, 239, 228, 0.4) 30%, rgba(243, 239, 228, 0.92) 70%);
+      pointer-events: none;
+    }
+
+    .upgrade-card {
+      border: 2px dashed var(--blue);
+      background: rgba(0, 47, 167, 0.04);
+      text-align: center;
+      padding: 22px 18px;
+    }
+    .upgrade-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 0 0 8px;
+    }
+    .upgrade-detail {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin: 0 0 14px;
+    }
+    .upgrade-button {
+      display: inline-block;
+      padding: 10px 22px;
+      background: var(--blue);
+      color: var(--paper-2);
+      font-weight: 800;
+      border: 2px solid var(--ink);
+      box-shadow: 3px 3px 0 var(--ink);
+      text-decoration: none;
+      transition: transform 150ms ease, box-shadow 150ms ease;
+    }
+    .upgrade-button:hover {
+      text-decoration: none;
+      transform: translate(-1px, -1px);
+      box-shadow: 4px 4px 0 var(--ink);
+    }
+      </style>
+</head>
+<body>
+  <header class="topbar">
+    <nav class="shell nav">
+      <a class="brand" href="#" aria-label="AI 祛魅词典">
+        <span class="brand-mark">AI</span>
+        <span>AI 祛魅词典</span>
+      </a>
+      <div class="nav-stats" aria-label="学习状态">
+        <span class="pill" id="nav-count">读取中</span>
+        <a class="pill full-version-cta" id="full-version-link" href="#" title="解锁全部深度内容">完整版 →</a>
+        <span class="pill" id="nav-known">认识 0</span>
+        <span class="pill" id="nav-missed">待复习 0</span>
+        <span class="translate-mini" aria-label="辅助翻译">
+          <button type="button" id="translate-zh" title="回到中文">CH</button>
+          <button type="button" id="translate-en" title="使用 Google Translate 临时翻译成英文">EN</button>
+          <span id="google_translate_element" aria-hidden="true"></span>
+        </span>
+      </div>
+    </nav>
+  </header>
+
+  <section class="shell hero">
+    <div class="kicker">Dictionary deck</div>
+    <div class="hero-grid">
+      <div>
+        <h1>把 AI 概念翻成能记住的卡片。</h1>
+        <p class="lead">这里像一本真实的 AI 字典，也像一副可抽取的学习卡。先抽一张，翻开解释，再沿着相关词继续走下去。</p>
+      </div>
+      <aside class="ledger" aria-label="词典统计">
+        <div class="ledger-title">
+          <span>Index</span>
+          <span id="deck-label">Flashcards</span>
+        </div>
+        <div class="stats">
+          <div class="stat"><strong id="term-count">--</strong><span>词典卡片</span></div>
+          <div class="stat"><strong id="category-count">--</strong><span>主题分类</span></div>
+          <div class="stat"><strong id="progress-count">0%</strong><span>点亮进度</span></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <main class="shell workspace">
+    <aside class="dictionary">
+      <div class="panel-head">
+        <h2>Dictionary</h2>
+        <span class="panel-count" id="visible-count">--</span>
+      </div>
+      <div class="panel-body">
+        <div class="search-row">
+          <input class="search" id="search" type="search" placeholder="搜索概念、别名或解释">
+          <div class="sort-stack" aria-label="词典排序方式">
+            <div class="sort-head">
+              <strong>排序</strong>
+              <span id="sort-summary" style="color:#b95f38;font-weight:bold">📡 数据已更新 2026-06-19 04:40 · 1177 张卡 · 搜索「测试」验证</span>
+            </div>
+            <div class="sort-map" id="sort-map"></div>
+          </div>
+        </div>
+        <div class="dict-list" id="dictionary-list"></div>
+        <details class="filter-drawer">
+          <summary>筛选分类</summary>
+          <div class="topic-map" id="topic-map" aria-label="主题地图"></div>
+          <div class="type-map" id="type-map" aria-label="条目类型筛选" data-entry-type="全部"></div>
+        </details>
+      </div>
+    </aside>
+
+    <section class="stage">
+      <div class="deck">
+        <article class="flashcard" id="flashcard" tabindex="0" aria-live="polite">
+          <div class="flash-meta">
+            <span id="card-index">-- / --</span>
+            <span class="card-status" id="card-status"></span>
+          </div>
+          <div class="question">
+            <div class="badges" id="card-badges"></div>
+            <h2 class="prompt" id="card-question">正在装载词典卡片。</h2>
+            <p class="answer" id="card-answer"></p>
+          </div>
+          <p class="hint" id="card-hint">点击卡片或下方按钮查看答案</p>
+        </article>
+        <div class="controls" aria-label="抽认卡操作">
+          <button class="control icon" type="button" id="prev-card" aria-label="上一张">←</button>
+          <button class="control no" type="button" id="mark-missed">不熟</button>
+          <button class="control primary" type="button" id="flip-card">查看答案</button>
+          <button class="control yes" type="button" id="mark-known">认识</button>
+          <button class="control icon" type="button" id="next-card" aria-label="下一张">→</button>
+          <button class="control" type="button" id="shuffle-card">随机抽卡</button>
+        </div>
+      </div>
+
+      <section class="entry" aria-label="词典释义">
+        <div class="panel-head">
+          <h2>Dictionary Entry</h2>
+          <span class="panel-count entry-status" id="entry-status"></span>
+        </div>
+        <div class="entry-body" id="detail">
+          <div class="empty">选择一张卡片后，这里会显示完整解释。</div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    window.googleTranslateElementInit = function() {
+      if (!window.google || !window.google.translate) return;
+      new google.translate.TranslateElement({
+        pageLanguage: "zh-CN",
+        includedLanguages: "en,zh-CN",
+        autoDisplay: false
+      }, "google_translate_element");
+    };
+
+    function setTranslateCookie(value) {
+      const expires = "expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie = `googtrans=; ${expires}; path=/`;
+      document.cookie = `googtrans=; ${expires}; domain=${location.hostname}; path=/`;
+      if (value) {
+        document.cookie = `googtrans=${value}; path=/`;
+      }
+    }
+
+    function loadGoogleTranslate() {
+      if (document.querySelector("script[data-google-translate]")) return;
+      const script = document.createElement("script");
+      script.dataset.googleTranslate = "true";
+      script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+      script.async = true;
+      document.head.appendChild(script);
+    }
+
+    function chooseGoogleLanguage(language) {
+      loadGoogleTranslate();
+      let attempts = 0;
+      const timer = window.setInterval(() => {
+        const select = document.querySelector(".goog-te-combo");
+        attempts += 1;
+        if (!select && attempts < 24) return;
+        window.clearInterval(timer);
+        if (!select) return;
+        select.value = language;
+        select.dispatchEvent(new Event("change"));
+      }, 250);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("translate-en")?.addEventListener("click", () => {
+        setTranslateCookie("/zh-CN/en");
+        chooseGoogleLanguage("en");
+      });
+      document.getElementById("translate-zh")?.addEventListener("click", () => {
+        setTranslateCookie("");
+        location.reload();
+      });
+    });
+
+    const STORAGE_KEY = "ai-dictionary-lab-progress-v2";
+
+    const state = {
+      terms: [],
+      filtered: [],
+      categories: [],
+      category: "全部",
+      entryType: "全部",
+      sortMode: "前沿焦点",
+      activeIndex: 0,
+      visibleLimit: 30,
+      listStep: 30,
+      showingBack: false,
+      progress: { known: {}, missed: {} },
+      toastTimer: null
+    };
+
+    const sortModes = [
+      { label: "前沿焦点", summary: "先看能激发好奇心的主线概念" },
+      { label: "学习路径", summary: "先基础，再模型，再产品与应用" },
+      { label: "主题浏览", summary: "按主题成片浏览，减少概念跳跃" },
+      { label: "A-Z", summary: "按词名字母顺序查找" }
+    ];
+
+    const curiosityPriority = [
+      // === 第一梯队：最热产品与模型（用户一眼能认出的）===
+      // --- 日常使用产品 ---
+      "ChatGPT", "Claude", "Gemini", "DeepSeek-R1", "GPT-4", "GPT-4o",
+      "NotebookLM", "Cursor", "GitHub Copilot", "Claude Code",
+      "Devin", "Windsurf", "Bolt.new", "v0", "Perplexity",
+      // --- 最新旗舰模型（随时更新）---
+      "GPT-5.5", "GPT-5", "Claude 4", "Claude Fable 5", "Claude Mythos 5",
+      "Gemini 2.5", "DeepSeek-V3", "Kimi K2.6", "MiniMax-M3", "GLM-5.2",
+      "Grok", "Llama", "Mistral AI", "Mixtral",
+      "DALL·E", "Veo", "AlphaFold2", "AlphaGo Zero", "AlphaStar",
+      // --- 关键公司与机构 ---
+      "OpenAI", "Anthropic", "DeepMind", "NVIDIA", "Hugging Face",
+      "Groq LPU",
+      // --- 中国模型 ---
+      "通义千问", "豆包", "文心一言", "智谱 GLM", "腾讯混元", "Kimi",
+      // === 第二梯队：Agent 与自动化 ===
+      "Agent", "Agentic AI", "智能体工作流", "计算机使用",
+      "工具调用", "函数调用", "模型上下文协议", "上下文工程",
+      "多智能体", "多智能体协作", "反思机制", "自我纠错",
+      "自主编程智能体", "长程运行智能体", "规划智能体", "评估智能体",
+      "测试驱动智能体", "智能体协调器", "学习回路", "循环工程",
+      "编排", "路由", "扇入", "扇出", "工作流",
+      "降级策略", "重试策略", "验证门控", "可复用技能",
+      "共享记忆", "记忆检索", "OpenClaw", "Operator",
+      "AI 浏览器", "命令行智能体", "IDE 智能体",
+      // === 第三梯队：AI 编程与工具 ===
+      "Codex", "Codex 运行控制", "Cursor Tab", "Code Llama",
+      "StarCoder", "BigCode", "Tabnine", "Stable Code",
+      "DeepSeek Coder",
+      "氛围编程", "从提示到代码", "代码审查", "代码补全",
+      "差异审查", "补丁生成", "测试执行框架", "SWE-bench",
+      // === 第四梯队：提示词与推理 ===
+      "思维链", "思维树", "推理轨迹", "检索增强生成",
+      "提示词", "提示词工程", "提示注入", "越狱攻击",
+      "系统提示词", "自定义指令", "自一致性", "零样本",
+      "少样本提示", "小样本学习", "结构化输出", "温度",
+      // === 第五梯队：核心概念 ===
+      "Transformer", "注意力机制", "Scaling Law", "扩展定律",
+      "锯齿感", "外推", "上下文窗口", "幻觉",
+      "词元", "强化学习", "监督微调", "人类反馈强化学习",
+      "知识蒸馏", "迁移学习", "模型压缩", "模型蒸馏",
+      "推理时计算", "推测解码", "长上下文",
+      // === 第六梯队：AI 创作 ===
+      "文生视频", "Sora", "文生图提示词技巧", "语音合成 TTS", "语音识别 ASR",
+      "语音克隆", "语音助手", "音频模型", "风格迁移",
+      "降低 AI 痕迹", "Runway",
+      // === 第七梯队：算力与硬件 ===
+      "CUDA", "GPU", "TPU", "图形处理器", "CPU vs GPU",
+      "GPU 架构", "GPU 集群", "GPU VRAM", "显存带宽",
+      "Flash Attention", "Flash Attention 2", "混合精度训练",
+      "张量并行", "AI 芯片", "AI 算力",
+      "高带宽内存", "Grace Blackwell 系统", "Project DIGITS",
+      "NVLink", "Tensor Core",
+      // === 第八梯队：搜索与数据 ===
+      "AI 搜索", "深度研究", "向量数据库",
+      "嵌入模型", "语义搜索", "混合搜索", "知识图谱",
+      "RAG 历史", "RAG 评估", "GraphRAG", "检索增强",
+      "网络爬虫", "网页抓取",
+      // === 第九梯队：关键人物 ===
+      "黄仁勋", "山姆·奥特曼", "达里奥·阿莫迪", "德米斯·哈萨比斯",
+      "伊尔亚·苏茨克维", "杰弗里·辛顿", "李飞飞", "吴恩达",
+      "安德烈·卡帕西", "杨立昆", "约书亚·本吉奥", "梁文锋",
+      "雷·库兹韦尔", "李世石", "约翰·麦卡锡", "艾伦·图灵",
+      "马文·明斯基", "亚历克斯·克里热夫斯基", "伊恩·古德费洛",
+      // === 第十梯队：AI 产品与应用 ===
+      "OpenRouter", "GPT4All", "HuggingFace Spaces", "LangChain",
+      "LangGraph", "LangSmith", "AutoGPT", "Code Interpreter",
+      "流式输出", "插件",
+      // === 第十一梯队：AI 商业与社会 ===
+      "开源 AI", "开源 vs 闭源", "超级智能", "负责任 AI",
+      "超对齐", "算法透明", "版权", "随机鹦鹉",
+      "莫拉维克悖论", "第一性原理", "中国大模型",
+      // === 第十二梯队：经典模型与概念（历史价值） ===
+      "Mamba", "BERT", "GPT", "Gato", "PaliGemma",
+    ];
+
+    const quietDuplicateIds = new Set([
+      "bb074b86a98f",
+      "56cd05fd1f34"
+    ]);
+
+    const openingTeasers = {
+      "ChatGPT": "ChatGPT 是大模型第一次真正进入普通人的入口。",
+      "Claude": "长任务、代码和 Agent，正在把模型拉进真实工作。",
+      "Gemini": "会先思考再回答的模型，正在改变复杂任务的节奏。",
+      "DeepSeek-R1": "推理模型突然变成开源世界的主战场。",
+      "GPT-4": "从 GPT-4 开始，大模型不再是玩具，而是工作伙伴。",
+      "GPT-4o": "OpenAI 的多模态旗舰，能同时看、听、说，一度是免费用户的主力模型。",
+      "Sora": "OpenAI 的视频生成模型，从惊艳亮相到 2026 年 4 月黯然下架，AI 产品的典型速生速死。",
+      "NotebookLM": "把一堆资料交给 AI，它能不能变成你的研究搭子？",
+      "Cursor": "当编辑器开始懂整个代码库，写代码会变成怎样？",
+      "GitHub Copilot": "代码还没写完，AI 已经猜到你下一步要写什么。",
+      "Claude Code": "让 AI 住进终端和仓库，软件开发会变成什么样？",
+      "Devin": "第一个自称「AI 软件工程师」的 Agent，它到底行不行？",
+      "Windsurf": "当 AI 编程不只是补全，而是一起写代码。",
+      "Bolt.new": "在浏览器里说一句话，就能生成一个完整的网页应用。",
+      "v0": "用自然语言生成 UI 界面，设计稿变成了对话。",
+      "Perplexity": "AI 搜索不只是找答案，而是找完还给来源。",
+      "OpenAI": "从非营利到商业帝国，OpenAI 的路越走越复杂。",
+      "Anthropic": "把安全写进公司基因的 AI 实验室，能走多远？",
+      "DeepMind": "从 AlphaGo 到 AlphaFold，这家公司一直在证明 AI 的边界。",
+      "NVIDIA": "AI 时代最大的「卖铲人」，从显卡到数据中心。",
+      "Hugging Face": "AI 界的 GitHub，开源模型和数据集的大本营。",
+      "Groq LPU": "Groq 的 LPU 芯片，推理速度快到让 ChatGPT 像在慢放。",
+      "Grok": "马斯克的 AI，嘴毒、联网、不装正经。",
+      "Llama": "Meta 的开源模型家族，让大模型从奢侈品变成日用品。",
+      "Mistral AI": "法国 AI 之光，用最少的钱做最强的开源模型。",
+      "Kimi": "中文世界最受关注的 AI 助手之一，长上下文是它的王牌。",
+      "通义千问": "阿里的大模型，从电商到办公，场景渗透越来越深。",
+      "豆包": "字节跳动的 AI 助手，背后是抖音级别的产品能力。",
+      "文心一言": "百度的 AI 旗舰，中文理解和知识图谱是它的根基。",
+      "智谱 GLM": "清华系 AI 公司，GLM 模型在学术和产业两端发力。",
+      "腾讯混元": "腾讯的大模型，从微信到游戏，场景是它最大的护城河。",
+      "Agent": "AI 不再只回答你，它开始接任务、拆步骤、调工具、交付结果。",
+      "Agentic AI": "AI 从「回答问题」进化到「主动做事」，这一跳有多远？",
+      "智能体工作流": "把一件事交给 AI 后，它怎样拆步骤、用工具、看结果？",
+      "计算机使用": "AI 开始真的看屏幕、点按钮、填表单。",
+      "工具调用": "模型什么时候该开口回答，什么时候该伸手调用工具？",
+      "函数调用": "AI 调用外部函数的那一刻，它从聊天框走进了真实世界。",
+      "模型上下文协议": "如果每个工具都要单独接线，Agent 系统很快就会乱套。",
+      "上下文工程": "Agent 真正厉害之前，先要把上下文喂得像一张作战地图。",
+      "多智能体": "一个 Agent 不够时，让一组 Agent 分工协作会发生什么？",
+      "多智能体协作": "Agent 之间怎么分工、怎么通信、怎么不互相踩脚？",
+      "反思机制": "让 AI 做完先回头检查一遍，很多任务才开始像工作流。",
+      "自我纠错": "AI 写代码写错了，能不能自己发现、自己改？",
+      "自主编程智能体": "AI 从代码补全到自主编程，中间还差几步？",
+      "长程运行智能体": "Agent 跑几个小时甚至几天，怎么保证不跑偏？",
+      "规划智能体": "AI 不只是执行，它开始先想好再动手。",
+      "评估智能体": "AI 写完答案，谁来打分？另一个 AI。",
+      "测试驱动智能体": "先写测试用例，再让 AI 写代码——靠谱吗？",
+      "智能体协调器": "一群 Agent 干活时，谁当指挥？",
+      "学习回路": "高手已经不满足于写提示词了。他们开始给 Agent 搭循环，让它自己反复干活、检查、修正。",
+      "循环工程": "Agent 的循环怎么设计，才不会被卡住或跑飞？",
+      "编排": "真正的 Agent 系统，核心是后台调度和分工。",
+      "路由": "同一个任务，应该交给哪个模型、哪条工具链、哪个 Agent？",
+      "扇入": "多个 Agent 分头做完，最后怎么把结果汇成一个判断？",
+      "扇出": "一个问题拆成多路并行，AI 才开始像团队一样工作。",
+      "工作流": "Agent 不是一步到位，而是按流程一步步推进。",
+      "降级策略": "工具坏了、模型慢了，Agent 怎么优雅地降级而不是崩溃？",
+      "重试策略": "失败一次就放弃？好的 Agent 知道什么时候再试一次。",
+      "验证门控": "Agent 输出结果前，必须经过一道验证关卡。",
+      "可复用技能": "Agent 学会的本事，能不能存下来下次直接用？",
+      "共享记忆": "多个 Agent 之间怎么共享上下文，不重复造轮子？",
+      "记忆检索": "Agent 需要从过去的经验里找到最相关的信息来用。",
+      "OpenClaw": "以前 AI 只在聊天框里回话；OpenClaw 让 Agent 长出手脚，开始接消息、看电脑、调工具。",
+      "Operator": "AI 代你操作网页时，最刺激也最危险的边界在哪里？",
+      "AI 浏览器": "浏览器开始替你读网页、点按钮，网页变成可执行入口。",
+      "命令行智能体": "让 AI 在终端里干活，程序员的工作方式正在被重写。",
+      "IDE 智能体": "AI 从代码补全到理解整个项目，IDE 变成了 AI 的工作台。",
+      "Claude 4": "长上下文、代码能力和 Agent 设计，Claude 4 把模型拉进真实工作。",
+      "Claude Fable 5": "Anthropic 首款面向大众开放的 Mythos 级模型，2026 年 6 月发布。",
+      "Claude Mythos 5": "Anthropic 的「满血版」旗舰，能力与 Fable 5 一致但移除了安全限制，仅限定向授权。",
+      "Gemini 2.5": "会先思考再回答的模型，正在改变复杂任务的节奏。",
+      "GPT-5.5": "前沿模型竞争进入系统能力阶段，不再只是跑分。",
+      "GPT-5": "从 GPT-5 开始，AI 推理和 Agent 能力跃升了一个台阶。",
+      "DeepSeek Coder": "开源代码模型能有多强？DeepSeek Coder 在测试。",
+      "DeepSeek-V3": "DeepSeek 的第三代，性价比和开源策略搅动了整个市场。",
+      "Veo": "Google 的视频生成模型，从文字到电影级的画面。",
+      "DALL·E": "说出你脑子里想的画面，AI 帮你画出来。",
+      "AlphaFold2": "AI 破解了蛋白质折叠，这是生物学五十年来最大的突破之一。",
+      "AlphaGo Zero": "不靠人类棋谱，从零开始自学，三天超越所有人类。",
+      "AlphaStar": "AlphaStar 在星际争霸里击败职业选手，AI 进入了实时策略游戏。",
+      "Kimi K2.6": "长上下文卷到新高度，Kimi 还在继续突破。",
+      "MiniMax-M3": "MiniMax 的最新一代模型，国产大模型的多模态排头兵。",
+      "GLM-5.2": "智谱迄今最强的开源模型，支持真正的 1M 上下文，MIT 协议开源。",
+      "Mixtral": "Mistral 的混合专家模型，用更少的算力跑出更好的效果。",
+      "Mamba": "Transformer 之外的另一条路，状态空间模型在崛起。",
+      "BERT": "Google 的双向编码器，NLP 领域的一次范式转移。",
+      "GPT": "Generative Pre-trained Transformer，一切从这里开始。",
+      "Gato": "一个模型做所有事：聊天、玩游戏、控制机器人。",
+      "PaliGemma": "Google 的视觉语言模型，看图说话的能力越来越强。",
+      "Codex": "代码任务交给 AI 后，可以从补全一行推进到完整流程。",
+      "Codex 运行控制": "Codex 不只是写代码，还能控制代码怎么运行。",
+      "Cursor Tab": "Cursor 的智能补全，不只是补一行，而是跳一段。",
+      "Code Llama": "Meta 的代码专用模型，开源代码生成的中坚力量。",
+      "StarCoder": "BigCode 项目的代码模型，开源社区的编程助手。",
+      "BigCode": "开源社区的代码 AI 大联盟，StarCoder 就是从这里出来的。",
+      "Tabnine": "AI 代码补全的元老，比 Copilot 更早进入编辑器。",
+      "Stable Code": "Stability AI 的代码模型，轻量但能跑在本地。",
+      "氛围编程": "AI 编程的新流派：不在乎过程，只在乎感觉对不对。",
+      "从提示到代码": "把自然语言描述变成可运行的代码，中间还差什么？",
+      "代码审查": "AI 帮你 review 代码，能发现人容易漏掉的问题吗？",
+      "代码补全": "AI 猜你接下来要写什么，准确率越来越高。",
+      "差异审查": "AI 帮你对比代码改动，找出潜在的风险点。",
+      "补丁生成": "AI 自动生成修复补丁，从 bug 到 fix 一条龙。",
+      "测试执行框架": "AI 写代码靠不靠谱，得让测试框架来验证。",
+      "SWE-bench": "判断编程 Agent 有没有真本事，不能只看演示，要看真实 issue。",
+      "思维链": "让模型写出思路，有时是解法，有时也会暴露风险。",
+      "思维树": "一条思路走不通时，让 AI 同时试几条路。",
+      "推理轨迹": "追踪 AI 的推理过程，看看它到底是怎么想的。",
+      "检索增强生成": "让 AI 回答前先翻资料，能把胡说的概率压下去。",
+      "提示词": "和 AI 对话的第一关：你怎么问，决定了它怎么答。",
+      "提示词工程": "真正的提示词要把任务、边界和判断标准说清楚。",
+      "提示注入": "有人偷偷在提示词里塞了东西，AI 会上当吗？",
+      "越狱攻击": "用各种方式绕过 AI 的安全限制，这是一场攻防战。",
+      "系统提示词": "藏在对话背后的「规则书」，决定了 AI 的底线和风格。",
+      "自定义指令": "给 AI 设一个永久人设，每次对话都按你的规矩来。",
+      "自一致性": "让 AI 多想几条路，然后投票选最靠谱的答案。",
+      "零样本": "不给 AI 看任何例子，它能不能直接理解任务？",
+      "少样本提示": "给 AI 看几个例子，它就能举一反三。",
+      "小样本学习": "AI 不需要海量数据，看几个样本就能学会。",
+      "结构化输出": "让 AI 输出 JSON 而不是自由文本，程序才能直接用。",
+      "温度": "温度越高 AI 越有创意，越低越保守——调对温度是门手艺。",
+      "Transformer": "现代大模型的核心骨架，从这里开始改变语言 AI。",
+      "注意力机制": "模型学会把注意力放在最相关的信息上。",
+      "Scaling Law": "前沿实验室真正赌的，是小实验能不能外推到大模型。",
+      "扩展定律": "算力、数据、模型大小之间的数学关系，决定了 AI 能走多远。",
+      "锯齿感": "AI 能力像锯齿海岸线：有的地方很强，有的地方突然粗糙。",
+      "外推": "先在小模型上看规律，再判断大模型会不会继续有效。",
+      "上下文窗口": "AI 眼前能摊多少资料，决定它能走多远。",
+      "幻觉": "AI 说得越顺，越要问一句：证据在哪？",
+      "词元": "模型读世界之前，先把文字切成它能处理的小块。",
+      "强化学习": "AI 在试错中学习：做对了奖励，做错了惩罚。",
+      "监督微调": "用标注好的问答数据，让通用模型学会特定任务。",
+      "人类反馈强化学习": "把人类偏好写进训练过程，让模型更像在配合人。",
+      "知识蒸馏": "让大模型当老师，把小模型教聪明——省算力但不省智商。",
+      "迁移学习": "在一个任务上学到的能力，能不能搬到另一个任务上？",
+      "模型压缩": "把大模型缩小，让它能在手机上跑起来。",
+      "模型蒸馏": "大模型教小模型，知识传递的精简版。",
+      "推理时计算": "AI 回答问题的时候，花多少算力思考？",
+      "推测解码": "让小模型先猜，大模型再确认——推理加速的秘密武器。",
+      "长上下文": "AI 一次能记住多少页书，决定了它能处理多复杂的任务。",
+      "文生视频": "打一句话，AI 生成一段视频——这是内容创作的新边疆。",
+      "文生图提示词技巧": "怎么跟 AI 描述你想要的画面？这是一门新语言。",
+      "语音合成 TTS": "AI 把文字变成人声，越来越像真人说话。",
+      "语音识别 ASR": "AI 听懂你在说什么，准确率已经超过人类。",
+      "语音克隆": "用几秒钟的录音，AI 就能模仿你的声音。",
+      "语音助手": "从 Siri 到 ChatGPT Voice，语音助手正在变成真正的对话伙伴。",
+      "音频模型": "AI 不只是处理文字和图像，声音也成了它的领域。",
+      "风格迁移": "把你的照片变成梵高的画风，AI 学会了「风格」这件事。",
+      "降低 AI 痕迹": "AI 写的东西太像 AI 了，怎么能让它更像人写的？",
+      "Runway": "AI 视频创作工具，从剪辑到生成，重新定义后期制作。",
+      "CUDA": "NVIDIA 的并行计算平台，AI 时代最深的护城河。",
+      "GPU": "AI 不只靠聪明算法，也靠能把矩阵乘法堆成工业能力的机器。",
+      "TPU": "Google 的 AI 专用芯片，为大模型推理而生。",
+      "图形处理器": "从游戏显卡到 AI 引擎，GPU 的第二次生命。",
+      "CPU vs GPU": "CPU 像数学教授，GPU 像一万个小学生——AI 需要的是后者。",
+      "GPU 架构": "GPU 内部怎么设计，决定了 AI 训练能跑多快。",
+      "GPU 集群": "几百张 GPU 连在一起，才能训练出 GPT-4 级别的模型。",
+      "GPU VRAM": "显存就是 AI 的「工作台」，太小了就放不下大模型。",
+      "显存带宽": "数据从显存到计算核心的速度，是 AI 推理的关键瓶颈。",
+      "Flash Attention": "一种让注意力机制更快更省显存的技术，几乎所有大模型都在用。",
+      "Flash Attention 2": "Flash Attention 的升级版，更快、更省、更稳。",
+      "混合精度训练": "用不同精度的数字训练模型，又快又省显存。",
+      "张量并行": "把一个大模型切分到多张 GPU 上，让它们同时计算。",
+      "AI 芯片": "专为 AI 设计的芯片，从训练到推理都在重新定义硬件。",
+      "AI 算力": "AI 时代的「石油」——谁有算力，谁就能训练更大的模型。",
+      "高带宽内存": "HBM 是 AI 芯片的「高速通道」，没有它大模型寸步难行。",
+      "Grace Blackwell 系统": "NVIDIA 的下一代 AI 超级芯片，把 CPU 和 GPU 焊在一起。",
+      "Project DIGITS": "NVIDIA 的个人 AI 超算，把数据中心级的算力放到桌面上。",
+      "NVLink": "NVIDIA 的高速互联技术，让 GPU 之间的通信快到像在同一张卡上。",
+      "Tensor Core": "NVIDIA GPU 里的 AI 计算核心，专门加速矩阵乘法。",
+      "AI 搜索": "搜索开始把答案和证据组织起来，而不是甩给你十个链接。",
+      "深度研究": "把一个复杂问题丢给 AI，它会自己查资料、比来源、写报告。",
+      "向量数据库": "AI 的「记忆库」，存的是语义而不是关键词。",
+      "嵌入模型": "把文字变成数字向量，AI 才能理解「意思」而不是「字面」。",
+      "语义搜索": "搜「怎么让猫不抓沙发」，AI 理解你的意图，不只是匹配关键词。",
+      "混合搜索": "关键词搜索 + 语义搜索，两种方法一起上，召回率更高。",
+      "知识图谱": "把知识组织成实体和关系网络，AI 不是只会匹配文字。",
+      "RAG 历史": "检索增强生成是怎么从想法变成所有 AI 应用标配的？",
+      "RAG 评估": "RAG 系统好不好，不能靠感觉，得有一套评估方法。",
+      "GraphRAG": "用知识图谱增强 RAG，让 AI 理解实体之间的关系。",
+      "检索增强": "AI 在回答之前，先去知识库里翻一翻相关资料。",
+      "网络爬虫": "AI 训练数据的来源：爬虫在互联网上日夜不停地抓取网页。",
+      "网页抓取": "从网页里提取结构化数据，是 AI 获取知识的第一步。",
+      "黄仁勋": "NVIDIA 的 CEO，AI 时代最有权势的人——他卖铲子，所有人都在挖金子。",
+      "山姆·奥特曼": "OpenAI 的 CEO，从 Y Combinator 到 AGI，他押注了整个人类未来。",
+      "达里奥·阿莫迪": "Anthropic 的 CEO，从 OpenAI 出走，把安全写进了公司的基因。",
+      "德米斯·哈萨比斯": "DeepMind 的创始人，从游戏 AI 到蛋白质折叠，他一直在突破边界。",
+      "伊尔亚·苏茨克维": "从 Hinton 学生到 OpenAI 核心人物，他串起了深度学习和前沿模型。",
+      "杰弗里·辛顿": "他把神经网络从冷门信念守到爆发，又开始提醒风险。",
+      "李飞飞": "ImageNet 的创始人，她让 AI 学会了「看」，也推动了 AI 伦理。",
+      "吴恩达": "从 Google Brain 到 Coursera，他把 AI 教育带给了全球几千万人。",
+      "安德烈·卡帕西": "从 Tesla Autopilot 到 OpenAI，他在哪里，哪里就有技术突破。",
+      "杨立昆": "CNN 发明人、Meta 首席 AI 科学家，他一直在和 Hinton 唱反调。",
+      "约书亚·本吉奥": "深度学习三巨头之一，学界的声音在商业浪潮中越来越珍贵。",
+      "梁文锋": "DeepSeek 的创始人，用开源和性价比搅动了整个 AI 市场。",
+      "雷·库兹韦尔": "预言奇点的人，他相信人类将在 2045 年与 AI 融合。",
+      "李世石": "人类围棋冠军，AlphaGo 击败他那一刻，AI 进入了公众视野。",
+      "约翰·麦卡锡": "「人工智能」这个词是他发明的，达特茅斯会议是他组织的。",
+      "艾伦·图灵": "他问了一个问题：机器能思考吗？七十年后我们还在回答。",
+      "马文·明斯基": "AI 先驱，符号主义的旗手，也是神经网络最激烈的批评者。",
+      "亚历克斯·克里热夫斯基": "AlexNet 的作者，他用 GPU 和深度网络改变了 AI 的路线。",
+      "伊恩·古德费洛": "GAN 的发明人，让 AI 学会「创造」而不仅仅是「识别」。",
+      "OpenRouter": "一个 API 调用所有模型，AI 路由的「中间层」。",
+      "GPT4All": "在本地跑大模型，不需要联网，数据也不会离开你的电脑。",
+      "HuggingFace Spaces": "HuggingFace 的应用托管平台，部署 AI demo 只需几分钟。",
+      "LangChain": "LLM 应用开发框架，把模型、工具、记忆串成一条链。",
+      "LangGraph": "LangChain 的进化版，用图结构来编排 Agent 的工作流。",
+      "LangSmith": "LangChain 的调试和监控平台，帮你看到 Agent 内部在干什么。",
+      "AutoGPT": "第一个火出圈的自主 Agent，让 AI 自己给自己布置任务。",
+      "Code Interpreter": "ChatGPT 的代码执行模式，让 AI 不只是聊天，还能写代码、画图、分析数据。",
+      "流式输出": "AI 一个字一个字往外蹦，不是一口气全吐出来——体验完全不一样。",
+      "插件": "ChatGPT 插件生态，让 AI 连接外部世界的第一步。",
+      "开源 AI": "开源模型正在缩小与闭源模型的差距，这场竞赛才刚刚开始。",
+      "开源 vs 闭源": "开源安全还是闭源安全？AI 领域最激烈的辩论之一。",
+      "超级智能": "比所有人类加起来还聪明的 AI，它来了之后会发生什么？",
+      "负责任 AI": "AI 不只是能做什么，还要问该不该做。",
+      "超对齐": "超级智能对齐问题：怎么确保比我们聪明的 AI 仍然听我们的话？",
+      "算法透明": "AI 的决策过程能不能被解释？透明是信任的前提。",
+      "版权": "AI 用你的内容训练，你该不该得到报酬？",
+      "随机鹦鹉": "有人说大模型只是「随机鹦鹉」，只会模仿不会理解——你同意吗？",
+      "莫拉维克悖论": "让 AI 下棋容易，让 AI 叠衣服难——这个悖论还没被完全打破。",
+      "第一性原理": "AI 发展到底是靠工程堆料，还是需要回到基本原理重新思考？",
+      "中国大模型": "百模大战之后，中国大模型正在走向分化与整合。",
+    };
+
+    const curatedFilters = [
+      { label: "全部", categories: null },
+      { label: "基础概念", categories: ["AI 基础概念"] },
+      { label: "产品与应用", categories: ["AI 产品与应用"] },
+      { label: "历史与里程碑", categories: ["AI 历史与里程碑"] },
+      { label: "AI 创作", categories: ["AI 创作"] },
+      { label: "人与机构", categories: ["人与机构"] },
+      { label: "文化与社会", categories: ["AI 文化与社会"] },
+      { label: "编程与工具", categories: ["AI 编程与工具"] },
+      { label: "Agent 自动化", categories: ["Agent 与自动化"] },
+      { label: "模型训练与调优", categories: ["模型训练与调优"] },
+      { label: "算力基础", categories: ["算力基础"] },
+      { label: "数据与检索", categories: ["数据与检索"] },
+      { label: "提示词与推理", categories: ["提示词与推理"] },
+      { label: "前沿模型", categories: ["前沿模型"] },
+      { label: "工程与部署", categories: ["工程与部署"] },
+      { label: "中国 AI", categories: ["@tag:国产"] }
+    ];
+
+    function escapeHTML(value) {
+      return String(value || "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function readProgress() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) state.progress = JSON.parse(raw);
+      } catch (error) {
+        state.progress = { known: {}, missed: {} };
+      }
+      state.progress.known ||= {};
+      state.progress.missed ||= {};
+    }
+
+    function writeProgress() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.progress));
+    }
+
+    async function loadDictionary() {
+      const response = await fetch(`ai-dictionary-free.json?t=${Date.now()}`);
+      if (!response.ok) throw new Error("无法读取 ai-dictionary-free.json。");
+      return response.json();
+    }
+
+    function normalizeCategory(category) {
+      const raw = String(category || "").trim();
+      if (!raw) return "概念";
+      if (raw === "AI 人物") return "人物";
+      if (raw === "AI 机构") return "机构";
+      if (raw === "产品与产业" || raw === "产品与应用") return "产品";
+      if (raw === "AI Coding" || raw === "Agent 工程") return "工程与开发";
+      if (raw === "数据与评测") return "数据与检索";
+      return raw;
+    }
+
+    function normalizeEntryType(term) {
+      const raw = String(term.entry_type || "").trim().toLowerCase();
+      const map = {
+        "": "",
+        concept: "concept",
+        "概念": "concept",
+        person: "person",
+        "人物": "person",
+        system: "system",
+        "系统": "system",
+        event: "event",
+        "事件": "event",
+        model: "model",
+        "模型": "model",
+        product: "product",
+        "产品": "product",
+        dataset: "dataset",
+        "数据集": "dataset",
+        company: "company",
+        organization: "company",
+        "组织": "company",
+        "机构": "company",
+        paper: "paper",
+        "论文": "paper"
+      };
+      return map[raw] || inferEntryType(term);
+    }
+
+    function normalizeTerms(data) {
+      return (data.terms || [])
+        .filter(term => term && term.term)
+        .map(term => {
+          const cnName = extractCnName(term);
+          return {
+            ...term,
+            rawCategory: term.category || "",
+            category: normalizeCategory(term.category),
+            entryType: normalizeEntryType(term),
+            cnName,
+            displayName: displayTermName({ ...term, cnName })
+          };
+        });
+    }
+
+    function escapeRegExp(value) {
+      return String(value || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+
+    function extractCnName(term) {
+      const en = String(term.term || "").trim();
+      const zh = String(term.term_zh || "").trim();
+      if (!zh || zh === en) return "";
+      let candidate = zh.replace(new RegExp(escapeRegExp(en), "gi"), "").trim();
+      candidate = candidate.replace(/^[｜|·:：\-\s]+|[（）()｜|·:：\-\s]+$/g, "").trim() || zh;
+      const compactCandidate = candidate.replace(/[《》〈〉（）()\[\]{}「」『』｜|·:：\-\s]/g, "").trim();
+      const genericTitleLabels = new Set([
+        "Agent", "AI Agent", "OpenAI", "Google", "Meta", "NVIDIA", "IBM",
+        "模型", "模型线", "推理模型线", "模型代际", "工具", "系统", "平台", "程序",
+        "能力", "项目", "线索", "模型家族", "代码助手", "编程工具", "编程编辑器",
+        "AI 编程编辑器", "应用生成器", "研究助手", "笔记研究助手", "研究 Agent",
+        "深度研究 Agent", "编程 Agent", "浏览器操作型 Agent", "图像生成模型",
+        "视频生成模型", "图像生成工具", "生成视频平台", "文生图模型", "图像数据集",
+        "软件工程评测", "专家系统", "医疗专家系统", "聊天程序", "绘图程序",
+        "编程语言", "逻辑编程语言", "符号积分程序", "数学文字题程序",
+        "机器人", "四足机器人", "仿人机器人", "人形机器人", "社交机器人",
+        "扫地机器人", "自动驾驶车", "语音识别软件", "连续语音识别", "采样",
+        "蛋白质结构预测系统", "算法发现系统", "自我博弈系统", "群体智能预测系统",
+        "再犯风险评估系统", "积木世界系统", "西洋双陆棋程序"
+      ]);
+      if (!compactCandidate) return "";
+      if (genericTitleLabels.has(candidate)) return "";
+      if (candidate.length > 18) return "";
+      if (/[，。！？；]/.test(candidate)) return "";
+      if (/更准确地说|你现在适合|动态入口|会理解/.test(candidate)) return "";
+      return candidate;
+    }
+
+    function displayTermName(term) {
+      const en = String(term.term || "").trim();
+      const explicitEn = String(term.term_en || "").trim();
+      const zh = String(term.cnName || extractCnName(term) || "").trim();
+      if (explicitEn && zh && zh !== explicitEn) return `${explicitEn}｜${zh}`;
+      if (explicitEn && /[\u4e00-\u9fff]/.test(en)) return `${explicitEn}｜${en}`;
+      if (!zh || zh === en) return en;
+      const compactEn = en.toLowerCase().replace(/[^a-z0-9]/g, "");
+      const compactZh = zh.toLowerCase().replace(/[^a-z0-9]/g, "");
+      if (compactEn && compactZh.includes(compactEn)) return zh;
+      return `${en}｜${zh}`;
+    }
+
+    function compareText(a, b) {
+      return String(a || "").localeCompare(String(b || ""), "zh-CN", { sensitivity: "base" });
+    }
+
+    function categoryRank(category, order) {
+      const index = order.indexOf(category || "");
+      return index === -1 ? order.length + 1 : index;
+    }
+
+    function difficultyRank(term) {
+      return ({ "入门": 0, "进阶": 1, "深入": 2 })[String(term.difficulty || "入门")] ?? 9;
+    }
+
+    function entryTypeRank(term) {
+      return ({ concept: 0, model: 1, product: 2, company: 3, person: 4, system: 5, dataset: 6, paper: 7, event: 8 })[term.entryType] ?? 9;
+    }
+
+    function priorityRank(term) {
+      if (quietDuplicateIds.has(term.id)) return curiosityPriority.length + 100;
+      const labels = [term.term, term.displayName, ...(term.aliases || [])].map(item => String(item || "").toLowerCase());
+      const index = curiosityPriority.findIndex(item => labels.some(label => label === item.toLowerCase()));
+      return index === -1 ? curiosityPriority.length + 1 : index;
+    }
+
+    function cardTeaser(term) {
+      const labels = [term.term, term.displayName, ...(term.aliases || [])].map(item => String(item || "").toLowerCase());
+      const key = Object.keys(openingTeasers).find(item => labels.some(label => label === item.toLowerCase()));
+      return key ? openingTeasers[key] : "";
+    }
+
+    function sortTerms(terms, mode) {
+      const learningOrder = [
+        "AI 基础概念", "AI 历史与里程碑", "人与机构", "AI 产品与应用", "AI 创作", "AI 文化与社会", "AI 编程与工具", "Agent 与自动化", "提示词与推理", "数据与检索", "前沿模型", "工程与部署", "算力基础", "模型训练与调优"
+      ];
+      const frontierOrder = [
+        "前沿模型", "Agent 与自动化", "AI 编程与工具", "提示词与推理", "AI 创作", "AI 产品与应用", "数据与检索", "算力基础", "模型训练与调优", "AI 基础概念", "AI 历史与里程碑", "人与机构", "AI 文化与社会", "工程与部署"
+      ];
+      const items = [...terms];
+      if (mode === "A-Z") {
+        return items.sort((a, b) => compareText(a.term, b.term) || compareText(a.displayName, b.displayName));
+      }
+      if (mode === "主题浏览") {
+        return items.sort((a, b) => compareText(a.category, b.category) || compareText(a.displayName, b.displayName));
+      }
+      if (mode === "前沿焦点") {
+        return items.sort((a, b) => {
+          const priority = priorityRank(a) - priorityRank(b);
+          if (priority) return priority;
+          const category = categoryRank(a.category, frontierOrder) - categoryRank(b.category, frontierOrder);
+          if (category) return category;
+          const type = entryTypeRank(a) - entryTypeRank(b);
+          if (type) return type;
+          return compareText(a.displayName, b.displayName) || compareText(a.term, b.term);
+        });
+      }
+      return items.sort((a, b) => {
+        const category = categoryRank(a.category, learningOrder) - categoryRank(b.category, learningOrder);
+        if (category) return category;
+        const type = entryTypeRank(a) - entryTypeRank(b);
+        if (type) return type;
+        const difficulty = difficultyRank(a) - difficultyRank(b);
+        if (difficulty) return difficulty;
+        return compareText(a.displayName, b.displayName) || compareText(a.term, b.term);
+      });
+    }
+
+    function currentPool() {
+      return state.filtered;
+    }
+
+    function activeTerm() {
+      const pool = currentPool();
+      return pool[Math.min(state.activeIndex, Math.max(pool.length - 1, 0))];
+    }
+
+    function termStatus(term) {
+      if (!term) return "未学习";
+      if (state.progress.known[term.id]) return "已认识";
+      if (state.progress.missed[term.id]) return "待复习";
+      return "未学习";
+    }
+
+    function inferEntryType(term) {
+      const category = String(term.category || "");
+      if (category.includes("人物")) return "person";
+      if (category.includes("产品") || category.includes("模型")) return "model";
+      if (category.includes("AI 历史")) return "concept";
+      return "concept";
+    }
+
+    function matchesCuratedCategory(term, filterLabel) {
+      if (filterLabel === "全部") return true;
+      const filter = curatedFilters.find(item => item.label === filterLabel);
+      if (!filter) return true;
+      if (filter.categories.some(item => item.startsWith("@tag:"))) {
+        const tagName = filter.categories.find(item => item.startsWith("@tag:")).slice(5);
+        return (term.tags || []).includes(tagName);
+      }
+      const category = term.category || "";
+      return filter.categories.some(item => item === category);
+    }
+
+    function entryTypeLabel(type) {
+      return {
+        concept: "概念",
+        person: "人物",
+        system: "系统",
+        event: "事件",
+        model: "模型",
+        product: "产品",
+        dataset: "数据集",
+        company: "组织",
+        paper: "论文"
+      }[type] || "概念";
+    }
+
+    function cardQuestion(term) {
+      if (!term) return "正在装载词典卡片。";
+      if (term.entryType === "person") {
+        return term.cnName && term.cnName !== term.term ? `谁是 ${term.term}（${term.cnName}）？` : `谁是 ${term.term}？`;
+      }
+      if (term.front) return term.front;
+      if (term.cnName && term.cnName !== term.term) return `什么是 ${displayTermName(term)}？`;
+      return term.front || `什么是 ${term.term}？`;
+    }
+
+    function setActiveById(id) {
+      let pool = currentPool();
+      let index = pool.findIndex(term => term.id === id);
+      if (index < 0) {
+        state.category = "全部";
+        state.filtered = state.terms;
+        pool = currentPool();
+        index = pool.findIndex(term => term.id === id);
+      }
+      if (index >= 0) {
+        state.activeIndex = index;
+        if (index >= state.visibleLimit) {
+          state.visibleLimit = Math.ceil((index + 1) / state.listStep) * state.listStep;
+        }
+        state.showingBack = false;
+        renderAll();
+        scrollActiveRowIntoView();
+      }
+    }
+
+    function changeCard(delta) {
+      const pool = currentPool();
+      if (!pool.length) return;
+      state.activeIndex = (state.activeIndex + delta + pool.length) % pool.length;
+      state.showingBack = false;
+      renderAll();
+    }
+
+    function randomCard() {
+      const pool = currentPool();
+      if (!pool.length) return;
+      state.activeIndex = Math.floor(Math.random() * pool.length);
+      state.showingBack = false;
+      renderAll();
+      showToast("已随机抽取一张新卡片。");
+    }
+
+    function flipCard() {
+      state.showingBack = !state.showingBack;
+      renderFlashcard();
+    }
+
+    function mark(kind) {
+      const term = activeTerm();
+      if (!term) return;
+      if (kind === "known") {
+        state.progress.known[term.id] = Date.now();
+        delete state.progress.missed[term.id];
+        showToast(`已点亮：${term.term}`);
+      } else {
+        state.progress.missed[term.id] = Date.now();
+        delete state.progress.known[term.id];
+        showToast(`已加入复习：${term.term}`);
+      }
+      writeProgress();
+      changeCard(1);
+    }
+
+    function splitReadableText(value, maxParts = 4) {
+      const normalized = String(value || "")
+        .replace(/\s+-\s+/g, "\n")
+        .replace(/(生活例子|比如|举个例子|你可以把它想成|听起来)/g, "\n$1")
+        .replace(/\s{2,}/g, " ")
+        .trim();
+      if (!normalized) return [];
+      const chunks = normalized
+        .split(/\n+|(?<=。)|(?<=！)|(?<=？)/)
+        .map(item => item.trim())
+        .filter(Boolean)
+        .reduce((acc, item) => {
+          const prev = acc[acc.length - 1] || "";
+          if (item.length < 24 && prev && prev.length + item.length < 90) {
+            acc[acc.length - 1] = `${prev}${item}`;
+          } else {
+            acc.push(item);
+          }
+          return acc;
+        }, []);
+      return chunks.slice(0, maxParts);
+    }
+
+    function renderReadCard(label, content, options = {}) {
+      const parts = splitReadableText(content, options.maxParts || 4);
+      if (!parts.length) return "";
+      const body = parts.map((part, index) => {
+        const className = options.takeaway && index === 0 ? "takeaway" : "detail-text";
+        return `<p class="${className}">${escapeHTML(part)}</p>`;
+      }).join("");
+      if (options.collapsible) {
+        return `
+          <details class="read-card expandable">
+            <summary>
+              <p class="section-label expand-label">${escapeHTML(label)}</p>
+              <span class="expand-action"><span class="when-closed">展开</span><span class="when-open">收起</span></span>
+            </summary>
+            <div class="expand-body">${body}</div>
+          </details>
+        `;
+      }
+      return `
+        <section class="read-card ${options.primary ? "primary" : ""}">
+          <p class="section-label">${escapeHTML(label)}</p>
+          ${body}
+        </section>
+      `;
+    }
+
+    function renderRelatedSection(label, values) {
+      const all = (values || []).filter(Boolean);
+      if (!all.length) return "";
+      const visible = all.slice(0, 8);
+      const hidden = all.slice(8);
+      const renderButtons = items => items.map(item => `<button type="button" data-related="${escapeHTML(item)}">${escapeHTML(item)}</button>`).join(" ");
+      return `
+        <section class="read-card">
+          <p class="section-label">${escapeHTML(label)}</p>
+          <div class="related">
+            ${renderButtons(visible)}
+            ${hidden.length ? `
+              <details class="related-more">
+                <summary>展开更多 ${hidden.length} 个</summary>
+                <div class="related">${renderButtons(hidden)}</div>
+              </details>
+            ` : ""}
+          </div>
+        </section>
+      `;
+    }
+
+
+    function renderLockedSection(label) {
+      return `
+        <section class="read-card locked-section">
+          <p class="section-label">${escapeHTML(label)}</p>
+          <div class="locked-body">
+            <p class="locked-text">这是完整版深度内容。</p>
+            <p class="locked-text">开放查阅版仅展示一句释义，完整版含展开理解、为何重要、记忆锚点等原创深度字段。</p>
+            <p class="locked-text">—— 升级完整版阅读全部 1327 条深度卡 ——</p>
+          </div>
+          <div class="locked-veil" aria-hidden="true"></div>
+        </section>
+      `;
+    }
+
+    function renderUpgradeCard() {
+      return `
+        <section class="read-card upgrade-card">
+          <p class="section-label">完整版解锁</p>
+          <p class="upgrade-title">这条词条的深度内容，只在完整版。</p>
+          <p class="upgrade-detail">完整版含 1327 条词条的展开理解、为何重要、记忆锚点、相关卡片等深度字段，月更新增。</p>
+          <a class="upgrade-button" href="#" onclick="window.open('https://github.com/your-username/ai-dictionary', '_blank'); return false;">了解完整版 →</a>
+        </section>
+      `;
+    }
+    function searchLabels(term) {
+      return [
+        term.term,
+        term.term_zh,
+        term.displayName,
+        ...(term.aliases || []),
+        ...(term.related_terms || [])
+      ].map(item => String(item || "").trim().toLowerCase()).filter(Boolean);
+    }
+
+    function primarySearchLabels(term) {
+      return [
+        term.term,
+        term.term_zh,
+        term.displayName,
+        ...(term.aliases || [])
+      ].map(item => String(item || "").trim().toLowerCase()).filter(Boolean);
+    }
+
+    function relatedSearchLabels(term) {
+      return (term.related_terms || []).map(item => String(item || "").trim().toLowerCase()).filter(Boolean);
+    }
+
+    function matchesSearch(term, keyword) {
+      if (!keyword) return true;
+      const labels = searchLabels(term);
+      const shortAscii = /^[a-z0-9.+#-]{1,3}$/.test(keyword);
+      if (shortAscii) {
+        return labels.some(label => label.split(/[^a-z0-9.+#-]+/).includes(keyword));
+      }
+      const haystack = [
+        ...labels,
+        ...(term.tags || []),
+        entryTypeLabel(term.entryType),
+        term.definition_short,
+        term.definition_long,
+        term.front,
+        term.back
+      ].join(" ").toLowerCase();
+      return haystack.includes(keyword);
+    }
+
+    function searchRank(term, keyword) {
+      if (!keyword) return 0;
+      const primary = primarySearchLabels(term);
+      const related = relatedSearchLabels(term);
+      if (primary.some(label => label === keyword)) return 0;
+      if (primary.some(label => label.startsWith(keyword))) return 1;
+      if (primary.some(label => label.includes(keyword))) return 2;
+      if (related.some(label => label === keyword)) return 3;
+      if (related.some(label => label.includes(keyword))) return 4;
+      return 5;
+    }
+
+    function applyFilter(shouldRender = true) {
+      const keyword = document.getElementById("search").value.trim().toLowerCase();
+      const currentId = keyword ? null : activeTerm()?.id;
+      const filtered = state.terms.filter(term => {
+        const inCategory = keyword ? true : matchesCuratedCategory(term, state.category);
+        const inType = keyword ? true : state.entryType === "全部" || term.entryType === state.entryType;
+        return inCategory && inType && matchesSearch(term, keyword);
+      });
+      state.filtered = sortTerms(filtered, state.sortMode);
+      if (keyword) {
+        state.filtered = state.filtered.sort((a, b) => searchRank(a, keyword) - searchRank(b, keyword));
+      }
+      if (currentId) {
+        const nextIndex = state.filtered.findIndex(term => term.id === currentId);
+        state.activeIndex = nextIndex >= 0 ? nextIndex : 0;
+      } else if (state.activeIndex >= state.filtered.length) {
+        state.activeIndex = 0;
+      }
+      if (shouldRender) renderAll();
+    }
+
+    function resetVisibleLimit() {
+      state.visibleLimit = state.listStep;
+    }
+
+    function currentSearchKeyword() {
+      return document.getElementById("search").value.trim().toLowerCase();
+    }
+
+    function scrollActiveRowIntoView() {
+      requestAnimationFrame(() => {
+        const row = document.querySelector(".dict-row.active");
+        const list = document.getElementById("dictionary-list");
+        if (!row || !list) return;
+        const top = row.offsetTop - list.offsetTop - 8;
+        list.scrollTo({ top: Math.max(top, 0), behavior: "smooth" });
+      });
+    }
+
+    function renderStats() {
+      const known = Object.keys(state.progress.known).filter(id => state.terms.some(term => term.id === id)).length;
+      const missed = Object.keys(state.progress.missed).filter(id => state.terms.some(term => term.id === id)).length;
+      const progress = state.terms.length ? Math.round((known / state.terms.length) * 100) : 0;
+      const sortMeta = sortModes.find(item => item.label === state.sortMode) || sortModes[0];
+      document.getElementById("term-count").textContent = state.terms.length;
+      document.getElementById("category-count").textContent = curatedFilters.length - 1;
+      document.getElementById("progress-count").textContent = `${progress}%`;
+      document.getElementById("nav-count").textContent = `${state.terms.length} 张卡片`;
+      document.getElementById("nav-known").textContent = `认识 ${known}`;
+      document.getElementById("nav-missed").textContent = `待复习 ${missed}`;
+      document.getElementById("visible-count").textContent = `${state.filtered.length} 条`;
+      document.getElementById("deck-label").textContent = sortMeta.label;
+      document.getElementById("sort-summary").textContent = `${sortMeta.label}：${sortMeta.summary}`;
+    }
+
+    function renderTopics() {
+      const counts = state.terms.reduce((acc, term) => {
+        const key = term.category || "未分类";
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+      }, {});
+      state.categories = [
+        "全部",
+        ...Object.keys(counts).sort((a, b) => {
+          const countDiff = counts[b] - counts[a];
+          if (countDiff) return countDiff;
+          return a.localeCompare(b, "zh-CN");
+        })
+      ];
+      document.getElementById("topic-map").innerHTML = curatedFilters.map(filter => {
+        const count = filter.label === "全部"
+          ? state.terms.length
+          : state.terms.filter(term => matchesCuratedCategory(term, filter.label)).length;
+        if (!count) return "";
+        return `<button class="topic ${filter.label === state.category ? "active" : ""}" type="button" data-category="${escapeHTML(filter.label)}">${escapeHTML(filter.label)} · ${count}</button>`;
+      }).join("");
+      document.querySelectorAll(".topic").forEach(button => {
+        button.addEventListener("click", () => {
+          state.category = button.dataset.category;
+          state.activeIndex = 0;
+          resetVisibleLimit();
+          state.showingBack = false;
+          applyFilter();
+        });
+      });
+    }
+
+    function renderSortModes() {
+      document.getElementById("sort-map").innerHTML = sortModes.map(mode => `
+        <button class="sort-chip ${mode.label === state.sortMode ? "active" : ""}" type="button" data-sort="${escapeHTML(mode.label)}">${escapeHTML(mode.label)}</button>
+      `).join("");
+      document.querySelectorAll("[data-sort]").forEach(button => {
+        button.addEventListener("click", () => {
+          state.sortMode = button.dataset.sort;
+          resetVisibleLimit();
+          state.showingBack = false;
+          applyFilter();
+        });
+      });
+    }
+
+    function renderTypes() {
+      state.entryType = "全部";
+      document.getElementById("type-map").innerHTML = "";
+    }
+
+    function renderDictionaryList() {
+      const active = activeTerm();
+      const list = document.getElementById("dictionary-list");
+      if (!state.filtered.length) {
+        list.innerHTML = `<div class="empty">没有匹配的词条。</div>`;
+        return;
+      }
+      const keyword = currentSearchKeyword();
+      const visibleTerms = keyword ? state.filtered : state.filtered.slice(0, state.visibleLimit);
+      const remaining = Math.max(state.filtered.length - visibleTerms.length, 0);
+      const footer = remaining
+        ? `<button class="list-more" type="button" id="show-more-terms">显示更多（还有 ${remaining} 条）</button>`
+        : (!keyword && state.filtered.length > state.listStep ? `<div class="list-end">已显示全部 ${state.filtered.length} 条</div>` : "");
+      list.innerHTML = visibleTerms.map(term => `
+        <button class="dict-row ${term.id === active?.id ? "active" : ""}" type="button" data-id="${escapeHTML(term.id)}">
+          <strong>${escapeHTML(term.displayName || term.term)}</strong>
+          <span>${escapeHTML(cardTeaser(term) || term.definition_short || term.category || "")}</span>
+        </button>
+      `).join("") + footer;
+      list.querySelectorAll(".dict-row").forEach(button => {
+        button.addEventListener("click", () => setActiveById(button.dataset.id));
+      });
+      const showMore = document.getElementById("show-more-terms");
+      if (showMore) {
+        showMore.addEventListener("click", () => {
+          state.visibleLimit += state.listStep;
+          renderDictionaryList();
+        });
+      }
+    }
+
+    function metaLabels(term) {
+      const labels = [
+        entryTypeLabel(term.entryType),
+        term.category || "AI 概念",
+        term.difficulty || "入门"
+      ].filter(Boolean);
+      return [...new Set(labels)];
+    }
+
+    function renderFlashcard() {
+      const term = activeTerm();
+      const card = document.getElementById("flashcard");
+      if (!term) {
+        document.getElementById("card-index").textContent = "0 / 0";
+        document.getElementById("card-status").textContent = "未匹配";
+        document.getElementById("card-badges").innerHTML = "";
+        document.getElementById("card-question").textContent = "没有匹配的词条。";
+        document.getElementById("card-answer").textContent = "换一个关键词，或清空搜索后重新浏览。";
+        document.getElementById("card-hint").textContent = "当前筛选结果为空";
+        document.getElementById("flip-card").textContent = "查看答案";
+        card.classList.remove("is-back");
+        return;
+      }
+      const pool = currentPool();
+      const position = pool.findIndex(item => item.id === term.id) + 1;
+      card.classList.toggle("is-back", state.showingBack);
+      document.getElementById("card-index").textContent = `${Math.max(position, 1)} / ${pool.length}`;
+      document.getElementById("card-status").textContent = termStatus(term);
+      document.getElementById("card-badges").innerHTML = metaLabels(term)
+        .map(label => `<span class="badge">${escapeHTML(label)}</span>`)
+        .join("");
+      document.getElementById("card-question").textContent = cardTeaser(term) || cardQuestion(term);
+      document.getElementById("card-answer").textContent = term.back || term.definition_short || "这张卡片还没有答案。";
+      document.getElementById("card-hint").textContent = state.showingBack ? "点击卡片或下方按钮收起答案" : "点击卡片或下方按钮查看答案";
+      document.getElementById("flip-card").textContent = state.showingBack ? "收起答案" : "查看答案";
+    }
+
+    function renderDetail() {
+      const term = activeTerm();
+      const detail = document.getElementById("detail");
+      if (!term) {
+        detail.innerHTML = `<div class="empty">没有可显示的词条。</div>`;
+        return;
+      }
+      const related = term.related_terms || [];
+      const relatedPeople = term.related_people || [];
+      const definition = term.definition_short || term.back || "";
+      const extended = term.definition_long && term.definition_long !== definition ? term.definition_long : "";
+      const isSample = term.is_sample === true;
+      document.getElementById("entry-status").textContent = termStatus(term);
+      const entryMeta = metaLabels(term).map(label => escapeHTML(label)).join(" · ");
+      const sampleBadge = isSample
+        ? '<span class="edition-badge sample">精选样板</span>'
+        : '<span class="edition-badge free">开放查阅</span>';
+      detail.innerHTML = `
+        <div class="entry-head">
+          <h3>${escapeHTML(term.displayName || term.term)}</h3>
+          <p class="entry-kicker">${entryMeta}</p>
+          ${sampleBadge}
+        </div>
+        ${renderReadCard("一句释义", definition, { primary: true, takeaway: true, maxParts: 1 })}
+        ${isSample && extended ? renderReadCard("展开理解", extended, { maxParts: 5, collapsible: true }) : ""}
+        ${isSample && term.why_it_matters ? renderReadCard("为何重要", term.why_it_matters, { maxParts: 2 }) : renderLockedSection("为何重要")}
+        ${isSample && term.memory_hook ? renderReadCard("记忆锚点", term.memory_hook, { maxParts: 1 }) : renderLockedSection("记忆锚点")}
+        ${renderRelatedSection("相关人物", relatedPeople)}
+        ${renderRelatedSection("相关卡片", related)}
+        ${isSample ? "" : renderUpgradeCard()}
+      `;
+      detail.querySelectorAll("[data-related]").forEach(button => {
+        button.addEventListener("click", () => {
+          const label = button.dataset.related.toLowerCase();
+          const match = state.terms.find(item => String(item.term).toLowerCase() === label || (item.aliases || []).some(alias => String(alias).toLowerCase() === label));
+          if (match) {
+            state.category = "全部";
+            applyFilter(false);
+            setActiveById(match.id);
+          }
+        });
+      });
+    }
+
+    function renderAll() {
+      renderStats();
+      renderSortModes();
+      renderTopics();
+      renderTypes();
+      renderDictionaryList();
+      renderFlashcard();
+      renderDetail();
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(state.toastTimer);
+      state.toastTimer = setTimeout(() => toast.classList.remove("show"), 1500);
+    }
+
+    function bindEvents() {
+      document.getElementById("search").addEventListener("input", () => {
+        state.activeIndex = 0;
+        resetVisibleLimit();
+        state.showingBack = false;
+        applyFilter();
+      });
+      document.getElementById("mark-known").title = "记录为认识，点亮学习进度。";
+      document.getElementById("mark-missed").title = "记录为不熟，方便之后复习。";
+      document.getElementById("prev-card").addEventListener("click", () => changeCard(-1));
+      document.getElementById("next-card").addEventListener("click", () => changeCard(1));
+      document.getElementById("shuffle-card").addEventListener("click", randomCard);
+      document.getElementById("flip-card").addEventListener("click", flipCard);
+      document.getElementById("mark-known").addEventListener("click", () => mark("known"));
+      document.getElementById("mark-missed").addEventListener("click", () => mark("missed"));
+      document.getElementById("flashcard").addEventListener("keydown", event => {
+        if (event.key === " " || event.key === "Enter") {
+          event.preventDefault();
+          flipCard();
+        }
+        if (event.key === "ArrowRight") changeCard(1);
+        if (event.key === "ArrowLeft") changeCard(-1);
+      });
+      document.getElementById("flashcard").addEventListener("click", event => {
+        if (event.target.closest("button")) return;
+        flipCard();
+      });
+    }
+
+    function openInitialTerm() {
+      const params = new URLSearchParams(window.location.search);
+      const target = params.get("term");
+      if (params.get("from") === "timeline") {
+        document.getElementById("back-timeline").classList.add("show");
+      }
+      if (!target) return;
+      const needle = target.trim().toLowerCase();
+      const match = state.terms.find(term => {
+        const candidates = [term.term, term.term_zh, ...(term.aliases || [])]
+          .map(item => String(item || "").trim().toLowerCase())
+          .filter(Boolean);
+        return candidates.includes(needle);
+      });
+      if (!match) return;
+      state.category = "全部";
+      state.entryType = "全部";
+      applyFilter(false);
+      setActiveById(match.id);
+    }
+
+    async function main() {
+      readProgress();
+      bindEvents();
+      const data = await loadDictionary();
+      state.terms = sortTerms(normalizeTerms(data), state.sortMode);
+      state.filtered = state.terms;
+      applyFilter(false);
+      openInitialTerm();
+      renderAll();
+      showToast("词典卡片已载入。");
+    }
+
+    main().catch(error => {
+      document.getElementById("card-question").textContent = "词典数据暂时没有载入。";
+      document.getElementById("card-answer").textContent = error.message;
+      document.getElementById("detail").innerHTML = `<div class="empty">${escapeHTML(error.message)}</div>`;
+      document.getElementById("topic-map").innerHTML = `<div class="empty">${escapeHTML(error.message)}</div>`;
+    });
+  </script>
+</body>
+</html>
