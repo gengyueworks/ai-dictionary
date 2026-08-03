@@ -4,7 +4,7 @@
 
 ## 在线访问
 
-部署到 GitHub Pages 后地址填这里：`https://your-username.github.io/ai-dictionary/`
+部署到 GitHub Pages 后地址填这里：`https://gengyueworks.github.io/ai-dictionary/`
 
 ## 这是什么
 

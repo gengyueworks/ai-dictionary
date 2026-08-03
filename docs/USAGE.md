@@ -2,7 +2,7 @@
 
 ## 在线访问
 
-部署后地址：`https://your-username.github.io/ai-dictionary/`
+部署后地址：`https://gengyueworks.github.io/ai-dictionary/`
 
 ## 功能说明
 
@@ -40,7 +40,7 @@
 ## 本地部署
 
 ```bash
-git clone https://github.com/your-username/ai-dictionary.git
+git clone https://github.com/gengyueworks/ai-dictionary.git
 cd ai-dictionary
 python3 -m http.server 8000
 ```
