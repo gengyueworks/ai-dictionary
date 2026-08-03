@@ -1,10 +1,11 @@
-# AI 祛魅词典 · 开放查阅版
+# AI 祛魅词典 + 编年史 · 开放查阅版
 
-> 1327 条 AI 概念的开放查阅，50 条精选完整样板。
+> 1327 条 AI 概念词典 + 251 个历史节点编年史，50 条精选完整样板。
 
 ## 在线访问
 
-部署到 GitHub Pages 后地址填这里：`https://gengyueworks.github.io/ai-dictionary/`
+- 词典：`https://gengyueworks.github.io/ai-dictionary/ai-dictionary-lab.html`
+- 时间轴：`https://gengyueworks.github.io/ai-dictionary/ai-timeline-design-fixed.html`
 
 ## 这是什么
 
@@ -13,6 +14,7 @@
 - **1327 条索引全开**：每个词条都有中英文名、类型、难度、一句释义，可搜索、可筛选、可跳转
 - **50 条精选样板完整展示**：含展开理解、为何重要、记忆锚点、相关卡片等深度字段
 - **闪卡复习 + 相关词跳转 + 中英切换** 全部可用
+- **AI 编年史**：251 个历史节点时间轴（1936 至今），按底层突破 / 模型路线 / 产品爆发 / 生态扩散 / 安全治理 / 文化影响分类筛选，事件可跳转词典词条
 
 ## 为什么叫"开放查阅版"
 
@@ -49,14 +51,18 @@ python3 -m http.server 8000
 
 ```
 ai-dictionary/
-├── ai-dictionary-lab.html      # 公开版前端（单文件，89KB）
-├── ai-dictionary-free.json     # 公开版数据（716KB，1327 条索引 + 50 条精选）
+├── ai-dictionary-lab.html          # 词典公开版前端（89KB）
+├── ai-dictionary-free.json         # 词典公开版数据（716KB，1327 索引 + 50 精选）
+├── ai-timeline-design-fixed.html   # 时间轴公开版前端（39KB）
+├── ai-timeline-data-free.json      # 时间轴公开版数据（590KB，251 事件）
 ├── README.md
 ├── docs/
-│   └── USAGE.md                # 使用说明
+│   └── USAGE.md                    # 使用说明
 └── scripts/
-    ├── build-free-version.py   # 数据拆分脚本
-    └── build-public-html.py    # 前端改造脚本
+    ├── build-free-version.py       # 词典数据拆分脚本
+    ├── build-public-html.py        # 词典前端改造脚本
+    ├── build-timeline-free.py      # 时间轴数据拆分脚本
+    └── build-timeline-html.py      # 时间轴前端改造脚本
 ```
 
 ## 数据构建
@@ -70,6 +76,13 @@ python3 scripts/build-public-html.py           # 生成公开版 HTML
 ```
 
 精选清单在 `scripts/build-free-version.py` 的 `SAMPLE_TERMS` 字典里，可手动调整。
+
+时间轴数据重建：
+
+```bash
+python3 scripts/build-timeline-free.py      # 生成 ai-timeline-data-free.json
+python3 scripts/build-timeline-html.py      # 改造时间轴 HTML + 词典加回时间轴链接
+```
 
 ## 技术栈
 

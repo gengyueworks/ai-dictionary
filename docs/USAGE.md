@@ -2,7 +2,8 @@
 
 ## 在线访问
 
-部署后地址：`https://gengyueworks.github.io/ai-dictionary/`
+- 词典：`https://gengyueworks.github.io/ai-dictionary/ai-dictionary-lab.html`
+- 时间轴：`https://gengyueworks.github.io/ai-dictionary/ai-timeline-design-fixed.html`
 
 ## 功能说明
 
@@ -65,3 +66,29 @@ python3 scripts/build-public-html.py
 
 - Chrome / Edge / Safari 最近 2 个版本
 - 不支持 IE
+
+
+## AI 编年史（时间轴）
+
+### 功能
+
+- **251 个历史节点**：从 1936 年 Turing Bombe 到 2026 年最新事件
+- **分类筛选**：底层突破 / 模型路线 / 产品爆发 / 生态扩散 / 安全治理 / 文化影响
+- **搜索**：按年份、事件、概念搜索
+- **事件跳转词典**：每个事件的相关词可跳转到词典词条
+
+### 时间轴分层
+
+| 字段 | 开放查阅版 | 完整版 |
+|------|-----------|--------|
+| 事件基本信息（年份 / 标题 / 摘要 / 类型） | 251 条全开 | 251 条 |
+| 相关词跳转 | 可用 | 可用 |
+| 背后现场（behind_scenes_zh） | 模糊遮罩 | 全部 |
+| 为何重要（why_it_matters_zh） | 模糊遮罩 | 全部 |
+| 学习路径（learning_path_hint） | 不展示 | 全部 |
+
+### 词典与时间轴互通
+
+- 词典顶部"← 时间轴"按钮 → 跳转时间轴
+- 时间轴顶部"词典 →"按钮 → 跳转词典
+- 时间轴事件的相关词点击 → 跳转词典对应词条
