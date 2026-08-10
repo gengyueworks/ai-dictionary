@@ -2319,7 +2319,7 @@
       if (!target) return;
       const needle = target.trim().toLowerCase();
       const match = state.terms.find(term => {
-        const candidates = [term.term, term.term_zh, ...(term.aliases || [])]
+        const candidates = [term.id, term.term, term.term_zh, ...(term.aliases || [])]
           .map(item => String(item || "").trim().toLowerCase())
           .filter(Boolean);
         return candidates.includes(needle);
