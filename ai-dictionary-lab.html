@@ -1076,7 +1076,7 @@
         <span>AI 祛魅词典</span>
       </a>
       <div class="nav-stats" aria-label="学习状态">
-        <a class="pill" href="ai-timeline-design-fixed.html" title="进入 AI 时间轴">← 时间轴</a>
+        <a class="pill" href="https://gengyueworks.github.io/ai-timeline/" title="进入 AI 时间轴">← 时间轴</a>
         <span class="pill" id="nav-count">读取中</span>
         <a class="pill full-version-cta" id="full-version-link" href="#" title="解锁全部深度内容">完整版 →</a>
         <span class="pill" id="nav-known">认识 0</span>
@@ -2314,7 +2314,7 @@
       const params = new URLSearchParams(window.location.search);
       const target = params.get("term");
       if (params.get("from") === "timeline") {
-        document.getElementById("back-timeline").classList.add("show");
+        document.getElementById("back-timeline")?.classList.add("show");
       }
       if (!target) return;
       const needle = target.trim().toLowerCase();
