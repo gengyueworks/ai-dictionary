@@ -173,22 +173,12 @@
       opacity: 1;
     }
 
-    #google_translate_element {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      opacity: 0;
-      pointer-events: none;
+    .translate-mini button.active-lang {
+      border-color: var(--blue);
+      color: var(--paper-2);
+      background: var(--blue);
+      opacity: 1;
     }
-
-    .goog-te-banner-frame,
-    .goog-te-balloon-frame,
-    .skiptranslate iframe {
-      display: none !important;
-    }
-
-    body { top: 0 !important; }
 
     .hero {
       display: none;
@@ -1073,18 +1063,17 @@
     <nav class="shell nav">
       <a class="brand" href="#" aria-label="AI 祛魅词典">
         <span class="brand-mark">AI</span>
-        <span>AI 祛魅词典</span>
+        <span id="brand-text">AI 祛魅词典</span>
       </a>
       <div class="nav-stats" aria-label="学习状态">
-        <a class="pill" href="https://gengyueworks.github.io/ai-timeline/" title="进入 AI 时间轴">← 时间轴</a>
+        <a class="pill" id="back-timeline" href="https://gengyueworks.github.io/ai-timeline/" title="进入 AI 时间轴">← 时间轴</a>
         <span class="pill" id="nav-count">读取中</span>
         <a class="pill full-version-cta" id="full-version-link" href="#" title="解锁全部深度内容">完整版 →</a>
         <span class="pill" id="nav-known">认识 0</span>
         <span class="pill" id="nav-missed">待复习 0</span>
-        <span class="translate-mini" aria-label="辅助翻译">
-          <button type="button" id="translate-zh" title="回到中文">CH</button>
-          <button type="button" id="translate-en" title="使用 Google Translate 临时翻译成英文">EN</button>
-          <span id="google_translate_element" aria-hidden="true"></span>
+        <span class="translate-mini" aria-label="语言切换">
+          <button type="button" id="translate-zh" class="active-lang" title="回到中文">CH</button>
+          <button type="button" id="translate-en" title="Switch to English">EN</button>
         </span>
       </div>
     </nav>
@@ -1094,8 +1083,8 @@
     <div class="kicker">Dictionary deck</div>
     <div class="hero-grid">
       <div>
-        <h1>把 AI 概念翻成能记住的卡片。</h1>
-        <p class="lead">这里像一本真实的 AI 字典，也像一副可抽取的学习卡。先抽一张，翻开解释，再沿着相关词继续走下去。</p>
+        <h1 id="site-title">把 AI 概念翻成能记住的卡片。</h1>
+        <p class="lead" id="site-lead">这里像一本真实的 AI 字典，也像一副可抽取的学习卡。先抽一张，翻开解释，再沿着相关词继续走下去。</p>
       </div>
       <aside class="ledger" aria-label="词典统计">
         <div class="ledger-title">
@@ -1103,9 +1092,9 @@
           <span id="deck-label">Flashcards</span>
         </div>
         <div class="stats">
-          <div class="stat"><strong id="term-count">--</strong><span>词典卡片</span></div>
-          <div class="stat"><strong id="category-count">--</strong><span>主题分类</span></div>
-          <div class="stat"><strong id="progress-count">0%</strong><span>点亮进度</span></div>
+          <div class="stat"><strong id="term-count">--</strong><span id="stat-cards">词典卡片</span></div>
+          <div class="stat"><strong id="category-count">--</strong><span id="stat-topics">主题分类</span></div>
+          <div class="stat"><strong id="progress-count">0%</strong><span id="stat-progress">点亮进度</span></div>
         </div>
       </aside>
     </div>
@@ -1122,7 +1111,7 @@
           <input class="search" id="search" type="search" placeholder="搜索概念、别名或解释">
           <div class="sort-stack" aria-label="词典排序方式">
             <div class="sort-head">
-              <strong>排序</strong>
+              <strong id="sort-label">排序</strong>
               <span id="sort-summary" style="color:#b95f38;font-weight:bold">📡 数据已更新 2026-06-19 04:40 · 1177 张卡 · 搜索「测试」验证</span>
             </div>
             <div class="sort-map" id="sort-map"></div>
@@ -1130,7 +1119,7 @@
         </div>
         <div class="dict-list" id="dictionary-list"></div>
         <details class="filter-drawer">
-          <summary>筛选分类</summary>
+          <summary id="filter-summary">筛选分类</summary>
           <div class="topic-map" id="topic-map" aria-label="主题地图"></div>
           <div class="type-map" id="type-map" aria-label="条目类型筛选" data-entry-type="全部"></div>
         </details>
@@ -1167,7 +1156,7 @@
           <span class="panel-count entry-status" id="entry-status"></span>
         </div>
         <div class="entry-body" id="detail">
-          <div class="empty">选择一张卡片后，这里会显示完整解释。</div>
+          <div class="empty" id="detail-empty">选择一张卡片后，这里会显示完整解释。</div>
         </div>
       </section>
     </section>
@@ -1176,62 +1165,206 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    window.googleTranslateElementInit = function() {
-      if (!window.google || !window.google.translate) return;
-      new google.translate.TranslateElement({
-        pageLanguage: "zh-CN",
-        includedLanguages: "en,zh-CN",
-        autoDisplay: false
-      }, "google_translate_element");
+    const DATA_FILES = { zh: "ai-dictionary-free.json", en: "ai-dictionary-free-en.json" };
+
+    const i18n = {
+      zh: {
+        brand: "AI 祛魅词典",
+        backTimeline: "← 时间轴",
+        backTimelineTitle: "进入 AI 时间轴",
+        navLoading: "读取中",
+        fullVersion: "完整版 →",
+        fullVersionTitle: "解锁全部深度内容",
+        chTitle: "回到中文",
+        enTitle: "Switch to English",
+        heroTitle: "把 AI 概念翻成能记住的卡片。",
+        heroLead: "这里像一本真实的 AI 字典，也像一副可抽取的学习卡。先抽一张，翻开解释，再沿着相关词继续走下去。",
+        statCards: "词典卡片",
+        statTopics: "主题分类",
+        statProgress: "点亮进度",
+        sortLabel: "排序",
+        searchPlaceholder: "搜索概念、别名或解释",
+        filterSummary: "筛选分类",
+        loading: "正在装载词典卡片。",
+        noMatch: "没有匹配的词条。",
+        nothingToDisplay: "没有可显示的词条。",
+        tryDifferent: "换一个关键词，或清空搜索后重新浏览。",
+        emptyFilter: "当前筛选结果为空",
+        noAnswer: "这张卡片还没有答案。",
+        unmatched: "未匹配",
+        hintFront: "点击卡片或下方按钮查看答案",
+        hintBack: "点击卡片或下方按钮收起答案",
+        showAnswer: "查看答案",
+        hideAnswer: "收起答案",
+        shuffle: "随机抽卡",
+        known: "认识",
+        review: "不熟",
+        markKnownTitle: "记录为认识，点亮学习进度。",
+        markMissedTitle: "记录为不熟，方便之后复习。",
+        toastShuffle: "已随机抽取一张新卡片。",
+        toastKnown: "已点亮：",
+        toastReview: "已加入复习：",
+        toastLoaded: "词典卡片已载入。",
+        loadFailed: "词典数据暂时没有载入。",
+        selectCard: "选择一张卡片后，这里会显示完整解释。",
+        showMore: "显示更多（还有 ",
+        showMoreEnd: " 条）",
+        allShown: "已显示全部 ",
+        allShownEnd: " 条",
+        oneLiner: "一句释义",
+        deeperDive: "展开理解",
+        whyItMatters: "为何重要",
+        memoryHook: "记忆锚点",
+        relatedPeople: "相关人物",
+        relatedCards: "相关卡片",
+        expandMore: "展开更多 ",
+        expandMoreEnd: " 个",
+        expanded: "展开",
+        collapsed: "收起",
+        locked: "这是完整版深度内容。",
+        lockedDetail: "开放查阅版仅展示一句释义，完整版含展开理解、为何重要、记忆锚点等原创深度字段。",
+        lockedFooter: "—— 升级完整版阅读全部 1327 条深度卡 ——",
+        upgradeTitle: "完整版解锁",
+        upgradeSubtitle: "这条词条的深度内容，只在完整版。",
+        upgradeDetail: "完整版含 1327 条词条的展开理解、为何重要、记忆锚点、相关卡片等深度字段，月更新增。",
+        learnMore: "了解完整版 →",
+        sampleBadge: "精选样板",
+        freeBadge: "开放查阅"
+      },
+      en: {
+        brand: "AI Demystified Dictionary",
+        backTimeline: "← Timeline",
+        backTimelineTitle: "Go to AI Timeline",
+        navLoading: "Loading…",
+        fullVersion: "Full Version →",
+        fullVersionTitle: "Unlock all deep content",
+        chTitle: "Back to Chinese",
+        enTitle: "Switch to English",
+        heroTitle: "Turn AI concepts into cards you remember.",
+        heroLead: "A real AI dictionary that doubles as a deck of study cards. Draw one, flip it over, then follow related terms onward.",
+        statCards: "Dictionary Cards",
+        statTopics: "Topics",
+        statProgress: "Progress",
+        sortLabel: "Sort",
+        searchPlaceholder: "Search concepts, aliases, or explanations",
+        filterSummary: "Filter by Topic",
+        loading: "Loading dictionary cards.",
+        noMatch: "No matching terms.",
+        nothingToDisplay: "Nothing to display.",
+        tryDifferent: "Try a different keyword, or clear the search.",
+        emptyFilter: "No results for this filter",
+        noAnswer: "No answer for this card yet.",
+        unmatched: "No match",
+        hintFront: "Click the card or the buttons below to reveal the answer",
+        hintBack: "Click the card or the buttons below to hide the answer",
+        showAnswer: "Show Answer",
+        hideAnswer: "Hide Answer",
+        shuffle: "Shuffle",
+        known: "Known",
+        review: "Review",
+        markKnownTitle: "Mark as known and light up your progress.",
+        markMissedTitle: "Mark as unfamiliar to review later.",
+        toastShuffle: "Shuffled to a new card.",
+        toastKnown: "Marked known: ",
+        toastReview: "Queued for review: ",
+        toastLoaded: "Dictionary cards loaded.",
+        loadFailed: "Dictionary data failed to load.",
+        selectCard: "Select a card to see the full explanation here.",
+        showMore: "Show more (",
+        showMoreEnd: " remaining)",
+        allShown: "All ",
+        allShownEnd: " shown",
+        oneLiner: "One-liner",
+        deeperDive: "Deeper dive",
+        whyItMatters: "Why it matters",
+        memoryHook: "Memory hook",
+        relatedPeople: "Related people",
+        relatedCards: "Related cards",
+        expandMore: "Show ",
+        expandMoreEnd: " more",
+        expanded: "Expand",
+        collapsed: "Collapse",
+        locked: "This is full-version content.",
+        lockedDetail: "The free version shows one-line definitions only; the full version includes deeper dives, why-it-matters, memory hooks, and other original deep fields.",
+        lockedFooter: "— Upgrade to read all 1,327 deep cards —",
+        upgradeTitle: "Full Version",
+        upgradeSubtitle: "This term's deep content is available in the full version.",
+        upgradeDetail: "The full version includes 1,327 terms with deeper dives, why-it-matters, memory hooks, related cards, updated monthly.",
+        learnMore: "Learn more →",
+        sampleBadge: "Featured sample",
+        freeBadge: "Free access"
+      }
     };
 
-    function setTranslateCookie(value) {
-      const expires = "expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      document.cookie = `googtrans=; ${expires}; path=/`;
-      document.cookie = `googtrans=; ${expires}; domain=${location.hostname}; path=/`;
-      if (value) {
-        document.cookie = `googtrans=${value}; path=/`;
+    function t(key) {
+      const table = i18n[state.lang] || i18n.zh;
+      return table[key] != null ? table[key] : (i18n.zh[key] != null ? i18n.zh[key] : key);
+    }
+
+    function syncLangButtons() {
+      const enBtn = document.getElementById("translate-en");
+      const zhBtn = document.getElementById("translate-zh");
+      if (enBtn) enBtn.classList.toggle("active-lang", state.lang === "en");
+      if (zhBtn) zhBtn.classList.toggle("active-lang", state.lang === "zh");
+    }
+
+    function updateStaticText() {
+      document.documentElement.lang = state.lang === "en" ? "en" : "zh-CN";
+      const setText = (id, key) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = t(key);
+      };
+      const setTitle = (id, key) => {
+        const el = document.getElementById(id);
+        if (el) el.setAttribute("title", t(key));
+      };
+      setText("brand-text", "brand");
+      setText("back-timeline", "backTimeline");
+      setTitle("back-timeline", "backTimelineTitle");
+      setText("full-version-link", "fullVersion");
+      setTitle("full-version-link", "fullVersionTitle");
+      setTitle("translate-zh", "chTitle");
+      setTitle("translate-en", "enTitle");
+      setText("site-title", "heroTitle");
+      setText("site-lead", "heroLead");
+      setText("stat-cards", "statCards");
+      setText("stat-topics", "statTopics");
+      setText("stat-progress", "statProgress");
+      setText("sort-label", "sortLabel");
+      setText("filter-summary", "filterSummary");
+      setText("mark-missed", "review");
+      setText("mark-known", "known");
+      setText("shuffle-card", "shuffle");
+      setTitle("mark-known", "markKnownTitle");
+      setTitle("mark-missed", "markMissedTitle");
+      const search = document.getElementById("search");
+      if (search) search.placeholder = t("searchPlaceholder");
+      const fullVersion = document.getElementById("full-version-link");
+      if (fullVersion) fullVersion.style.display = state.isPublic ? "" : "none";
+      syncLangButtons();
+    }
+
+    function setLang(lang) {
+      if (state.lang === lang) return;
+      state.lang = lang;
+      if (state.rawTerms.length) {
+        state.terms = sortTerms(normalizeTerms(state.rawTerms), state.sortMode);
       }
-    }
-
-    function loadGoogleTranslate() {
-      if (document.querySelector("script[data-google-translate]")) return;
-      const script = document.createElement("script");
-      script.dataset.googleTranslate = "true";
-      script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-      script.async = true;
-      document.head.appendChild(script);
-    }
-
-    function chooseGoogleLanguage(language) {
-      loadGoogleTranslate();
-      let attempts = 0;
-      const timer = window.setInterval(() => {
-        const select = document.querySelector(".goog-te-combo");
-        attempts += 1;
-        if (!select && attempts < 24) return;
-        window.clearInterval(timer);
-        if (!select) return;
-        select.value = language;
-        select.dispatchEvent(new Event("change"));
-      }, 250);
+      applyFilter(false);
+      updateStaticText();
+      renderAll();
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("translate-en")?.addEventListener("click", () => {
-        setTranslateCookie("/zh-CN/en");
-        chooseGoogleLanguage("en");
-      });
-      document.getElementById("translate-zh")?.addEventListener("click", () => {
-        setTranslateCookie("");
-        location.reload();
-      });
+      document.getElementById("translate-en")?.addEventListener("click", () => setLang("en"));
+      document.getElementById("translate-zh")?.addEventListener("click", () => setLang("zh"));
     });
 
     const STORAGE_KEY = "ai-dictionary-lab-progress-v2";
 
     const state = {
       terms: [],
+      rawTerms: [],
       filtered: [],
       categories: [],
       category: "全部",
@@ -1242,14 +1375,16 @@
       listStep: 30,
       showingBack: false,
       progress: { known: {}, missed: {} },
-      toastTimer: null
+      toastTimer: null,
+      lang: "zh",
+      isPublic: true
     };
 
     const sortModes = [
-      { label: "前沿焦点", summary: "先看能激发好奇心的主线概念" },
-      { label: "学习路径", summary: "先基础，再模型，再产品与应用" },
-      { label: "主题浏览", summary: "按主题成片浏览，减少概念跳跃" },
-      { label: "A-Z", summary: "按词名字母顺序查找" }
+      { label: "前沿焦点", labelEn: "Frontier Focus", summary: "先看能激发好奇心的主线概念", summaryEn: "Start with the concepts that spark curiosity" },
+      { label: "学习路径", labelEn: "Learning Path", summary: "先基础，再模型，再产品与应用", summaryEn: "Basics first, then models, then products & apps" },
+      { label: "主题浏览", labelEn: "By Topic", summary: "按主题成片浏览，减少概念跳跃", summaryEn: "Browse by topic to reduce concept hopping" },
+      { label: "A-Z", labelEn: "A-Z", summary: "按词名字母顺序查找", summaryEn: "Look up terms alphabetically" }
     ];
 
     const curiosityPriority = [
@@ -1561,22 +1696,22 @@
     };
 
     const curatedFilters = [
-      { label: "全部", categories: null },
-      { label: "基础概念", categories: ["AI 基础概念"] },
-      { label: "产品与应用", categories: ["AI 产品与应用"] },
-      { label: "历史与里程碑", categories: ["AI 历史与里程碑"] },
-      { label: "AI 创作", categories: ["AI 创作"] },
-      { label: "人与机构", categories: ["人与机构"] },
-      { label: "文化与社会", categories: ["AI 文化与社会"] },
-      { label: "编程与工具", categories: ["AI 编程与工具"] },
-      { label: "Agent 自动化", categories: ["Agent 与自动化"] },
-      { label: "模型训练与调优", categories: ["模型训练与调优"] },
-      { label: "算力基础", categories: ["算力基础"] },
-      { label: "数据与检索", categories: ["数据与检索"] },
-      { label: "提示词与推理", categories: ["提示词与推理"] },
-      { label: "前沿模型", categories: ["前沿模型"] },
-      { label: "工程与部署", categories: ["工程与部署"] },
-      { label: "中国 AI", categories: ["@tag:国产"] }
+      { label: "全部", labelEn: "All", categories: null },
+      { label: "基础概念", labelEn: "Core Concepts", categories: ["AI 基础概念"] },
+      { label: "产品与应用", labelEn: "Products & Apps", categories: ["AI 产品与应用"] },
+      { label: "历史与里程碑", labelEn: "History & Milestones", categories: ["AI 历史与里程碑"] },
+      { label: "AI 创作", labelEn: "AI & Creativity", categories: ["AI 创作"] },
+      { label: "人与机构", labelEn: "People & Organizations", categories: ["人与机构"] },
+      { label: "文化与社会", labelEn: "Culture & Society", categories: ["AI 文化与社会"] },
+      { label: "编程与工具", labelEn: "Programming & Tools", categories: ["AI 编程与工具"] },
+      { label: "Agent 自动化", labelEn: "Agents & Automation", categories: ["Agent 与自动化"] },
+      { label: "模型训练与调优", labelEn: "Model Training & Tuning", categories: ["模型训练与调优"] },
+      { label: "算力基础", labelEn: "Compute & Infrastructure", categories: ["算力基础"] },
+      { label: "数据与检索", labelEn: "Data & Retrieval", categories: ["数据与检索"] },
+      { label: "提示词与推理", labelEn: "Prompting & Reasoning", categories: ["提示词与推理"] },
+      { label: "前沿模型", labelEn: "Frontier Models", categories: ["前沿模型"] },
+      { label: "工程与部署", labelEn: "Engineering & Deployment", categories: ["工程与部署"] },
+      { label: "中国 AI", labelEn: "Chinese AI", categories: ["@tag:国产"] }
     ];
 
     function escapeHTML(value) {
@@ -1604,10 +1739,32 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state.progress));
     }
 
-    async function loadDictionary() {
-      const response = await fetch(`ai-dictionary-free.json?t=${Date.now()}`);
-      if (!response.ok) throw new Error("无法读取 ai-dictionary-free.json。");
+    async function loadJSON(path) {
+      const response = await fetch(`${path}?t=${Date.now()}`);
+      if (!response.ok) throw new Error(`无法读取 ${path}。`);
       return response.json();
+    }
+
+    async function loadDictionary() {
+      const [zhData, enData] = await Promise.all([
+        loadJSON(DATA_FILES.zh).catch(() => ({ terms: [] })),
+        loadJSON(DATA_FILES.en).catch(() => ({ terms: [] }))
+      ]);
+      const zhTerms = (zhData && zhData.terms) || [];
+      const enTerms = (enData && enData.terms) || [];
+      state.isPublic = zhTerms.some(term => term && Object.prototype.hasOwnProperty.call(term, "is_sample"));
+      const enById = new Map(enTerms.filter(term => term && term.id).map(term => [term.id, term]));
+      return zhTerms
+        .filter(term => term && term.term)
+        .map(term => {
+          const enTerm = enById.get(term.id);
+          if (!enTerm) return term;
+          const enFields = {};
+          Object.keys(enTerm).forEach(key => {
+            if (key.endsWith("_en")) enFields[key] = enTerm[key];
+          });
+          return { ...term, ...enFields };
+        });
     }
 
     function normalizeCategory(category) {
@@ -1649,18 +1806,38 @@
       return map[raw] || inferEntryType(term);
     }
 
-    function normalizeTerms(data) {
-      return (data.terms || [])
+    function normalizeTerms(rawTerms) {
+      const isEn = state.lang === "en";
+      return (rawTerms || [])
         .filter(term => term && term.term)
         .map(term => {
           const cnName = extractCnName(term);
-          return {
+          const base = {
             ...term,
             rawCategory: term.category || "",
             category: normalizeCategory(term.category),
             entryType: normalizeEntryType(term),
             cnName,
-            displayName: displayTermName({ ...term, cnName })
+            front: isEn ? (term.front_en || term.front || "") : (term.front || term.front_en || ""),
+            back: isEn ? (term.back_en || term.back || "") : (term.back || term.back_en || ""),
+            definition_short: isEn ? (term.definition_short_en || term.definition_short || "") : (term.definition_short || term.definition_short_en || ""),
+            definition_long: isEn ? (term.definition_long_en || term.definition_long || "") : (term.definition_long || term.definition_long_en || ""),
+            why_it_matters: isEn ? (term.why_it_matters_en || term.why_it_matters || "") : (term.why_it_matters || term.why_it_matters_en || ""),
+            memory_hook: isEn ? (term.memory_hook_en || term.memory_hook || "") : (term.memory_hook || term.memory_hook_en || ""),
+            example: isEn ? (term.example_en || term.example || "") : (term.example || term.example_en || ""),
+            examples: isEn
+              ? (Array.isArray(term.examples_en) && term.examples_en.length ? term.examples_en : (Array.isArray(term.examples) ? term.examples : []))
+              : (Array.isArray(term.examples) ? term.examples : []),
+            categoryLabel: isEn ? (term.category_en || term.category || "") : (term.category || ""),
+            difficultyLabel: isEn ? (term.difficulty_en || term.difficulty || "") : (term.difficulty || "")
+          };
+          const displayName = isEn
+            ? (term.term_en || term.term || term.displayName || "")
+            : displayTermName({ ...base, cnName });
+          const normalized = { ...base, displayName };
+          return {
+            ...normalized,
+            teaser: isEn ? "" : cardTeaser(normalized)
           };
         });
     }
@@ -1787,10 +1964,11 @@
     }
 
     function termStatus(term) {
-      if (!term) return "未学习";
-      if (state.progress.known[term.id]) return "已认识";
-      if (state.progress.missed[term.id]) return "待复习";
-      return "未学习";
+      const isEn = state.lang === "en";
+      if (!term) return isEn ? "New" : "未学习";
+      if (state.progress.known[term.id]) return isEn ? "Known" : "已认识";
+      if (state.progress.missed[term.id]) return isEn ? "Review" : "待复习";
+      return isEn ? "New" : "未学习";
     }
 
     function inferEntryType(term) {
@@ -1814,7 +1992,7 @@
     }
 
     function entryTypeLabel(type) {
-      return {
+      const zhMap = {
         concept: "概念",
         person: "人物",
         system: "系统",
@@ -1824,11 +2002,29 @@
         dataset: "数据集",
         company: "组织",
         paper: "论文"
-      }[type] || "概念";
+      };
+      const enMap = {
+        concept: "Concept",
+        person: "People",
+        system: "System",
+        event: "Event",
+        model: "Model",
+        product: "Product",
+        dataset: "Dataset",
+        company: "Organization",
+        paper: "Paper"
+      };
+      const map = state.lang === "en" ? enMap : zhMap;
+      return map[type] || (state.lang === "en" ? "Concept" : "概念");
     }
 
     function cardQuestion(term) {
-      if (!term) return "正在装载词典卡片。";
+      if (!term) return t("loading");
+      if (state.lang === "en") {
+        if (term.front) return term.front;
+        if (term.term) return `What is ${term.term}?`;
+        return "";
+      }
       if (term.entryType === "person") {
         return term.cnName && term.cnName !== term.term ? `谁是 ${term.term}（${term.cnName}）？` : `谁是 ${term.term}？`;
       }
@@ -1871,7 +2067,7 @@
       state.activeIndex = Math.floor(Math.random() * pool.length);
       state.showingBack = false;
       renderAll();
-      showToast("已随机抽取一张新卡片。");
+      showToast(t("toastShuffle"));
     }
 
     function flipCard() {
@@ -1885,11 +2081,11 @@
       if (kind === "known") {
         state.progress.known[term.id] = Date.now();
         delete state.progress.missed[term.id];
-        showToast(`已点亮：${term.term}`);
+        showToast(`${t("toastKnown")}${term.term}`);
       } else {
         state.progress.missed[term.id] = Date.now();
         delete state.progress.known[term.id];
-        showToast(`已加入复习：${term.term}`);
+        showToast(`${t("toastReview")}${term.term}`);
       }
       writeProgress();
       changeCard(1);
@@ -1930,7 +2126,7 @@
           <details class="read-card expandable">
             <summary>
               <p class="section-label expand-label">${escapeHTML(label)}</p>
-              <span class="expand-action"><span class="when-closed">展开</span><span class="when-open">收起</span></span>
+              <span class="expand-action"><span class="when-closed">${escapeHTML(t("expanded"))}</span><span class="when-open">${escapeHTML(t("collapsed"))}</span></span>
             </summary>
             <div class="expand-body">${body}</div>
           </details>
@@ -1957,7 +2153,7 @@
             ${renderButtons(visible)}
             ${hidden.length ? `
               <details class="related-more">
-                <summary>展开更多 ${hidden.length} 个</summary>
+                <summary>${escapeHTML(t("expandMore"))}${hidden.length}${escapeHTML(t("expandMoreEnd"))}</summary>
                 <div class="related">${renderButtons(hidden)}</div>
               </details>
             ` : ""}
@@ -1972,9 +2168,9 @@
         <section class="read-card locked-section">
           <p class="section-label">${escapeHTML(label)}</p>
           <div class="locked-body">
-            <p class="locked-text">这是完整版深度内容。</p>
-            <p class="locked-text">开放查阅版仅展示一句释义，完整版含展开理解、为何重要、记忆锚点等原创深度字段。</p>
-            <p class="locked-text">—— 升级完整版阅读全部 1327 条深度卡 ——</p>
+            <p class="locked-text">${escapeHTML(t("locked"))}</p>
+            <p class="locked-text">${escapeHTML(t("lockedDetail"))}</p>
+            <p class="locked-text">${escapeHTML(t("lockedFooter"))}</p>
           </div>
           <div class="locked-veil" aria-hidden="true"></div>
         </section>
@@ -1984,10 +2180,10 @@
     function renderUpgradeCard() {
       return `
         <section class="read-card upgrade-card">
-          <p class="section-label">完整版解锁</p>
-          <p class="upgrade-title">这条词条的深度内容，只在完整版。</p>
-          <p class="upgrade-detail">完整版含 1327 条词条的展开理解、为何重要、记忆锚点、相关卡片等深度字段，月更新增。</p>
-          <a class="upgrade-button" href="#" onclick="window.open('https://github.com/gengyueworks/ai-dictionary', '_blank'); return false;">了解完整版 →</a>
+          <p class="section-label">${escapeHTML(t("upgradeTitle"))}</p>
+          <p class="upgrade-title">${escapeHTML(t("upgradeSubtitle"))}</p>
+          <p class="upgrade-detail">${escapeHTML(t("upgradeDetail"))}</p>
+          <a class="upgrade-button" href="#" onclick="window.open('https://github.com/gengyueworks/ai-dictionary', '_blank'); return false;">${escapeHTML(t("learnMore"))}</a>
         </section>
       `;
     }
@@ -2028,7 +2224,11 @@
         term.definition_short,
         term.definition_long,
         term.front,
-        term.back
+        term.back,
+        term.definition_short_en,
+        term.definition_long_en,
+        term.front_en,
+        term.back_en
       ].join(" ").toLowerCase();
       return haystack.includes(keyword);
     }
@@ -2085,19 +2285,23 @@
     }
 
     function renderStats() {
+      const isEn = state.lang === "en";
       const known = Object.keys(state.progress.known).filter(id => state.terms.some(term => term.id === id)).length;
       const missed = Object.keys(state.progress.missed).filter(id => state.terms.some(term => term.id === id)).length;
       const progress = state.terms.length ? Math.round((known / state.terms.length) * 100) : 0;
       const sortMeta = sortModes.find(item => item.label === state.sortMode) || sortModes[0];
+      const sortLabel = isEn ? (sortMeta.labelEn || sortMeta.label) : sortMeta.label;
       document.getElementById("term-count").textContent = state.terms.length;
       document.getElementById("category-count").textContent = curatedFilters.length - 1;
       document.getElementById("progress-count").textContent = `${progress}%`;
-      document.getElementById("nav-count").textContent = `${state.terms.length} 张卡片`;
-      document.getElementById("nav-known").textContent = `认识 ${known}`;
-      document.getElementById("nav-missed").textContent = `待复习 ${missed}`;
-      document.getElementById("visible-count").textContent = `${state.filtered.length} 条`;
-      document.getElementById("deck-label").textContent = sortMeta.label;
-      document.getElementById("sort-summary").textContent = `${sortMeta.label}：${sortMeta.summary}`;
+      document.getElementById("nav-count").textContent = `${state.terms.length} ${isEn ? "cards" : "张卡片"}`;
+      document.getElementById("nav-known").textContent = `${isEn ? "Known" : "认识"} ${known}`;
+      document.getElementById("nav-missed").textContent = `${isEn ? "Review" : "待复习"} ${missed}`;
+      document.getElementById("visible-count").textContent = `${state.filtered.length} ${isEn ? "entries" : "条"}`;
+      document.getElementById("deck-label").textContent = sortLabel;
+      document.getElementById("sort-summary").textContent = isEn
+        ? `${sortLabel}: ${sortMeta.summaryEn || sortMeta.summary}`
+        : `${sortLabel}：${sortMeta.summary}`;
     }
 
     function renderTopics() {
@@ -2119,7 +2323,8 @@
           ? state.terms.length
           : state.terms.filter(term => matchesCuratedCategory(term, filter.label)).length;
         if (!count) return "";
-        return `<button class="topic ${filter.label === state.category ? "active" : ""}" type="button" data-category="${escapeHTML(filter.label)}">${escapeHTML(filter.label)} · ${count}</button>`;
+        const displayLabel = state.lang === "en" ? (filter.labelEn || filter.label) : filter.label;
+        return `<button class="topic ${filter.label === state.category ? "active" : ""}" type="button" data-category="${escapeHTML(filter.label)}">${escapeHTML(displayLabel)} · ${count}</button>`;
       }).join("");
       document.querySelectorAll(".topic").forEach(button => {
         button.addEventListener("click", () => {
@@ -2133,9 +2338,12 @@
     }
 
     function renderSortModes() {
-      document.getElementById("sort-map").innerHTML = sortModes.map(mode => `
-        <button class="sort-chip ${mode.label === state.sortMode ? "active" : ""}" type="button" data-sort="${escapeHTML(mode.label)}">${escapeHTML(mode.label)}</button>
-      `).join("");
+      document.getElementById("sort-map").innerHTML = sortModes.map(mode => {
+        const displayLabel = state.lang === "en" ? (mode.labelEn || mode.label) : mode.label;
+        return `
+        <button class="sort-chip ${mode.label === state.sortMode ? "active" : ""}" type="button" data-sort="${escapeHTML(mode.label)}">${escapeHTML(displayLabel)}</button>
+      `;
+      }).join("");
       document.querySelectorAll("[data-sort]").forEach(button => {
         button.addEventListener("click", () => {
           state.sortMode = button.dataset.sort;
@@ -2155,19 +2363,19 @@
       const active = activeTerm();
       const list = document.getElementById("dictionary-list");
       if (!state.filtered.length) {
-        list.innerHTML = `<div class="empty">没有匹配的词条。</div>`;
+        list.innerHTML = `<div class="empty">${escapeHTML(t("noMatch"))}</div>`;
         return;
       }
       const keyword = currentSearchKeyword();
       const visibleTerms = keyword ? state.filtered : state.filtered.slice(0, state.visibleLimit);
       const remaining = Math.max(state.filtered.length - visibleTerms.length, 0);
       const footer = remaining
-        ? `<button class="list-more" type="button" id="show-more-terms">显示更多（还有 ${remaining} 条）</button>`
-        : (!keyword && state.filtered.length > state.listStep ? `<div class="list-end">已显示全部 ${state.filtered.length} 条</div>` : "");
+        ? `<button class="list-more" type="button" id="show-more-terms">${escapeHTML(t("showMore"))}${remaining}${escapeHTML(t("showMoreEnd"))}</button>`
+        : (!keyword && state.filtered.length > state.listStep ? `<div class="list-end">${escapeHTML(t("allShown"))}${state.filtered.length}${escapeHTML(t("allShownEnd"))}</div>` : "");
       list.innerHTML = visibleTerms.map(term => `
         <button class="dict-row ${term.id === active?.id ? "active" : ""}" type="button" data-id="${escapeHTML(term.id)}">
           <strong>${escapeHTML(term.displayName || term.term)}</strong>
-          <span>${escapeHTML(cardTeaser(term) || term.definition_short || term.category || "")}</span>
+          <span>${escapeHTML(term.teaser || term.definition_short || term.categoryLabel || "")}</span>
         </button>
       `).join("") + footer;
       list.querySelectorAll(".dict-row").forEach(button => {
@@ -2185,8 +2393,8 @@
     function metaLabels(term) {
       const labels = [
         entryTypeLabel(term.entryType),
-        term.category || "AI 概念",
-        term.difficulty || "入门"
+        term.categoryLabel || term.category || (state.lang === "en" ? "AI Concept" : "AI 概念"),
+        term.difficultyLabel || term.difficulty || (state.lang === "en" ? "Beginner" : "入门")
       ].filter(Boolean);
       return [...new Set(labels)];
     }
@@ -2196,12 +2404,12 @@
       const card = document.getElementById("flashcard");
       if (!term) {
         document.getElementById("card-index").textContent = "0 / 0";
-        document.getElementById("card-status").textContent = "未匹配";
+        document.getElementById("card-status").textContent = t("unmatched");
         document.getElementById("card-badges").innerHTML = "";
-        document.getElementById("card-question").textContent = "没有匹配的词条。";
-        document.getElementById("card-answer").textContent = "换一个关键词，或清空搜索后重新浏览。";
-        document.getElementById("card-hint").textContent = "当前筛选结果为空";
-        document.getElementById("flip-card").textContent = "查看答案";
+        document.getElementById("card-question").textContent = t("noMatch");
+        document.getElementById("card-answer").textContent = t("tryDifferent");
+        document.getElementById("card-hint").textContent = t("emptyFilter");
+        document.getElementById("flip-card").textContent = t("showAnswer");
         card.classList.remove("is-back");
         return;
       }
@@ -2213,41 +2421,43 @@
       document.getElementById("card-badges").innerHTML = metaLabels(term)
         .map(label => `<span class="badge">${escapeHTML(label)}</span>`)
         .join("");
-      document.getElementById("card-question").textContent = cardTeaser(term) || cardQuestion(term);
-      document.getElementById("card-answer").textContent = term.back || term.definition_short || "这张卡片还没有答案。";
-      document.getElementById("card-hint").textContent = state.showingBack ? "点击卡片或下方按钮收起答案" : "点击卡片或下方按钮查看答案";
-      document.getElementById("flip-card").textContent = state.showingBack ? "收起答案" : "查看答案";
+      document.getElementById("card-question").textContent = state.lang === "zh" ? (cardTeaser(term) || cardQuestion(term)) : cardQuestion(term);
+      document.getElementById("card-answer").textContent = term.back || term.definition_short || t("noAnswer");
+      document.getElementById("card-hint").textContent = state.showingBack ? t("hintBack") : t("hintFront");
+      document.getElementById("flip-card").textContent = state.showingBack ? t("hideAnswer") : t("showAnswer");
     }
 
     function renderDetail() {
       const term = activeTerm();
       const detail = document.getElementById("detail");
       if (!term) {
-        detail.innerHTML = `<div class="empty">没有可显示的词条。</div>`;
+        detail.innerHTML = `<div class="empty">${escapeHTML(t("nothingToDisplay"))}</div>`;
         return;
       }
       const related = term.related_terms || [];
       const relatedPeople = term.related_people || [];
       const definition = term.definition_short || term.back || "";
       const extended = term.definition_long && term.definition_long !== definition ? term.definition_long : "";
-      const isSample = term.is_sample === true;
+      const isSample = state.isPublic ? (term.is_sample === true) : true;
       document.getElementById("entry-status").textContent = termStatus(term);
       const entryMeta = metaLabels(term).map(label => escapeHTML(label)).join(" · ");
-      const sampleBadge = isSample
-        ? '<span class="edition-badge sample">精选样板</span>'
-        : '<span class="edition-badge free">开放查阅</span>';
+      const sampleBadge = state.isPublic
+        ? (isSample
+          ? `<span class="edition-badge sample">${escapeHTML(t("sampleBadge"))}</span>`
+          : `<span class="edition-badge free">${escapeHTML(t("freeBadge"))}</span>`)
+        : "";
       detail.innerHTML = `
         <div class="entry-head">
           <h3>${escapeHTML(term.displayName || term.term)}</h3>
           <p class="entry-kicker">${entryMeta}</p>
           ${sampleBadge}
         </div>
-        ${renderReadCard("一句释义", definition, { primary: true, takeaway: true, maxParts: 1 })}
-        ${isSample && extended ? renderReadCard("展开理解", extended, { maxParts: 5, collapsible: true }) : ""}
-        ${isSample && term.why_it_matters ? renderReadCard("为何重要", term.why_it_matters, { maxParts: 2 }) : renderLockedSection("为何重要")}
-        ${isSample && term.memory_hook ? renderReadCard("记忆锚点", term.memory_hook, { maxParts: 1 }) : renderLockedSection("记忆锚点")}
-        ${renderRelatedSection("相关人物", relatedPeople)}
-        ${renderRelatedSection("相关卡片", related)}
+        ${renderReadCard(t("oneLiner"), definition, { primary: true, takeaway: true, maxParts: 1 })}
+        ${isSample && extended ? renderReadCard(t("deeperDive"), extended, { maxParts: 5, collapsible: true }) : ""}
+        ${isSample ? (term.why_it_matters ? renderReadCard(t("whyItMatters"), term.why_it_matters, { maxParts: 2 }) : "") : renderLockedSection(t("whyItMatters"))}
+        ${isSample ? (term.memory_hook ? renderReadCard(t("memoryHook"), term.memory_hook, { maxParts: 1 }) : "") : renderLockedSection(t("memoryHook"))}
+        ${renderRelatedSection(t("relatedPeople"), relatedPeople)}
+        ${renderRelatedSection(t("relatedCards"), related)}
         ${isSample ? "" : renderUpgradeCard()}
       `;
       detail.querySelectorAll("[data-related]").forEach(button => {
@@ -2288,8 +2498,6 @@
         state.showingBack = false;
         applyFilter();
       });
-      document.getElementById("mark-known").title = "记录为认识，点亮学习进度。";
-      document.getElementById("mark-missed").title = "记录为不熟，方便之后复习。";
       document.getElementById("prev-card").addEventListener("click", () => changeCard(-1));
       document.getElementById("next-card").addEventListener("click", () => changeCard(1));
       document.getElementById("shuffle-card").addEventListener("click", randomCard);
@@ -2334,17 +2542,20 @@
     async function main() {
       readProgress();
       bindEvents();
-      const data = await loadDictionary();
-      state.terms = sortTerms(normalizeTerms(data), state.sortMode);
+      const rawTerms = await loadDictionary();
+      state.rawTerms = rawTerms;
+      state.terms = sortTerms(normalizeTerms(rawTerms), state.sortMode);
       state.filtered = state.terms;
       applyFilter(false);
+      updateStaticText();
       openInitialTerm();
       renderAll();
-      showToast("词典卡片已载入。");
+      syncLangButtons();
+      showToast(t("toastLoaded"));
     }
 
     main().catch(error => {
-      document.getElementById("card-question").textContent = "词典数据暂时没有载入。";
+      document.getElementById("card-question").textContent = t("loadFailed");
       document.getElementById("card-answer").textContent = error.message;
       document.getElementById("detail").innerHTML = `<div class="empty">${escapeHTML(error.message)}</div>`;
       document.getElementById("topic-map").innerHTML = `<div class="empty">${escapeHTML(error.message)}</div>`;
