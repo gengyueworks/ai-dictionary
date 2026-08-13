@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI 学习记录</title>
+  <style>
+    :root {
+      --paper: #f8f4ea;
+      --paper-soft: #fffaf0;
+      --ink: #211d18;
+      --muted: #766c5e;
+      --line: rgba(33, 29, 24, 0.14);
+      --blue: #173f9f;
+      --green: #25624a;
+      --rose: #c94e43;
+      --shadow: 0 18px 42px rgba(41, 33, 24, 0.10);
+      color-scheme: light;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: linear-gradient(180deg, #fbf7ee 0%, #f2ecdf 100%);
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .page {
+      min-height: 100vh;
+      width: min(100%, 440px);
+      margin: 0 auto;
+      padding: 16px 14px 30px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .back-link,
+    .ghost-button {
+      min-height: 38px;
+      border: 1px solid rgba(33, 29, 24, 0.16);
+      border-radius: 999px;
+      padding: 0 13px;
+      color: var(--ink);
+      background: rgba(255, 250, 240, 0.74);
+      font-size: 13px;
+      font-weight: 780;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .title-block {
+      margin: 8px 2px 16px;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--ink);
+      font-family: Georgia, "Songti SC", "STSong", serif;
+      font-size: 34px;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 9px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px 10px;
+      background: rgba(255, 250, 240, 0.76);
+      box-shadow: 0 10px 26px rgba(41, 33, 24, 0.06);
+    }
+
+    .stat strong {
+      display: block;
+      color: var(--blue);
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 760;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 14px;
+      background: rgba(255, 250, 240, 0.78);
+      box-shadow: 0 10px 28px rgba(41, 33, 24, 0.07);
+    }
+
+    .month-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .month-title {
+      color: #42382d;
+      font-size: 15px;
+      font-weight: 860;
+    }
+
+    .month-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .icon-button {
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(33, 29, 24, 0.15);
+      border-radius: 999px;
+      color: var(--blue);
+      background: rgba(255, 250, 240, 0.70);
+      font-size: 18px;
+      font-weight: 860;
+    }
+
+    .week {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 760;
+      text-align: center;
+    }
+
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    .day {
+      min-height: 43px;
+      border: 1px solid rgba(33, 29, 24, 0.10);
+      border-radius: 13px;
+      padding: 6px 4px;
+      color: #4d4337;
+      background: rgba(248, 244, 234, 0.52);
+      text-align: left;
+    }
+
+    .day.is-empty {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .day.is-today {
+      border-color: rgba(23, 63, 159, 0.34);
+    }
+
+    .day.is-selected {
+      color: var(--paper-soft);
+      background: var(--blue);
+    }
+
+    .day-number {
+      display: block;
+      font-size: 12px;
+      font-weight: 820;
+    }
+
+    .day-count {
+      display: inline-flex;
+      margin-top: 5px;
+      border-radius: 999px;
+      padding: 2px 6px;
+      color: var(--green);
+      background: rgba(37, 98, 74, 0.10);
+      font-size: 10px;
+      font-weight: 840;
+    }
+
+    .day.is-selected .day-count {
+      color: var(--paper-soft);
+      background: rgba(255, 250, 240, 0.18);
+    }
+
+    .detail {
+      margin-top: 14px;
+    }
+
+    .detail-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 0 2px 8px;
+      color: #42382d;
+      font-size: 13px;
+      font-weight: 860;
+    }
+
+    .record-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .record-item {
+      border: 1px solid rgba(33, 29, 24, 0.10);
+      border-radius: 16px;
+      padding: 11px 12px;
+      background: rgba(255, 250, 240, 0.70);
+    }
+
+    .record-item strong {
+      display: block;
+      color: #332d24;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .record-meta {
+      display: flex;
+      gap: 8px;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 760;
+    }
+
+    .empty {
+      border: 1px dashed rgba(33, 29, 24, 0.16);
+      border-radius: 16px;
+      padding: 18px 14px;
+      color: var(--muted);
+      background: rgba(255, 250, 240, 0.46);
+      font-size: 13px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .tool-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .primary-button {
+      min-height: 42px;
+      border: 0;
+      border-radius: 999px;
+      color: var(--paper-soft);
+      background: var(--blue);
+      font-size: 13px;
+      font-weight: 840;
+    }
+
+    .primary-link {
+      min-height: 42px;
+      border-radius: 999px;
+      color: var(--ink);
+      background: rgba(255, 250, 240, 0.74);
+      border: 1px solid rgba(33, 29, 24, 0.16);
+      font-size: 13px;
+      font-weight: 840;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      z-index: 20;
+      transform: translate(-50%, 18px);
+      border-radius: 999px;
+      padding: 10px 14px;
+      color: var(--paper-soft);
+      background: rgba(33, 29, 24, 0.92);
+      box-shadow: var(--shadow);
+      font-size: 13px;
+      font-weight: 760;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms ease, transform 220ms ease;
+    }
+
+    .toast.is-visible {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <nav class="topbar" aria-label="学习记录导航">
+      <a class="back-link" href="ai-mobile-cards-prototype-v0.html">返回轻卡</a>
+      <button class="ghost-button" id="today-button" type="button">今天</button>
+    </nav>
+
+    <section class="title-block">
+      <h1>学习记录</h1>
+      <p class="subtitle">这里只记录你点亮过的卡。数据保存在这台浏览器里。</p>
+    </section>
+
+    <section class="stats" aria-label="学习统计">
+      <div class="stat"><strong id="total-cards">0</strong><span>已点亮</span></div>
+      <div class="stat"><strong id="total-days">0</strong><span>有记录的天</span></div>
+      <div class="stat"><strong id="today-count">0</strong><span>今天</span></div>
+    </section>
+
+    <section class="panel" aria-label="学习日历">
+      <div class="month-head">
+        <div class="month-title" id="month-title"></div>
+        <div class="month-actions">
+          <button class="icon-button" id="prev-month" type="button" aria-label="上个月">‹</button>
+          <button class="icon-button" id="next-month" type="button" aria-label="下个月">›</button>
+        </div>
+      </div>
+      <div class="week" aria-hidden="true">
+        <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+      </div>
+      <div class="calendar" id="calendar"></div>
+
+      <section class="detail" aria-label="当天记录">
+        <div class="detail-head">
+          <span id="selected-date"></span>
+          <span id="selected-count"></span>
+        </div>
+        <div class="record-list" id="record-list"></div>
+      </section>
+
+      <div class="tool-row">
+        <button class="primary-button" id="copy-button" type="button">复制记录</button>
+        <a class="primary-link" href="ai-mobile-cards-prototype-v0.html">继续学习</a>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const learnedStorageKey = "ai-mobile-learned-v1";
+    let selectedDate = todayKey();
+    let visibleMonth = new Date();
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function todayKey() {
+      const now = new Date();
+      return dateKey(now);
+    }
+
+    function dateKey(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function readLearned() {
+      try {
+        const raw = JSON.parse(localStorage.getItem(learnedStorageKey) || "{}");
+        Object.keys(raw).forEach(date => {
+          if (!Array.isArray(raw[date])) {
+            raw[date] = [];
+            return;
+          }
+          raw[date] = raw[date].map(item => {
+            if (typeof item === "string") {
+              return {
+                id: item,
+                title: cleanLegacyTitle(item),
+                type: inferLegacyType(item),
+                learnedAt: ""
+              };
+            }
+            const id = item.id || "";
+            const title = item.title && item.title !== id ? item.title : cleanLegacyTitle(id);
+            const type = item.type && item.type !== "记录" ? item.type : inferLegacyType(id);
+            return { ...item, title, type };
+          });
+        });
+        return raw;
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function inferLegacyType(value) {
+      const text = String(value || "");
+      if (text.startsWith("event-")) return "历史";
+      if (text.startsWith("term-")) return "词卡";
+      return "卡片";
+    }
+
+    function cleanLegacyTitle(value) {
+      let text = String(value || "").trim();
+      text = text.replace(/^event-\d{4}(?:-\d{2})?(?:-\d{2})?-/, "");
+      text = text.replace(/^term-/, "");
+      text = text.replace(/^record-/, "");
+      if (!text) return "未命名卡片";
+      if (/^[a-z0-9-]+$/i.test(text)) {
+        return prettifyTitleWords(text
+          .split("-")
+          .filter(Boolean)
+          .join(" "));
+      }
+      return prettifyTitleWords(text.replace(/-/g, " "));
+    }
+
+    function prettifyTitleWords(value) {
+      const special = new Map([
+        ["ai", "AI"],
+        ["agi", "AGI"],
+        ["rag", "RAG"],
+        ["mcp", "MCP"],
+        ["llm", "LLM"],
+        ["gpu", "GPU"],
+        ["cpu", "CPU"],
+        ["nlp", "NLP"],
+        ["api", "API"],
+        ["json", "JSON"],
+        ["student", "STUDENT"],
+        ["rand", "RAND"],
+        ["glue", "GLUE"]
+      ]);
+      return String(value || "")
+        .split(" ")
+        .map(word => special.get(word.toLowerCase()) || word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+    }
+
+    function formatTime(value) {
+      if (!value) return "";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "";
+      return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("is-visible");
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => toast.classList.remove("is-visible"), 1500);
+    }
+
+    function renderStats(data) {
+      const dates = Object.keys(data).filter(date => data[date].length);
+      const total = dates.reduce((sum, date) => sum + data[date].length, 0);
+      document.getElementById("total-cards").textContent = total;
+      document.getElementById("total-days").textContent = dates.length;
+      document.getElementById("today-count").textContent = data[todayKey()]?.length || 0;
+    }
+
+    function renderCalendar(data) {
+      const year = visibleMonth.getFullYear();
+      const month = visibleMonth.getMonth();
+      const first = new Date(year, month, 1);
+      const days = new Date(year, month + 1, 0).getDate();
+      const blanks = first.getDay();
+      const calendar = document.getElementById("calendar");
+      document.getElementById("month-title").textContent = `${year} 年 ${month + 1} 月`;
+
+      const cells = [];
+      for (let i = 0; i < blanks; i += 1) {
+        cells.push(`<button class="day is-empty" type="button" tabindex="-1"></button>`);
+      }
+      for (let day = 1; day <= days; day += 1) {
+        const date = new Date(year, month, day);
+        const key = dateKey(date);
+        const count = data[key]?.length || 0;
+        const classes = [
+          "day",
+          key === todayKey() ? "is-today" : "",
+          key === selectedDate ? "is-selected" : ""
+        ].filter(Boolean).join(" ");
+        cells.push(`
+          <button class="${classes}" type="button" data-date="${key}">
+            <span class="day-number">${day}</span>
+            ${count ? `<span class="day-count">${count} 张</span>` : ""}
+          </button>
+        `);
+      }
+      calendar.innerHTML = cells.join("");
+    }
+
+    function renderSelected(data) {
+      const items = data[selectedDate] || [];
+      document.getElementById("selected-date").textContent = selectedDate;
+      document.getElementById("selected-count").textContent = items.length ? `${items.length} 张` : "暂无";
+      const list = document.getElementById("record-list");
+      if (!items.length) {
+        list.innerHTML = `<div class="empty">这一天还没有点亮卡片。</div>`;
+        return;
+      }
+      list.innerHTML = items.map(item => `
+        <article class="record-item">
+          <strong>${escapeHTML(item.title || item.id)}</strong>
+          <div class="record-meta">
+            <span>${escapeHTML(item.type || "卡片")}</span>
+            ${formatTime(item.learnedAt) ? `<span>${formatTime(item.learnedAt)}</span>` : ""}
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function render() {
+      const data = readLearned();
+      renderStats(data);
+      renderCalendar(data);
+      renderSelected(data);
+    }
+
+    function summaryText(data) {
+      const dates = Object.keys(data).sort();
+      if (!dates.length) return "还没有学习记录。";
+      return dates.map(date => {
+        const lines = data[date].map(item => `- ${item.type || "卡片"}：${item.title || item.id}`);
+        return `AI 学习记录｜${formatChineseDate(date)}｜${data[date].length} 张\n${lines.join("\n")}`;
+      }).join("\n\n");
+    }
+
+    function formatChineseDate(value) {
+      const [year, month, day] = String(value || "").split("-");
+      if (!year || !month || !day) return value;
+      return `${year} 年 ${Number(month)} 月 ${String(day).padStart(2, "0")} 日`;
+    }
+
+    document.getElementById("calendar").addEventListener("click", event => {
+      const button = event.target.closest("[data-date]");
+      if (!button) return;
+      selectedDate = button.dataset.date;
+      visibleMonth = new Date(`${selectedDate}T00:00:00`);
+      render();
+    });
+
+    document.getElementById("prev-month").addEventListener("click", () => {
+      visibleMonth = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() - 1, 1);
+      render();
+    });
+
+    document.getElementById("next-month").addEventListener("click", () => {
+      visibleMonth = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 1);
+      render();
+    });
+
+    document.getElementById("today-button").addEventListener("click", () => {
+      selectedDate = todayKey();
+      visibleMonth = new Date();
+      render();
+    });
+
+    document.getElementById("copy-button").addEventListener("click", async () => {
+      const text = summaryText(readLearned());
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast("已复制记录");
+      } catch (error) {
+        showToast("复制失败");
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>

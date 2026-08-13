@@ -1,0 +1,1620 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI 轻卡原型 v0</title>
+  <style>
+    :root {
+      --paper: #f6f3ed;
+      --paper-soft: #fffdfa;
+      --ink: #1d1a16;
+      --muted: #756f66;
+      --line: rgba(29, 26, 22, 0.11);
+      --blue: #193f91;
+      --green: #2f6f57;
+      --rose: #b95445;
+      --gold: #c8a04b;
+      --shadow: 0 18px 48px rgba(28, 22, 15, 0.09);
+      --radius: 19px;
+      color-scheme: light;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.72) 0%, rgba(246, 243, 237, 0) 34%),
+        #f6f3ed;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .phone-page {
+      min-height: 100vh;
+      width: min(100%, 440px);
+      margin: 0 auto;
+      padding: 10px 15px 30px;
+    }
+
+    .actionbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 0 -15px;
+      padding: 10px 15px 8px;
+      background: rgba(246, 243, 237, 0.90);
+      backdrop-filter: blur(14px);
+    }
+
+    .soft-button {
+      min-height: 40px;
+      border: 1px solid rgba(29, 26, 22, 0.12);
+      border-radius: 14px;
+      color: var(--ink);
+      background: rgba(255, 253, 250, 0.66);
+      font-size: 13px;
+      font-weight: 780;
+    }
+
+    .soft-button.primary {
+      color: var(--ink);
+      background: rgba(255, 253, 250, 0.88);
+      border-color: rgba(25, 63, 145, 0.28);
+      box-shadow: inset 0 0 0 1px rgba(25, 63, 145, 0.05);
+    }
+
+    .section {
+      margin-top: 14px;
+    }
+
+    .section.is-hidden {
+      display: none;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 3px 10px;
+    }
+
+    .section-title {
+      margin: 0;
+      color: #5a5148;
+      font-size: 12px;
+      font-weight: 820;
+      letter-spacing: 0.04em;
+    }
+
+    .section:not(#review-section) > .section-head {
+      display: none;
+    }
+
+    .section-note {
+      color: var(--muted);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    #term-count {
+      display: none;
+    }
+
+    #event-count {
+      display: none;
+    }
+
+    .card-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .light-card {
+      border: 1px solid rgba(29, 26, 22, 0.10);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: rgba(255, 253, 250, 0.88);
+      box-shadow: var(--shadow);
+    }
+
+    .light-card > summary {
+      position: relative;
+      min-height: 190px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 16px;
+      padding: 22px 19px 18px;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .card-list .light-card:first-child > summary {
+      min-height: 210px;
+    }
+
+    .light-card > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .card-kicker {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+      color: var(--rose);
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.25;
+      letter-spacing: 0.02em;
+    }
+
+    .card-title {
+      display: block;
+      color: var(--ink);
+      font-family: Georgia, "Songti SC", "STSong", serif;
+      font-size: 29px;
+      font-weight: 760;
+      line-height: 1.08;
+      overflow-wrap: anywhere;
+    }
+
+    .card-teaser {
+      display: grid;
+      gap: 7px;
+      margin-top: 15px;
+      color: #5d5245;
+      font-size: 15px;
+      font-weight: 420;
+      line-height: 1.66;
+    }
+
+    .teaser-main,
+    .teaser-detail {
+      display: block;
+    }
+
+    .teaser-main {
+      color: #42382d;
+      font-weight: 620;
+    }
+
+    .teaser-detail {
+      color: #746d63;
+      font-size: 14px;
+      line-height: 1.62;
+    }
+
+    .open-dot {
+      position: relative;
+      width: 44px;
+      height: 38px;
+      display: block;
+      border-radius: 15px;
+      color: #b95f38;
+      background: rgba(185, 95, 56, 0.08);
+      transition: transform 180ms ease, background 180ms ease;
+    }
+
+    .open-dot::before {
+      content: "";
+      position: absolute;
+      left: 14px;
+      top: 18px;
+      width: 17px;
+      height: 15px;
+      border-radius: 12px 12px 9px 9px;
+      background: #c86d42;
+      box-shadow: inset 0 -3px 0 rgba(94, 48, 30, 0.13);
+      transform: rotate(-6deg);
+    }
+
+    .open-dot::after {
+      content: "";
+      position: absolute;
+      left: 12px;
+      top: 10px;
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #f8dfc7;
+      box-shadow: 9px -3px 0 #f8dfc7, 18px 0 0 #f8dfc7;
+    }
+
+    details[open] .open-dot {
+      background: rgba(185, 95, 56, 0.14);
+      color: #9e4f30;
+    }
+
+    .card-body {
+      display: grid;
+      gap: 14px;
+      padding: 0 19px 19px;
+      color: #4e4538;
+      font-size: 14px;
+      line-height: 1.64;
+    }
+
+    .card-body p {
+      margin: 0;
+    }
+
+    .back-block {
+      display: grid;
+      gap: 8px;
+      border-top: 1px solid rgba(33, 29, 24, 0.10);
+      padding-top: 14px;
+    }
+
+    .back-block p {
+      margin: 0;
+    }
+
+    .back-label {
+      color: #a84d41;
+      font-size: 12px;
+      font-weight: 820;
+      line-height: 1.25;
+    }
+
+    .back-text {
+      color: #2f2a24;
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.76;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .learn-action {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border-top: 1px solid rgba(33, 29, 24, 0.10);
+      padding-top: 14px;
+    }
+
+    .learn-button {
+      order: 2;
+      width: 48px;
+      height: 44px;
+      flex: 0 0 auto;
+      position: relative;
+      display: block;
+      border: 1px solid rgba(185, 95, 56, 0.20);
+      border-radius: 14px;
+      color: #9e4f30;
+      background: linear-gradient(180deg, rgba(255, 246, 235, 0.96), rgba(185, 95, 56, 0.10));
+      box-shadow: 0 8px 18px rgba(185, 95, 56, 0.08);
+    }
+
+    .learn-button::before {
+      content: "";
+      position: absolute;
+      left: 10px;
+      top: 17px;
+      z-index: 1;
+      width: 28px;
+      height: 20px;
+      border-radius: 15px 15px 11px 11px;
+      background: #c86d42;
+      box-shadow: inset 0 -3px 0 rgba(94, 48, 30, 0.15);
+      transform: rotate(-6deg);
+    }
+
+    .learn-button::after {
+      content: "";
+      position: absolute;
+      left: 10px;
+      top: 9px;
+      z-index: 1;
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #d9753f;
+      box-shadow: 11px -3px 0 #d9753f, 22px 0 0 #d9753f;
+    }
+
+    .learn-yes {
+      position: absolute;
+      left: 50%;
+      top: 23px;
+      z-index: 2;
+      transform: translateX(-50%) rotate(-6deg);
+      color: #fff8ee;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      line-height: 1;
+      text-shadow: 0 1px 0 rgba(94, 48, 30, 0.16);
+      pointer-events: none;
+    }
+
+    .learn-button.is-done {
+      border-color: rgba(37, 98, 74, 0.18);
+      color: var(--green);
+      background: linear-gradient(180deg, rgba(247, 252, 248, 0.96), rgba(37, 98, 74, 0.10));
+      box-shadow: 0 8px 18px rgba(37, 98, 74, 0.08);
+    }
+
+    .learn-button.is-done::before,
+    .learn-button.is-done::after {
+      background: var(--green);
+      box-shadow: inset 0 -3px 0 rgba(24, 70, 52, 0.12);
+    }
+
+    .learn-button.is-done::after {
+      box-shadow: 9px -3px 0 var(--green), 18px 0 0 var(--green);
+    }
+
+    .learn-copy {
+      order: 1;
+      display: grid;
+      gap: 2px;
+      flex: 1;
+      color: #332d24;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .learn-copy strong {
+      color: #242019;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 13px;
+      font-weight: 760;
+      letter-spacing: 0;
+    }
+
+    .learn-copy strong.is-soft {
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 760;
+      letter-spacing: 0;
+    }
+
+    .learn-copy span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .learn-plus {
+      margin-left: 4px;
+      color: #b95f38;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 22px;
+      font-weight: 820;
+      letter-spacing: 0.02em;
+      vertical-align: -2px;
+    }
+
+    .chip {
+      border: 1px solid rgba(33, 29, 24, 0.12);
+      border-radius: 999px;
+      padding: 5px 8px;
+      color: var(--muted);
+      background: rgba(255, 250, 240, 0.72);
+      font-size: 11px;
+      text-decoration: none;
+    }
+
+    .related-more {
+      border-top: 1px solid rgba(33, 29, 24, 0.08);
+      padding-top: 11px;
+    }
+
+    .related-more summary {
+      display: inline-flex;
+      min-height: auto;
+      padding: 0;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 780;
+      line-height: 1.4;
+      list-style: none;
+    }
+
+    .related-more summary:focus {
+      outline: 0;
+    }
+
+    .related-more summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .related-more summary::after {
+      content: "⌄";
+      margin-left: 5px;
+      color: rgba(118, 108, 94, 0.74);
+    }
+
+    .related-more[open] summary::after {
+      content: "⌃";
+    }
+
+    .related-more .chips {
+      margin-top: 9px;
+    }
+
+    .year-pill {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      border-radius: 999px;
+      border: 1px solid rgba(33, 29, 24, 0.16);
+      padding: 4px 9px;
+      color: #6f6253;
+      background: rgba(255, 250, 240, 0.72);
+      font-size: 11px;
+      font-weight: 760;
+      letter-spacing: 0.02em;
+    }
+
+    .timeline-card .card-kicker {
+      justify-content: flex-end;
+      margin-bottom: 16px;
+    }
+
+    .timeline-card .card-title {
+      margin-top: 0;
+      padding-right: 0;
+    }
+
+    .timeline-card .card-teaser {
+      margin-top: 18px;
+    }
+
+    .loading {
+      padding: 18px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .footer-space {
+      height: 18px;
+    }
+
+    .learn-toast {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      z-index: 20;
+      min-width: 172px;
+      max-width: min(320px, calc(100vw - 36px));
+      transform: translate(-50%, 18px);
+      border: 1px solid rgba(33, 29, 24, 0.13);
+      border-radius: 999px;
+      padding: 10px 14px;
+      color: var(--paper-soft);
+      background: rgba(33, 29, 24, 0.92);
+      box-shadow: var(--shadow);
+      font-size: 13px;
+      font-weight: 760;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms ease, transform 220ms ease;
+    }
+
+    .learn-toast.is-visible {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .win-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(246, 243, 237, 0.74);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms ease;
+    }
+
+    .win-layer.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .win-card {
+      width: min(100%, 360px);
+      border: 1px solid rgba(29, 26, 22, 0.11);
+      border-radius: 24px;
+      padding: 24px 20px 18px;
+      background: rgba(255, 253, 250, 0.94);
+      box-shadow: 0 24px 70px rgba(28, 22, 15, 0.16);
+      text-align: center;
+      transform: translateY(10px) scale(0.98);
+      transition: transform 240ms ease;
+    }
+
+    .win-layer.is-visible .win-card {
+      transform: translateY(0) scale(1);
+    }
+
+    .win-mascot {
+      width: 112px;
+      height: 112px;
+      margin: -4px auto 6px;
+      display: block;
+      object-fit: contain;
+    }
+
+    .win-kicker {
+      margin: 0 0 5px;
+      color: #b95f38;
+      font-size: 12px;
+      font-weight: 840;
+      letter-spacing: 0.08em;
+    }
+
+    .win-title {
+      margin: 0;
+      color: var(--ink);
+      font-family: Georgia, "Songti SC", "STSong", serif;
+      font-size: 30px;
+      line-height: 1.12;
+    }
+
+    .win-copy {
+      margin: 10px auto 0;
+      max-width: 280px;
+      color: #5f574e;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .win-list {
+      display: grid;
+      gap: 7px;
+      margin: 15px 0 0;
+      padding: 0;
+      list-style: none;
+      text-align: left;
+    }
+
+    .win-list li {
+      border: 1px solid rgba(29, 26, 22, 0.08);
+      border-radius: 13px;
+      padding: 9px 10px;
+      color: #373029;
+      background: rgba(246, 243, 237, 0.58);
+      font-size: 13px;
+      font-weight: 650;
+      line-height: 1.38;
+    }
+
+    .win-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .win-button {
+      min-height: 40px;
+      border: 1px solid rgba(29, 26, 22, 0.13);
+      border-radius: 14px;
+      color: var(--ink);
+      background: rgba(255, 253, 250, 0.74);
+      font-size: 13px;
+      font-weight: 820;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .win-button.primary {
+      color: var(--paper-soft);
+      border-color: #b95f38;
+      background: #b95f38;
+    }
+
+    .record-entry {
+      position: fixed;
+      right: 14px;
+      bottom: 16px;
+      z-index: 18;
+      width: 52px;
+      height: 46px;
+      display: grid;
+      gap: 1px;
+      place-items: center;
+      border: 1px solid rgba(33, 29, 24, 0.14);
+      border-radius: 15px;
+      color: var(--blue);
+      background: rgba(255, 250, 240, 0.88);
+      box-shadow: 0 10px 24px rgba(41, 33, 24, 0.10);
+      font-weight: 860;
+      text-decoration: none;
+      backdrop-filter: blur(12px);
+    }
+
+    .record-entry strong {
+      display: block;
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .record-entry span {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1;
+    }
+
+    @media (min-width: 720px) {
+      body {
+        background:
+          radial-gradient(circle at 14% 0%, rgba(216, 166, 50, 0.20), transparent 30%),
+          linear-gradient(90deg, #eee7d9 0%, #fbf7ee 18%, #fbf7ee 82%, #eee7d9 100%);
+      }
+
+      .phone-page {
+        padding-top: 12px;
+      }
+
+      .light-card {
+        border-radius: 26px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="phone-page">
+    <div class="actionbar" aria-label="切换卡片">
+      <button class="soft-button primary" id="next-event" type="button">换一段历史</button>
+      <button class="soft-button" id="next-term" type="button">换一个词</button>
+    </div>
+
+    <section class="section is-hidden" id="review-section" aria-label="到期回看">
+      <div class="section-head">
+        <h2 class="section-title">该回看</h2>
+        <span class="section-note" id="review-count">0 张</span>
+      </div>
+      <div class="card-list" id="review-list"></div>
+    </section>
+
+    <section class="section" aria-label="时间轴轻卡">
+      <div class="section-head">
+        <h2 class="section-title">时间轴</h2>
+        <span class="section-note" id="event-count">读取中</span>
+      </div>
+      <div class="card-list" id="event-list">
+        <div class="light-card loading">正在装载时间轴卡片。</div>
+      </div>
+    </section>
+
+    <section class="section" aria-label="词典轻卡">
+      <div class="section-head">
+        <h2 class="section-title">词卡</h2>
+        <span class="section-note" id="term-count">读取中</span>
+      </div>
+      <div class="card-list" id="term-list">
+        <div class="light-card loading">正在装载词典卡片。</div>
+      </div>
+    </section>
+
+    <div class="footer-space"></div>
+  </main>
+  <a class="record-entry" href="ai-learning-record.html" aria-label="查看学习记录">
+    <strong id="record-count">0</strong>
+    <span>记录</span>
+  </a>
+  <div class="learn-toast" id="learn-toast" role="status" aria-live="polite"></div>
+  <div class="win-layer" id="win-layer" role="dialog" aria-modal="true" aria-labelledby="win-title">
+    <section class="win-card">
+      <img class="win-mascot" src="assets/red-panda-mascot-soft-popup-512.png?v=20260609-soft" alt="" aria-hidden="true">
+      <p class="win-kicker" id="win-kicker">今日完成</p>
+      <h2 class="win-title" id="win-title">今天很可以</h2>
+      <p class="win-copy" id="win-copy">你刚刚点亮了一张 AI 卡。</p>
+      <ul class="win-list" id="win-list"></ul>
+      <div class="win-actions">
+        <a class="win-button" href="ai-learning-record.html">看记录</a>
+        <button class="win-button primary" id="win-close" type="button">继续学习</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const learnedStorageKey = "ai-mobile-learned-v1";
+
+    const state = {
+      terms: [],
+      events: [],
+      termOffset: 0,
+      eventOffset: 0,
+      termPinnedId: "",
+      eventPinnedId: "",
+      toastTimer: null
+    };
+
+    const reviewIntervals = new Set([1, 3, 7, 15, 30]);
+
+    const calmCategories = new Set([
+      "基础概念",
+      "Agent 与工作流",
+      "Agent 工程",
+      "AI 历史",
+      "提示词与推理",
+      "数据与检索",
+      "产品与应用"
+    ]);
+
+    const openingTermOrder = [
+      "AI Agent",
+      "Agentic Workflow",
+      "Loops",
+      "Computer Use",
+      "Tool Calling",
+      "MCP",
+      "Context Engineering",
+      "Deep Research",
+      "OpenClaw",
+      "Claude Code",
+      "Codex",
+      "AI Browser",
+      "Operator",
+      "Cursor",
+      "RAG",
+      "Context Window",
+      "Hallucination",
+      "Multi-Agent Collaboration",
+      "Orchestration",
+      "Routing",
+      "Fan-out",
+      "Fan-in",
+      "Scaling Law",
+      "Jaggedness",
+      "Extrapolation",
+      "Scaling Loss",
+      "Frontier-Level Intelligence",
+      "Hermes",
+      "Co-Scientist",
+      "AlphaEvolve",
+      "Multi-Agent Collaboration",
+      "Orchestration",
+      "Routing",
+      "Fan-in",
+      "Fan-out",
+      "Sandbox",
+      "Reflection",
+      "Chain-of-Thought",
+      "Reasoning Model",
+      "Tree-of-Thought",
+      "SWE-bench",
+      "Multimodal",
+      "Backpropagation",
+      "Geoffrey Hinton",
+      "Ilya Sutskever",
+      "AlexNet",
+      "GPU",
+      "Loss Function",
+      "AI Search",
+      "NotebookLM",
+      "LLM",
+      "ChatGPT",
+      "Prompt Engineering",
+      "Transformer",
+      "Attention Mechanism",
+      "Tokenizer",
+      "Fine-tuning",
+      "RLHF"
+    ];
+
+    const openingEventOrder = [
+      "Deep Research 发布",
+      "Claude Code 进入正式编程工作流",
+      "Codex 云端 Agent 进入软件工程工作流",
+      "Codex 云端 Agent 发布",
+      "ChatGPT Atlas 浏览器发布",
+      "Claude Computer Use 进入公开测试",
+      "Hermes Agent 进入自我改进 Agent 线索",
+      "OpenClaw 进入开源个人 Agent 线索",
+      "OpenClaw 作为开源个人 Agent 线索进入待审",
+      "Co-Scientist 进入科研 Agent 叙事",
+      "AlphaEvolve 发布",
+      "AlphaFold2 震动生物学",
+      "ChatGPT Plugins 开启工具调用探索",
+      "Code Interpreter 让 ChatGPT 处理文件与数据",
+      "Codex 接入 ChatGPT 移动端",
+      "GPT-5-Codex 进入开发者工作流",
+      "Codex CLI 开源",
+      "Codex 编程 Agent 产品线成形",
+      "ChatGPT Apps 与 Apps SDK 推出",
+      "Claude Sonnet 4.5 强化编码 Agent",
+      "Claude Opus 4.5 面向高难编码与代理任务",
+      "Claude Code Security 研究预览",
+      "Claude Design 研究预览",
+      "GPT-5.4 强化专业工作与计算机使用",
+      "GPT-5.3-Codex 发布",
+      "GPT-5.1 更新对话体验与自适应推理",
+      "GPT-5.2 面向多场景版本分层",
+      "实时语音多模态成熟",
+      "4o 图像生成上线",
+      "AI 办公全面嵌入",
+      "聊天转向工作流自动化",
+      "RAG 路线兴起",
+      "RLHF 成主流后训练",
+      "GitHub Copilot 公测",
+      "GPT-3 论文",
+      "Stable Diffusion 公开",
+      "DALL·E 发布",
+      "CLIP 发布",
+      "AlphaGo 胜李世石",
+      "AlphaGo 击败李世石",
+      "ChatGPT 发布"
+    ];
+
+    const quietOpeningTerms = new Set([
+      "AI Content Filter",
+      "AI Detection Reduction",
+      "Student",
+      "Warren McCulloch",
+      "What is a natural language autoencoder?",
+      "上下文窗口",
+      "思维链",
+      "GPT-5.5",
+      "DeepSeek-R1",
+      "Claude 4",
+      "Claude Fable 5",
+      "Claude Mythos 5",
+      "Gemini 2.5",
+      "Qwen3",
+      "Sora"
+    ].map(normalizeSearchName));
+
+    const quietOpeningTermIds = new Set([
+      "term-bb074b86a98f",
+      "term-56cd05fd1f34"
+    ]);
+
+    const quietOpeningEventPatterns = [
+      /student/i,
+      /gpt-4/i,
+      /gpt-5/i,
+      /deepseek-r1/i,
+      /claude 4/i,
+      /claude fable/i,
+      /claude mythos/i,
+      /gemini 2\.5/i,
+      /qwen3/i,
+      /sora/i,
+      /evals?/i,
+      /system card/i,
+      /系统卡/,
+      /评测框架/,
+      /医学诊断/,
+      /专家系统/
+    ];
+
+    const openingTermTeasers = {
+      "AI Agent": "AI 不再只回答你，它开始接任务、拆步骤、调工具、交付结果。",
+      "Agentic Workflow": "把目标交给 AI 后，它怎样拆步骤、用工具、看结果？",
+      "Loops": "高手已经不满足于写提示词了。他们开始给 Agent 搭循环，让它自己反复干活、检查、修正。",
+      "Computer Use": "AI 开始真的看屏幕、点按钮、填表单。",
+      "Tool Calling": "模型什么时候该开口回答，什么时候该伸手调用工具？",
+      "MCP": "如果每个工具都要单独接线，Agent 系统很快就会乱套。",
+      "Context Engineering": "Agent 真正厉害之前，先要把上下文喂得像一张作战地图。",
+      "Scaling Law": "前沿实验室真正赌的，是小实验能不能外推到大模型。",
+      "Scaling Loss": "看大模型值不值得继续烧钱，先看 loss 曲线还降不降。",
+      "Extrapolation": "先在小模型上看规律，再判断大模型会不会继续有效。",
+      "Frontier-Level Intelligence": "前沿智能不是聊天更顺，而是能力边界还能不能往外推。",
+      "Jaggedness": "AI 能力像锯齿海岸线：有的地方很强，有的地方突然粗糙。",
+      "Context Window": "AI 眼前能摊多少资料，决定它能走多远。",
+      "Hallucination": "AI 说得越顺，越要问一句：证据在哪？",
+      "RAG": "让 AI 回答前先翻资料，能把胡说的概率压下去。",
+      "Deep Research": "把一个复杂问题丢给 AI，它会自己查资料、比来源、写报告。",
+      "OpenClaw": "以前 AI 只在聊天框里回话；龙虾让 Agent 长出手脚，开始接消息、看电脑、调工具。",
+      "Claude Code": "让 AI 住进终端和仓库，软件开发会变成什么样？",
+      "Codex": "代码任务交给 Agent 后，可以从补全一行推进到完整流程。",
+      "AI Browser": "浏览器从信息入口，变成 AI 替你办事的操作台。",
+      "Operator": "AI 代你操作网页时，最刺激也最危险的边界在哪里？",
+      "Cursor": "当编辑器开始懂整个代码库，写代码会变成怎样？",
+      "Hermes": "一个会记忆、会用 Skill、会自我改进的 Agent，会长成什么样？",
+      "Co-Scientist": "AI 开始帮科学家提假设、找证据、设计下一步实验。",
+      "AlphaEvolve": "AI 开始写答案，也开始改进算法本身。",
+      "Multi-Agent Collaboration": "一个 Agent 不够时，让一组 Agent 分工协作会发生什么？",
+      "Orchestration": "真正的 Agent 系统，核心是后台调度和分工。",
+      "Routing": "同一个任务，应该交给哪个模型、哪条工具链、哪个 Agent？",
+      "Fan-in": "多个 Agent 分头做完，最后怎么把结果汇成一个判断？",
+      "Fan-out": "一个问题拆成多路并行，AI 才开始像团队一样工作。",
+      "Sandbox": "让 AI 动手之前，先给它一个摔不坏东西的试验场。",
+      "Reflection": "让 AI 做完先回头检查一遍，很多任务才开始像工作流。",
+      "Chain-of-Thought": "让模型写出思路，有时是解法，有时也会暴露风险。",
+      "Reasoning Model": "推理模型的重点，是愿意慢下来想。",
+      "Tree-of-Thought": "一条思路走不通时，让 AI 同时试几条路。",
+      "SWE-bench": "判断编程 Agent 有没有真本事，不能只看演示，要看真实 issue。",
+      "Multimodal": "AI 离开聊天框后，第一件事是学会看图、听声、懂视频。",
+      "Backpropagation": "让神经网络自己改参数，深度学习才真正跑起来。",
+      "Geoffrey Hinton": "他把神经网络从冷门信念守到爆发，又开始提醒风险。",
+      "Ilya Sutskever": "从 Hinton 学生到 OpenAI 核心人物，他串起了深度学习和前沿模型。",
+      "AlexNet": "那一刻，GPU、数据和深度网络突然合到一起，AI 路线改道。",
+      "GPU": "AI 不是只靠聪明算法，也靠能把矩阵乘法堆成工业能力的机器。",
+      "Loss Function": "模型训练里的扣分表：哪里错、错多少，下一轮就往哪里改。",
+      "GPT-5.5": "前沿模型竞争进入系统能力阶段。",
+      "DeepSeek-R1": "推理模型突然变成开源世界的主战场。",
+      "Claude 4": "长任务、代码和 Agent，正在把模型拉进真实工作。",
+      "Claude Fable 5": "Anthropic 把 Mythos-class 能力做成公开版，但安全护栏也一起上场。",
+      "Claude Mythos 5": "同一底层强模型，给可信网络防御场景打开更窄也更重的通道。",
+      "Gemini 2.5": "会先思考再回答的模型，正在改变复杂任务的节奏。",
+      "Qwen3": "开源模型继续追赶，也在重塑中文和开发者生态。",
+      "Sora": "视频生成让 AI 从写句子，走向制造连续世界。",
+      "AI Search": "搜索开始把答案和证据组织起来。",
+      "NotebookLM": "把一堆资料交给 AI，它能不能变成你的研究搭子？"
+    };
+
+    const eventHooks = {
+      "Deep Research 发布": "AI 开始像研究员一样连续检索、读来源、交付报告。",
+      "Claude Code 进入正式编程工作流": "终端里的 Agent 开始接手真实仓库里的长任务。",
+      "Codex 云端 Agent 进入软件工程工作流": "代码任务被搬到云端，AI 可以排队改、跑、验。",
+      "Codex 云端 Agent 发布": "编程助手从聊天窗口，走进可执行的软件工程流水线。",
+      "ChatGPT Atlas 浏览器发布": "浏览器成为 Agent 的入口，AI 离真实网页操作更近了。",
+      "Claude Computer Use 进入公开测试": "AI 第一次公开走向看屏幕、点按钮、操作软件。",
+      "Hermes Agent 进入自我改进 Agent 线索": "一个会记忆、会调用 Skill、会复盘自己的 Agent 线索出现了。",
+      "OpenClaw 进入开源个人 Agent 线索": "以前 AI 多半待在 Chatbox 里回话；龙虾让 Agent 长出手脚，开始接消息、看电脑、调工具。",
+      "OpenClaw 作为开源个人 Agent 线索进入待审": "这条待审线索真正要看的是：AI 能不能从聊天窗口走到你的电脑、消息和工具里。",
+      "Co-Scientist 进入科研 Agent 叙事": "AI 开始参与科学假设、资料检索和实验设计。",
+      "AlphaEvolve 发布": "AI 开始用模型帮助发现和改进算法本身。",
+      "GPT-5.5 发布": "前沿竞争进入系统阶段：模型、工具、Agent 和工作流绑在一起。",
+      "DeepSeek-R1 引爆推理模型竞争": "推理模型和开放权重，把前沿模型竞争突然改了节奏。",
+      "DeepSeek-R1 发布": "一条更开放、更强调推理的模型路线打到台前。",
+      "Sora 公布": "文本开始变成连续视频，生成式 AI 的想象力突然有了画面。",
+      "Qwen3 发布": "国产开源模型继续往推理、代码和多语言生态推进。",
+      "Claude 4 发布": "Claude 把长任务、代码和 Agent 能力推到更前面。",
+      "Claude Fable 5 与 Mythos 5 发布": "强模型开始分成公开版和可信访问版，能力和安全边界一起发布。",
+      "Gemini 2.5 Pro 公布": "thinking 模型开始成为复杂任务的主角。",
+      "Bombe 加速破译 Enigma": "密码太多，人算不过来，机器能不能帮人快速筛答案？",
+      "人工神经元模型": "如果神经元像开关一样连接，机器能不能模拟一点点思考？",
+      "《行为、目的与目的论》发表": "一个系统偏离目标后，怎样靠反馈把自己拉回来？",
+      "Theseus 迷宫鼠演示机器记忆": "一只机器鼠走过迷宫后，能不能记住下一次怎么走？",
+      "图灵发表机器能思考吗": "如果你分不清对面是人还是机器，这算不算智能？",
+      "达特茅斯会议提出 AI": "一群人第一次把“人工智能”作为共同研究目标摆上桌。",
+      "感知机发布": "机器能不能从例子里学会识别一个模式？",
+      "ELIZA 聊天程序": "只靠简单规则，机器也能让人产生被理解的感觉吗？",
+      "反向传播重新点燃神经网络": "让机器自己调参数，学习会不会变得更有效？",
+      "Transformer 论文发表": "如果模型能更好地看见上下文，语言理解会发生什么变化？",
+      "STUDENT 把英文应用题变成方程": "机器能不能读懂一道英文数学题，再把它变成方程？",
+      "RAND Tablet 开启手写图形输入": "如果电脑能接收手写和图形，人机交互会不会自然很多？",
+      "DENDRAL 开启专家系统路线": "把化学专家的判断写进程序，机器能不能像专家一样分析问题？",
+      "AlphaFold 初显潜力": "AI 开始预测蛋白质结构，科学发现有了新的计算路线。",
+      "AlphaFold2 震动生物学": "AI 真的碰到了生命科学的硬问题：蛋白质会折成什么形状？",
+      "GLUE 基准": "大家终于能用同一套题比较语言模型，模型进步开始变得可量化。",
+      "V100 成训练主力": "大模型的成长同时依赖算法和越来越强的 GPU 训练底座。",
+      "Medical Diagnosis | 医学诊断": "AI 进入医学诊断时，真正的问题是：它能帮医生少漏掉什么？"
+    };
+
+    const eventScenes = {
+      "OpenClaw 进入开源个人 Agent 线索": "龙虾之前，AI 多半待在 Chatbox 里回话；龙虾之后，Agent 开始接消息、看电脑、连浏览器、文件和脚本，把聊天变成可执行任务。",
+      "OpenClaw 作为开源个人 Agent 线索进入待审": "这里先不押注夸张数字，只看生产力入口：个人 Agent 能不能接消息、看电脑、调工具，把日常流程真的跑起来。"
+    };
+
+    const eventDetails = {
+      "AlphaFold 初显潜力": "重点是蛋白质结构预测：AI 开始帮助科学家推断看不见的三维形状。",
+      "AlphaFold2 震动生物学": "它把大量生物数据和深度学习组织成工具，改变了结构生物学的工作节奏。",
+      "GLUE 基准": "NLP 模型从“各说各的厉害”，进入同一套题目上公开比较的阶段。",
+      "V100 成训练主力": "V100 这类硬件让深度学习训练变得更快、更可规模化，模型能力才有继续放大的空间。",
+      "STUDENT 把英文应用题变成方程": "它读的是受限英文题目，做的是把文字关系转成代数方程。",
+      "RAND Tablet 开启手写图形输入": "这条线后来会通向更自然的人机交互：手写、画图、触控。",
+      "DENDRAL 开启专家系统路线": "早期 AI 的一个信念是：把专家知识写成规则，机器就能在窄领域帮忙判断。",
+      "Bombe 加速破译 Enigma": "它属于早期计算史，把复杂符号问题交给机器高速筛选。",
+      "人工神经元模型": "复杂大脑被拆成输入、判断、输出的小单元，神经网络有了第一块积木。"
+    };
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function shortText(value, limit = 92) {
+      const text = String(value || "").replace(/\s+/g, " ").trim();
+      if (text.length <= limit) return text;
+      return `${text.slice(0, limit - 1)}…`;
+    }
+
+    function slug(value) {
+      return String(value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9\u4e00-\u9fa5_-]/g, "")
+        .slice(0, 64);
+    }
+
+    function splitReadable(value, limit = 86) {
+      const blocks = String(value || "")
+        .split(/\n+/)
+        .map(item => item.trim())
+        .filter(Boolean);
+      const pieces = [];
+      blocks.forEach(block => {
+        const sentences = block
+          .split(/(?<=[。！？；])/)
+          .map(item => item.trim())
+          .filter(Boolean);
+        let current = "";
+        sentences.forEach(sentence => {
+          if ((current + sentence).length > limit && current) {
+            pieces.push(current);
+            current = sentence;
+          } else {
+            current += sentence;
+          }
+        });
+        if (current) pieces.push(current);
+      });
+      return pieces.slice(0, 5);
+    }
+
+    function firstReadable(value, limit = 76) {
+      const first = splitReadable(value, limit)[0] || String(value || "").trim();
+      return shortText(first, limit);
+    }
+
+    function readableAt(value, index = 0, limit = 76) {
+      const pieces = splitReadable(value, limit);
+      return shortText(pieces[index] || pieces[0] || value || "", limit);
+    }
+
+    function cleanLead(value) {
+      return String(value || "")
+        .replace(/^为何重要[:：]\s*/, "")
+        .replace(/^背后现场[:：]\s*/, "")
+        .replace(/^这件事的背景是[:：]\s*/, "")
+        .trim();
+    }
+
+    function frontLine(primary, fallback, limit = 84) {
+      return shortText(cleanLead(firstReadable(primary, limit) || firstReadable(fallback, limit)), limit);
+    }
+
+    function isThinLine(text, title = "") {
+      const value = cleanLead(text);
+      if (!value) return true;
+      const titleCore = String(title).replace(/[|｜].*$/, "").trim();
+      const genericWords = ["展示显著突破", "取得突破性表现", "成为", "推动", "显示潜力"];
+      if (titleCore && value.includes(titleCore) && genericWords.some(word => value.includes(word))) return true;
+      return value.length < 18;
+    }
+
+    function concreteLineFromEvent(event, limit = 78) {
+      const candidates = splitReadable(`${event.summary}\n${event.why}`, 92)
+        .map(cleanLead)
+        .filter(item => !isThinLine(item, event.title));
+      return shortText(candidates[0] || eventDetails[event.title] || event.why || event.summary, limit);
+    }
+
+    function teaserHTML(main, detail = "") {
+      const safeMain = escapeHTML(shortText(main, 88));
+      const safeDetail = detail ? `<span class="teaser-detail">${escapeHTML(shortText(detail, 78))}</span>` : "";
+      return `<span class="card-teaser"><span class="teaser-main">${safeMain}</span>${safeDetail}</span>`;
+    }
+
+    function dailyOffset(total, step, salt) {
+      if (!total) return 0;
+      const day = Math.floor(Date.now() / 86400000);
+      const maxStart = Math.max(1, total - step);
+      return (day * salt) % maxStart;
+    }
+
+    function todayKey() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function dayNumber(dateKeyValue) {
+      return Math.floor(new Date(`${dateKeyValue}T00:00:00`).getTime() / 86400000);
+    }
+
+    function readLearned() {
+      try {
+        const raw = JSON.parse(localStorage.getItem(learnedStorageKey) || "{}");
+        Object.keys(raw).forEach(date => {
+          if (!Array.isArray(raw[date])) {
+            raw[date] = [];
+            return;
+          }
+          raw[date] = raw[date].map(item => {
+            if (typeof item === "string") {
+              return { id: item, title: item, type: "记录", learnedAt: "" };
+            }
+            return item;
+          });
+        });
+        return raw;
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function learnedIdSet() {
+      const ids = new Set();
+      Object.values(readLearned()).forEach(items => {
+        if (!Array.isArray(items)) return;
+        items.forEach(item => {
+          if (item?.id) ids.add(item.id);
+        });
+      });
+      return ids;
+    }
+
+    function newItems(items) {
+      const learned = learnedIdSet();
+      const fresh = items.filter(item => !learned.has(item.id));
+      return fresh.length ? fresh : items;
+    }
+
+    function sliceLoop(items, offset, size) {
+      if (!items.length) return [];
+      return Array.from({ length: Math.min(size, items.length) }, (_, index) => {
+        return items[(offset + index) % items.length];
+      });
+    }
+
+    function listWithPinned(items, pinnedId, offset, size) {
+      const pool = newItems(items);
+      const pinned = items.find(item => item.id === pinnedId);
+      if (!pinned) return sliceLoop(pool, offset, size);
+      const rest = pool.filter(item => item.id !== pinned.id);
+      return [pinned, ...sliceLoop(rest, offset, size - 1)].slice(0, size);
+    }
+
+    function writeLearned(value) {
+      localStorage.setItem(learnedStorageKey, JSON.stringify(value));
+    }
+
+    function updateRecordEntry() {
+      const count = readLearned()[todayKey()]?.length || 0;
+      const node = document.getElementById("record-count");
+      if (node) node.textContent = count;
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("learn-toast");
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.add("is-visible");
+      window.clearTimeout(state.toastTimer);
+      state.toastTimer = window.setTimeout(() => {
+        toast.classList.remove("is-visible");
+      }, 1700);
+    }
+
+    function showWinMoment(todayItems) {
+      const count = todayItems.length;
+      if (count !== 1 && count % 3 !== 0) return;
+
+      const layer = document.getElementById("win-layer");
+      const title = document.getElementById("win-title");
+      const copy = document.getElementById("win-copy");
+      const list = document.getElementById("win-list");
+      if (!layer || !title || !copy || !list) return;
+
+      title.textContent = count === 1 ? "第一张已点亮" : `${count} 张轻卡完成`;
+      copy.textContent = count === 1
+        ? "今天已经开始对 AI 多了解一点。"
+        : `你对 AI 世界的了解又多了 ${count} 个点。`;
+      list.innerHTML = todayItems.slice(-3).map(item =>
+        `<li>${escapeHTML(item.title || item.id)}</li>`
+      ).join("");
+      window.setTimeout(() => layer.classList.add("is-visible"), 120);
+    }
+
+    function closeWinMoment() {
+      document.getElementById("win-layer")?.classList.remove("is-visible");
+    }
+
+    function markLearned(cardId, title, type = "卡片") {
+      if (!cardId) return;
+      const today = todayKey();
+      const learned = readLearned();
+      const todayItems = Array.isArray(learned[today]) ? learned[today] : [];
+      if (todayItems.some(item => item.id === cardId)) return;
+      todayItems.push({
+        id: cardId,
+        title: title || cardId,
+        type,
+        learnedAt: new Date().toISOString()
+      });
+      learned[today] = todayItems;
+      writeLearned(learned);
+      updateRecordEntry();
+      renderReviews();
+      const count = todayItems.length;
+      const label = count === 1 ? "今天对 AI 多了解了 1%" : `今天已点亮 ${count} 张卡`;
+      showToast(label);
+      showWinMoment(todayItems);
+      document.querySelectorAll(`[data-learn-id="${CSS.escape(cardId)}"]`).forEach(button => {
+        button.classList.add("is-done");
+        const action = button.closest(".learn-action");
+        const strong = action?.querySelector(".learn-copy strong");
+        const note = action?.querySelector(".learn-copy span");
+        if (strong) strong.textContent = "今天多懂了一点";
+        if (strong) strong.classList.add("is-soft");
+        if (note) note.textContent = "已经记进今天的学习记录。";
+      });
+    }
+
+    function renderBackBlock(label, value, limit = 86, maxPieces = 1) {
+      const pieces = splitReadable(value, limit).slice(0, maxPieces);
+      if (!pieces.length) return "";
+      return `
+        <section class="back-block">
+          <span class="back-label">${escapeHTML(label)}</span>
+          ${pieces.map(text => `<p class="back-text">${escapeHTML(cleanLead(text))}</p>`).join("")}
+        </section>
+      `;
+    }
+
+    async function loadJSON(path) {
+      const separator = path.includes("?") ? "&" : "?";
+      const response = await fetch(`${path}${separator}v=${Date.now()}`, { cache: "no-store" });
+      if (!response.ok) throw new Error(`${path} failed`);
+      return response.json();
+    }
+
+    function normalizeTerm(term) {
+      return {
+        term: term.term || "",
+        termZh: term.term_zh || "",
+        category: term.category || "AI 词条",
+        id: `term-${slug(term.id || term.term || term.term_zh)}`,
+        short: term.definition_short || term.front || "",
+        why: term.why_it_matters || "",
+        example: term.example || (Array.isArray(term.examples) ? term.examples[0] : "") || "",
+        hook: term.memory_hook || term.back || "",
+        related: Array.isArray(term.related_terms) ? term.related_terms.slice(0, 4) : []
+      };
+    }
+
+    function openingTermRank(term) {
+      if (quietOpeningTermIds.has(term.id)) return 900;
+      const names = [term.term, term.termZh, displayTermTitle(term)].map(normalizeSearchName);
+      const featuredIndex = openingTermOrder.findIndex(name => names.includes(normalizeSearchName(name)));
+      if (featuredIndex >= 0) return featuredIndex;
+      if (names.some(name => quietOpeningTerms.has(name))) return 900;
+      if (calmCategories.has(term.category)) return 500;
+      return 700;
+    }
+
+    function isQuietOpeningEvent(event) {
+      const text = `${event.title} ${event.date} ${event.summary} ${event.why}`;
+      return quietOpeningEventPatterns.some(pattern => pattern.test(text));
+    }
+
+    function openingEventRank(event) {
+      const featuredIndex = openingEventOrder.findIndex(title => normalizeSearchName(title) === normalizeSearchName(event.title));
+      if (featuredIndex >= 0) return featuredIndex;
+      if (isQuietOpeningEvent(event)) return 900;
+      if (/^202[0-9]/.test(String(event.date || ""))) return 500;
+      return 750;
+    }
+
+    function sortByOpeningRank(items, ranker) {
+      return items
+        .map((item, index) => ({ item, index, rank: ranker(item) }))
+        .sort((a, b) => a.rank - b.rank || a.index - b.index)
+        .map(entry => entry.item);
+    }
+
+    function isQuietReviewCard(card) {
+      if (!card) return true;
+      if (card.kind === "term") return openingTermRank(card.value) >= 900;
+      if (card.kind === "event") return openingEventRank(card.value) >= 900;
+      return false;
+    }
+
+    function normalizeEvent(event) {
+      const title = event.title_zh || event.title_en || "AI 事件";
+      return {
+        year: event.year || event.date || "",
+        date: event.date || event.year || "",
+        title,
+        id: `event-${slug(`${event.date || event.year || ""}-${title}`)}`,
+        summary: event.summary_zh || "",
+        why: event.why_it_matters_zh || "",
+        hook: eventHooks[title] || "",
+        detail: eventDetails[title] || "",
+        related: Array.isArray(event.related_terms) ? event.related_terms.slice(0, 4) : []
+      };
+    }
+
+    function pickTerms(terms) {
+      return sortByOpeningRank(terms.filter(term => term.short), openingTermRank);
+    }
+
+    function displayTermTitle(term) {
+      const primary = String(term.term || "").trim();
+      const secondary = String(term.termZh || "").trim();
+      if (!secondary) return primary;
+      if (normalizeSearchName(primary) === normalizeSearchName(secondary)) return primary;
+      return `${primary}｜${secondary}`;
+    }
+
+    function openingTermTeaser(term) {
+      const key = Object.keys(openingTermTeasers).find(name => normalizeSearchName(name) === normalizeSearchName(term.term));
+      return key ? openingTermTeasers[key] : "";
+    }
+
+    function renderTermCard(term, index) {
+      const title = displayTermTitle(term);
+      const teaser = openingTermTeaser(term) || frontLine(term.short, term.hook || term.why, 84);
+      return `
+        <details class="light-card" data-card-id="${escapeHTML(term.id)}" data-card-title="${escapeHTML(title)}" data-card-type="词卡">
+          <summary>
+            <span>
+              <span class="card-kicker">${escapeHTML(term.category)}</span>
+              <span class="card-title">${escapeHTML(title)}</span>
+              ${teaserHTML(teaser)}
+            </span>
+            <span class="open-dot" aria-hidden="true"></span>
+          </summary>
+          <div class="card-body">
+            ${renderBackBlock("一句话", term.short, 78)}
+            ${renderBackBlock("为何重要", term.why, 88, 2)}
+            ${renderBackBlock("记住", term.hook, 78)}
+            ${renderBackBlock("例子", term.example, 82)}
+            ${renderLearnAction(term.id)}
+            ${renderChips(freshRelatedTerms(term.related).slice(0, 3))}
+          </div>
+        </details>
+      `;
+    }
+
+    function renderEventCard(event, index) {
+      const teaser = event.hook || concreteLineFromEvent(event, 84);
+      const scene = eventScenes[event.title] || readableAt(event.summary, 1, 92);
+      return `
+        <details class="light-card timeline-card" data-card-id="${escapeHTML(event.id)}" data-card-title="${escapeHTML(event.title)}" data-card-type="历史">
+          <summary>
+            <span>
+              <span class="card-kicker"><span class="year-pill">${escapeHTML(event.date)}</span></span>
+              <span class="card-title">${escapeHTML(event.title)}</span>
+              ${teaserHTML(teaser)}
+            </span>
+            <span class="open-dot" aria-hidden="true"></span>
+          </summary>
+          <div class="card-body">
+            ${renderBackBlock("背后现场", scene, 56, 3)}
+            ${renderBackBlock("为何重要", event.why, 86, 2)}
+            ${renderLearnAction(event.id)}
+            ${renderChips(freshRelatedTerms(event.related).slice(0, 3))}
+          </div>
+        </details>
+      `;
+    }
+
+    function hasLearned(cardId) {
+      const learned = readLearned();
+      const todayItems = Array.isArray(learned[todayKey()]) ? learned[todayKey()] : [];
+      return todayItems.some(item => item.id === cardId);
+    }
+
+    function renderLearnAction(cardId) {
+      const done = hasLearned(cardId);
+      const buttonClass = done ? "learn-button is-done" : "learn-button";
+      const title = done ? "今天多懂了一点" : "今天";
+      const note = done ? "已经记进今天的学习记录。" : "懂了，就点一下小熊猫的 YES。";
+      const titleHTML = done
+        ? escapeHTML(title)
+        : `${escapeHTML(title)}<span class="learn-plus">+1</span>`;
+      return `
+        <div class="learn-action">
+          <button class="${buttonClass}" type="button" data-learn-id="${escapeHTML(cardId)}" aria-label="${escapeHTML(title)}"><span class="learn-yes">YES</span></button>
+          <span class="learn-copy">
+            <strong class="${done ? "is-soft" : ""}">${titleHTML}</strong>
+            <span>${escapeHTML(note)}</span>
+          </span>
+        </div>
+      `;
+    }
+
+    function renderChips(items) {
+      if (!items.length) return "";
+      return `
+        <details class="related-more">
+          <summary>顺着看 ${items.length} 个</summary>
+          <div class="chips">${items.map(item =>
+            `<button class="chip" type="button" data-related-term="${escapeHTML(item)}">${escapeHTML(item)}</button>`
+          ).join("")}</div>
+        </details>
+      `;
+    }
+
+    function findTermByName(name) {
+      const wanted = normalizeSearchName(name);
+      return state.terms.find(term =>
+        normalizeSearchName(term.term) === wanted ||
+        normalizeSearchName(term.termZh) === wanted ||
+        normalizeSearchName(`${term.term}｜${term.termZh}`) === wanted
+      );
+    }
+
+    function freshRelatedTerms(items) {
+      const learned = learnedIdSet();
+      return items.filter(item => {
+        const term = findTermByName(item);
+        return !term || !learned.has(term.id);
+      });
+    }
+
+    function normalizeSearchName(value) {
+      return String(value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, " ");
+    }
+
+    function openRelatedTerm(name) {
+      const match = findTermByName(name);
+      if (!match) {
+        showToast("这张词卡还没放进轻卡流");
+        return;
+      }
+      state.termPinnedId = match.id;
+      state.termOffset = state.terms.findIndex(term => term.id === match.id);
+      renderTerms();
+      document.querySelector('[aria-label="词典轻卡"]')?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function renderTerms() {
+      const pool = newItems(state.terms);
+      if (state.termOffset >= pool.length) state.termOffset = 0;
+      const list = listWithPinned(state.terms, state.termPinnedId, state.termOffset, 3);
+      document.getElementById("term-list").innerHTML = list.map(renderTermCard).join("");
+      document.getElementById("term-count").textContent = pool.length === state.terms.length
+        ? `${state.terms.length} 张`
+        : `${pool.length} 张新卡`;
+    }
+
+    function renderEvents() {
+      const pool = newItems(state.events);
+      if (state.eventOffset >= pool.length) state.eventOffset = 0;
+      const list = listWithPinned(state.events, state.eventPinnedId, state.eventOffset, 3);
+      document.getElementById("event-list").innerHTML = list.map(renderEventCard).join("");
+      document.getElementById("event-count").textContent = pool.length === state.events.length
+        ? `${state.events.length} 段`
+        : `${pool.length} 段新历史`;
+    }
+
+    function dueReviewItems() {
+      const learned = readLearned();
+      const latest = new Map();
+      Object.entries(learned).forEach(([date, items]) => {
+        items.forEach(item => {
+          const existing = latest.get(item.id);
+          if (!existing || dayNumber(date) > dayNumber(existing.date)) {
+            latest.set(item.id, { ...item, date });
+          }
+        });
+      });
+
+      const today = dayNumber(todayKey());
+      const cards = new Map();
+      state.events.forEach(event => cards.set(event.id, { kind: "event", value: event }));
+      state.terms.forEach(term => cards.set(term.id, { kind: "term", value: term }));
+
+      return [...latest.values()]
+        .filter(item => {
+          const gap = today - dayNumber(item.date);
+          return reviewIntervals.has(gap);
+        })
+        .map(item => cards.get(item.id))
+        .filter(Boolean)
+        .filter(item => !isQuietReviewCard(item))
+        .slice(0, 3);
+    }
+
+    function renderReviews() {
+      const section = document.getElementById("review-section");
+      const list = document.getElementById("review-list");
+      const count = document.getElementById("review-count");
+      const due = dueReviewItems();
+      if (!due.length) {
+        section.classList.add("is-hidden");
+        list.innerHTML = "";
+        count.textContent = "0 张";
+        return;
+      }
+      section.classList.remove("is-hidden");
+      count.textContent = `${due.length} 张`;
+      list.innerHTML = due.map(item =>
+        item.kind === "event" ? renderEventCard(item.value) : renderTermCard(item.value)
+      ).join("");
+    }
+
+    function advanceTerms() {
+      const pool = newItems(state.terms);
+      if (!pool.length) return;
+      state.termPinnedId = "";
+      state.termOffset = (state.termOffset + 3) % pool.length;
+      renderTerms();
+      document.querySelector('[aria-label="词典轻卡"]')?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function advanceEvents() {
+      const pool = newItems(state.events);
+      if (!pool.length) return;
+      state.eventPinnedId = "";
+      state.eventOffset = (state.eventOffset + 3) % pool.length;
+      renderEvents();
+      document.querySelector('[aria-label="时间轴轻卡"]')?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    async function init() {
+      try {
+        const [dictionary, timeline] = await Promise.all([
+          loadJSON("ai-dictionary.json"),
+          loadJSON("ai-timeline-data.json")
+        ]);
+        state.terms = pickTerms((dictionary.terms || []).map(normalizeTerm));
+        state.events = sortByOpeningRank((timeline.timeline || []).map(normalizeEvent), openingEventRank);
+        state.eventOffset = 0;
+        state.termOffset = 0;
+        renderTerms();
+        renderEvents();
+        renderReviews();
+        updateRecordEntry();
+      } catch (error) {
+        document.getElementById("term-list").innerHTML = `<div class="light-card loading">数据读取失败，请检查 JSON 文件。</div>`;
+        document.getElementById("event-list").innerHTML = `<div class="light-card loading">数据读取失败，请检查 JSON 文件。</div>`;
+      }
+    }
+
+    document.getElementById("next-term").addEventListener("click", advanceTerms);
+    document.getElementById("next-event").addEventListener("click", advanceEvents);
+    document.getElementById("win-close").addEventListener("click", closeWinMoment);
+    document.getElementById("win-layer").addEventListener("click", event => {
+      if (event.target.id === "win-layer") closeWinMoment();
+    });
+    document.addEventListener("click", event => {
+      const related = event.target.closest("[data-related-term]");
+      if (related) {
+        openRelatedTerm(related.dataset.relatedTerm);
+        return;
+      }
+      const button = event.target.closest("[data-learn-id]");
+      if (!button) return;
+      const card = button.closest("details");
+      markLearned(button.dataset.learnId, card?.dataset.cardTitle, card?.dataset.cardType);
+    });
+    init();
+  </script>
+</body>
+</html>

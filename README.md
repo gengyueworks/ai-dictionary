@@ -47,6 +47,14 @@ python3 -m http.server 8000
 
 访问 `http://localhost:8000/ai-dictionary-lab.html`
 
+## 移动端轻卡原型（未完成）
+
+词典还有一个 2026-06 开发的移动端原型「AI 轻卡」：每日随机翻词卡+历史卡、小熊猫 YES 打卡、间隔回顾、学习记录页，并规划了微信小程序版。未完成、未上线，作为开发痕迹归档在 [`mobile/`](mobile/) 目录。
+
+- 原型主文件：`mobile/ai-mobile-cards-prototype-v0.html`
+- 状态与运行说明：`mobile/README.md`
+- 微信小程序说明书：`mobile/AI轻卡-微信小程序项目说明书-给Agent.md`
+
 ## 目录结构
 
 ```
@@ -58,6 +66,12 @@ ai-dictionary/
 ├── README.md
 ├── docs/
 │   └── USAGE.md                    # 使用说明
+├── mobile/                         # 移动端轻卡原型（未完成，开发痕迹归档）
+│   ├── README.md                   # 状态与运行说明
+│   ├── ai-mobile-cards-prototype-v0.html
+│   ├── ai-learning-record.html
+│   ├── AI轻卡-微信小程序项目说明书-给Agent.md
+│   └── assets/                     # 小熊猫吉祥物（PNG + SVG）
 └── scripts/
     ├── build-free-version.py       # 词典数据拆分脚本
     ├── build-public-html.py        # 词典前端改造脚本
