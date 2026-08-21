@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21 19:26:25",
+  "generated_at": "2026-08-21 19:30:54",
   "source_note": "AI 词典公开版（深度切分层）—— 1327 条索引全开 + 50 条精选完整卡。完整版含 why_it_matters / memory_hook 等深度字段。",
   "edition": "public",
   "total_terms": 1329,
@@ -18087,8 +18087,8 @@
       "id": "public-ai-observatory",
       "term": "Public AI Observatory",
       "term_zh": "公共AI观测站（2026）",
-      "entry_type": "concept",
-      "category": "数据与检索",
+      "entry_type": "institution",
+      "category": "人与机构",
       "difficulty": "入门",
       "definition_short": "Public AI Observatory 是 MIT 与斯坦福在 2026 年共建的独立观测站，专门测量人们真实使用 AI 的方式。",
       "aliases": [],

@@ -2,7 +2,7 @@
   "generated_at": "2026-08-11",
   "source_note": "AI 词典公开版英文层 —— 1327 索引英文名/短释义 + 51 样板英文深度字段。英文完整版为私有资产，见 ai-dictionary-en.json。",
   "edition": "public-en",
-  "total_terms": 1327,
+  "total_terms": 1329,
   "sample_terms": 51,
   "terms": [
     {
@@ -22319,6 +22319,38 @@
       "aliases": null,
       "updated_at": "2026-07-18",
       "displayName": "月之暗面",
+      "is_sample": false
+    },
+    {
+      "id": "search-index",
+      "term": "Search Index",
+      "term_zh": "检索索引评测（2026）",
+      "entry_type": "concept",
+      "category": "数据与检索",
+      "category_en": "Data & Retrieval",
+      "difficulty": "入门",
+      "difficulty_en": "Beginner",
+      "definition_short": "Search Index 是 Artificial Analysis 在 2026 年 8 月发布的检索评测基准，把检索质量和总成本放进同一张记分牌。",
+      "definition_short_en": "Search Index is a retrieval benchmark released by Artificial Analysis in August 2026. It runs the same model through different retrieval services inside a single fixed harness, measuring both final quality and each provider's share of total cost. In the first edition Parallel scored 75, Exa 74, Firecrawl 73 — while a no-retrieval baseline managed only 33.",
+      "aliases": [],
+      "updated_at": "2026-08-21",
+      "displayName": "检索索引评测",
+      "is_sample": false
+    },
+    {
+      "id": "public-ai-observatory",
+      "term": "Public AI Observatory",
+      "term_zh": "公共AI观测站（2026）",
+      "entry_type": "institution",
+      "category": "人与机构",
+      "category_en": "People & Organizations",
+      "difficulty": "入门",
+      "difficulty_en": "Beginner",
+      "definition_short": "Public AI Observatory 是 MIT 与斯坦福在 2026 年共建的独立观测站，专门测量人们真实使用 AI 的方式。",
+      "definition_short_en": "Public AI Observatory is an independent observatory built by MIT and Stanford in 2026 to measure how people actually use AI. It collects real conversations and usage data outside vendor channels, and its launch paper publishes the collection methodology so the measurement itself can be checked.",
+      "aliases": [],
+      "updated_at": "2026-08-21",
+      "displayName": "公共AI观测站",
       "is_sample": false
     }
   ],

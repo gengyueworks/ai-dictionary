@@ -57,8 +57,8 @@ FORBIDDEN_DEEP_KEYS = (
     + ["front", "back", "definition_long", "why_it_matters", "memory_hook", "example"]
 )
 
-# 目标条数（与 free.json 强一致）
-TARGET_TOTAL = 1327
+# 目标条数（与 free.json 强一致；动态取值，避免词条增长后硬编码过期）
+# 历史值：1327（2026-08-20 前）→ 词条新增后改为运行时从 free.json 读取
 
 
 def load_json(path):
@@ -113,9 +113,10 @@ def run_self_checks(free_data, out_terms):
 
     print("\n========== 自检报告 ==========")
 
-    # 1. 总条数
-    assert len(out_terms) == TARGET_TOTAL, f"条数不符: {len(out_terms)} != {TARGET_TOTAL}"
-    print(f"[1] 总条数: {len(out_terms)} == {TARGET_TOTAL}  ✓")
+    # 1. 总条数（动态：必须与 free.json 完全一致）
+    target_total = len(free_terms)
+    assert len(out_terms) == target_total, f"条数不符: {len(out_terms)} != {target_total}"
+    print(f"[1] 总条数: {len(out_terms)} == free.json {target_total}  ✓")
 
     # 2. 样板数量（与 free.json 一致）
     assert len(out_samples) == len(free_samples) == 51, (
