@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-08-03 09:40:31",
+  "generated_at": "2026-08-21 19:26:25",
   "source_note": "AI 词典公开版（深度切分层）—— 1327 条索引全开 + 50 条精选完整卡。完整版含 why_it_matters / memory_hook 等深度字段。",
   "edition": "public",
-  "total_terms": 1327,
+  "total_terms": 1329,
   "sample_terms": 51,
   "terms": [
     {
@@ -18069,7 +18069,33 @@
       "updated_at": "2026-07-18",
       "displayName": "月之暗面",
       "is_sample": false
+    },
+    {
+      "id": "search-index",
+      "term": "Search Index",
+      "term_zh": "检索索引评测（2026）",
+      "entry_type": "concept",
+      "category": "数据与检索",
+      "difficulty": "入门",
+      "definition_short": "Search Index 是 Artificial Analysis 在 2026 年 8 月发布的检索评测基准，把检索质量和总成本放进同一张记分牌。",
+      "aliases": [],
+      "updated_at": "2026-08-21",
+      "displayName": "检索索引评测",
+      "is_sample": false
+    },
+    {
+      "id": "public-ai-observatory",
+      "term": "Public AI Observatory",
+      "term_zh": "公共AI观测站（2026）",
+      "entry_type": "concept",
+      "category": "数据与检索",
+      "difficulty": "入门",
+      "definition_short": "Public AI Observatory 是 MIT 与斯坦福在 2026 年共建的独立观测站，专门测量人们真实使用 AI 的方式。",
+      "aliases": [],
+      "updated_at": "2026-08-21",
+      "displayName": "公共AI观测站",
+      "is_sample": false
     }
   ],
-  "updated_at": "2026-07-18"
+  "updated_at": "2026-08-21"
 }
