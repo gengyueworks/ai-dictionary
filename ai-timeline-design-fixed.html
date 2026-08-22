@@ -158,6 +158,13 @@
       opacity: 1;
     }
 
+    .translate-mini button.active {
+      border-color: var(--track);
+      color: var(--track);
+      background: rgba(255, 250, 240, 0.92);
+      opacity: 1;
+    }
+
     #google_translate_element {
       position: absolute;
       width: 1px;
@@ -780,8 +787,8 @@
         <input class="search" id="search" type="search" placeholder="搜索年份、事件、概念">
         <a class="chip dict-link" href="ai-dictionary-lab.html" title="进入 AI 词典">词典 →</a>
         <span class="translate-mini" aria-label="辅助翻译">
-          <button type="button" id="translate-zh" title="回到中文">CH</button>
-          <button type="button" id="translate-en" title="使用 Google Translate 临时翻译成英文">EN</button>
+          <button type="button" id="translate-zh" title="切换到中文（原生数据）">CH</button>
+          <button type="button" id="translate-en" title="Switch to English (native data)">EN</button>
           <span id="google_translate_element" aria-hidden="true"></span>
         </span>
       </div>
@@ -864,15 +871,50 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("translate-en")?.addEventListener("click", () => {
-        setTranslateCookie("/zh-CN/en");
-        chooseGoogleLanguage("en");
-      });
-      document.getElementById("translate-zh")?.addEventListener("click", () => {
-        setTranslateCookie("");
-        location.reload();
-      });
+      // 原生双语切换：数据源已带 title_en / summary_en，不再依赖 Google 机器翻译
+      document.getElementById("translate-en")?.addEventListener("click", () => setLang("en"));
+      document.getElementById("translate-zh")?.addEventListener("click", () => setLang("zh"));
     });
+
+    const TYPE_LABELS_EN = {
+      foundational: "Foundational",
+      model: "Models",
+      product: "Products",
+      ecosystem: "Ecosystem",
+      industry: "Industry",
+      compute: "Compute",
+      policy: "Policy",
+      safety: "Safety",
+      data: "Data",
+      dataset: "Data",
+      breakthrough: "Breakthrough",
+      concept: "Conceptual shift",
+      interface: "Interfaces",
+      risk: "Risk",
+      theme: "Theme",
+      governance: "Governance",
+      robotics: "Robotics",
+      infrastructure: "Infrastructure",
+      culture: "Culture"
+    };
+
+    function setLang(lang) {
+      state.lang = lang === "en" ? "en" : "zh";
+      document.getElementById("translate-en")?.classList.toggle("active", state.lang === "en");
+      document.getElementById("translate-zh")?.classList.toggle("active", state.lang === "zh");
+      renderAll();
+    }
+
+    function localized(event) {
+      if (state.lang !== "en") {
+        return { title: event.title, summary: event.summary, label: event.label };
+      }
+      return {
+        title: event.titleEn || event.title,
+        summary: event.summaryEn || event.summary,
+        label: TYPE_LABELS_EN[event.type] || event.label
+      };
+    }
 
     const TYPE_LABELS = {
       foundational: "底层突破",
@@ -912,6 +954,7 @@
       filter: "全部",
       keyword: "",
       active: -1,
+      lang: "zh",
       openProductLines: new Set()
     };
 
@@ -955,6 +998,7 @@
         year,
         title: event.title_zh || event.title_en || "",
         titleEn: event.title_en || "",
+        summaryEn: event.summary_en || "",
         type: event.type || "foundational",
         label: TYPE_LABELS[event.type] || event.type || "历史节点",
         summary: makeEventDeck(event, sections),
@@ -1225,9 +1269,9 @@
                 ${event.displayDate ? `<span class="date">${escapeHTML(event.displayDate)}</span>` : ""}
               </div>
               <div>
-                <span class="event-type">${escapeHTML(event.label)}</span>
-                <h3>${escapeHTML(event.title)}</h3>
-                <p class="summary">${escapeHTML(event.summary)}</p>
+                <span class="event-type">${escapeHTML(localized(event).label)}</span>
+                <h3>${escapeHTML(localized(event).title)}</h3>
+                <p class="summary">${escapeHTML(localized(event).summary)}</p>
                 <div class="event-detail">
 		                  <div class="detail-grid">
 		                    <div class="detail-main">
