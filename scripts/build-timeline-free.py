@@ -13,7 +13,7 @@
 import json
 from pathlib import Path
 
-SRC = Path("/Volumes/拓展坞 1T2022/2 Codex-Workspace/Codex-Workspace-Main/32-AI高质量阅读库/05-情报与深读系统/AI精华情报与深读操作台/10-源头网站活文件/00-站点根文件/ai-timeline-data.json")
+SRC = Path("/Volumes/拓展坞 1T2022/2 Codex-Workspace/Codex-Workspace-Main/30-项目-网站/AI时间轴/_私有数据/ai-timeline-data-263条-完整版.json")
 DST = Path("/Volumes/拓展坞 1T2022/2 Codex-Workspace/Codex-Workspace-Main/gengyueworks-Github/ai-dictionary/ai-timeline-data-free.json")
 
 # 深度字段（砍掉）
@@ -40,7 +40,7 @@ def main():
 
     # 标记版本
     data["edition"] = "public"
-    data["source_note"] = "AI 时间轴公开版 —— 252 个事件全开，深度字段（为何重要 / 背后现场 / 学习路径）在完整版。"
+    data["source_note"] = "AI 时间轴公开版 —— 265 个事件全开，深度字段（为何重要 / 背后现场 / 学习路径）在完整版。"
 
     DST.parent.mkdir(parents=True, exist_ok=True)
     with DST.open("w", encoding="utf-8") as f:
