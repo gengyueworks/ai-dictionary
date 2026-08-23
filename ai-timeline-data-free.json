@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-21",
+  "updated_at": "2026-08-23",
   "schema_version": "ai-timeline-v2.1",
   "source_files": {
     "timeline_md_dir": "/Volumes/拓展坞 1T2022/2 Codex-Workspace/Codex-Workspace-Main/32-AI高质量阅读库/05-情报与深读系统/AI精华情报与深读操作台/10-源头网站活文件/_revised/timeline-md-review",
@@ -7211,41 +7211,6 @@
       "summary_en": "In 2024, small 7B-14B models leveraged distillation + DPO to surpass GPT-3.5 on multiple tasks, led by Microsoft's Phi-3 mini 3.8B (2024-04), Qwen 2.5 7B Instruct (2024-09), Llama 3.2 1B/3B (2024-09), Mistral NeMo 12B (2024-07), and Google's Gemma 2 2B/9B/27B (2024-06). Capable of running locally on phones, laptops, and edge devices, these models exceeded the quality of 2023's GPT-3.5."
     },
     {
-      "title_zh": "NVIDIA AI 硬件平台化",
-      "title_en": "NVIDIA turns AI hardware into a full platform",
-      "year": 2025,
-      "date": "2025-01",
-      "date_precision": "month",
-      "importance": 5,
-      "type": "compute",
-      "confidence": "high",
-      "summary_zh": "NVIDIA 从 GPU 厂商，逐步变成 AI 计算平台公司：芯片、CUDA、服务器、互联、软件库和开发者生态一起构成底座。\nAI 能力看起来在模型层爆发，底下却是一条算力基础设施线。\nCUDA、AlexNet 的 GPU 训练、V100、A100、H100、Blackwell 和 ProjectDIGITS，都应该放在 NVIDIA 二级时间线里看。",
-      "source_name": "NVIDIA AI",
-      "source_url": "https://www.nvidia.com/en-us/ai/",
-      "related_terms": [
-        "gpu",
-        "data-center",
-        "nvidia",
-        "cuda"
-      ],
-      "missing_terms": [
-        "GPU 集群",
-        "数据中心",
-        "NVIDIA",
-        "CUDA"
-      ],
-      "tags": [
-        "2025",
-        "算力",
-        "NVIDIA",
-        "AI 芯片",
-        "GPU",
-        "数据中心"
-      ],
-      "card_summary_zh": "NVIDIA 从 GPU 厂商，逐步变成 AI 计算平台公司：芯片、CUDA、服务器、互联；理解 NVIDIA，才能理解大模型时代为什么会出现算力竞争、芯片管制。",
-      "summary_en": "NVIDIA has evolved from a GPU manufacturer into an AI computing platform company, with chips, CUDA, servers, interconnects, software libraries, and a developer ecosystem forming its foundation. While AI capabilities appear to explode at the model layer, they are driven by this underlying compute infrastructure. Milestones like CUDA, GPU training for AlexNet, the V100, A100, H100, Blackwell, and ProjectDIGITS should all be viewed within this secondary NVIDIA timeline."
-    },
-    {
       "title_zh": "AI 办公全面嵌入",
       "title_en": "AI Embedded in Productivity Tools",
       "year": 2025,
@@ -7334,6 +7299,41 @@
       ],
       "card_summary_zh": "模型变强之后，行业开始围绕成本、可控性、知识更新、上下文长度和部署位置做取舍。",
       "summary_en": "Quantization, small models, and on-device inference continue to expand the local deployment ecosystem. These milestones trace the shifting engineering pathways of large models. As these models grew more powerful, the industry began making trade-offs around cost, controllability, knowledge updates, context length, and deployment location."
+    },
+    {
+      "title_zh": "NVIDIA AI 硬件平台化",
+      "title_en": "NVIDIA turns AI hardware into a full platform",
+      "year": 2025,
+      "date": "2025-01",
+      "date_precision": "month",
+      "importance": 5,
+      "type": "compute",
+      "confidence": "high",
+      "summary_zh": "NVIDIA 从 GPU 厂商，逐步变成 AI 计算平台公司：芯片、CUDA、服务器、互联、软件库和开发者生态一起构成底座。\nAI 能力看起来在模型层爆发，底下却是一条算力基础设施线。\nCUDA、AlexNet 的 GPU 训练、V100、A100、H100、Blackwell 和 ProjectDIGITS，都应该放在 NVIDIA 二级时间线里看。",
+      "source_name": "NVIDIA AI",
+      "source_url": "https://www.nvidia.com/en-us/ai/",
+      "related_terms": [
+        "gpu",
+        "data-center",
+        "nvidia",
+        "cuda"
+      ],
+      "missing_terms": [
+        "GPU 集群",
+        "数据中心",
+        "NVIDIA",
+        "CUDA"
+      ],
+      "tags": [
+        "2025",
+        "算力",
+        "NVIDIA",
+        "AI 芯片",
+        "GPU",
+        "数据中心"
+      ],
+      "card_summary_zh": "NVIDIA 从 GPU 厂商，逐步变成 AI 计算平台公司：芯片、CUDA、服务器、互联；理解 NVIDIA，才能理解大模型时代为什么会出现算力竞争、芯片管制。",
+      "summary_en": "NVIDIA has evolved from a GPU manufacturer into an AI computing platform company, with chips, CUDA, servers, interconnects, software libraries, and a developer ecosystem forming its foundation. While AI capabilities appear to explode at the model layer, they are driven by this underlying compute infrastructure. Milestones like CUDA, GPU training for AlexNet, the V100, A100, H100, Blackwell, and ProjectDIGITS should all be viewed within this secondary NVIDIA timeline."
     },
     {
       "title_zh": "DeepSeek-R1 发布及技术报告开源",
@@ -8317,6 +8317,33 @@
       "summary_en": "OpenAI updated GPT-5.6 Sol in ChatGPT, touting sharper answers, more reliable factual performance and a more consistent reasoning experience, while expanding free-user access to GPT-5.6 Luna."
     },
     {
+      "year": 2026,
+      "date": "2026-08-18",
+      "date_precision": "day",
+      "title_zh": "Mojo 编译器开源——面向 AI 硬件的语言交出完整工具链",
+      "title_en": "Mojo Compiler Open-Sourced: The AI-Hardware Language Ships Its Full Toolchain",
+      "type": "foundational",
+      "importance": 4,
+      "summary_zh": "2026 年 8 月，Modular 将 Mojo 编译器、工具链和构建所需源代码公开，采用 Apache 2.0 许可证并附 LLVM 例外。此前 Mojo 的标准库已开放，但负责把源码编译为机器代码的核心编译器始终封闭；此次开源使开发者可以从源码构建、审计并 fork 这门面向 CPU、GPU 等异构硬件的语言。",
+      "summary_en": "In August 2026, Modular published the Mojo compiler, toolchain and the sources needed to build it under Apache 2.0 (with an LLVM exception). The standard library had been open before, but the core compiler that turns Mojo source into machine code remained closed; developers can now build, audit and fork the language aimed at CPUs, GPUs and other heterogeneous hardware from source.",
+      "why_it_matters_en": "AI infrastructure depends not only on models but on who controls the compiler layer. Mojo combines Python-like expressiveness, MLIR compilation foundations and GPU-class performance targets; with the compiler open, the language toolchain around AI kernels, inference optimization and heterogeneous hardware finally qualifies as public infrastructure.",
+      "card_summary_zh": "Modular 开源 Mojo 编译器：面向 AI 硬件的语言从可用但不可审计，变成可阅读、可构建、可 fork 的公共基础设施。",
+      "card_summary_en": "Modular open-sourced the Mojo compiler, turning an AI-hardware language that was usable but unauditable into readable, buildable, forkable public infrastructure.",
+      "tags": [
+        "开源",
+        "编译器",
+        "编程语言",
+        "GPU"
+      ],
+      "source_name": "Modular Blog",
+      "source_url": "https://www.modular.com/blog/mojo-open-source",
+      "related_terms": [
+        "mojo"
+      ],
+      "missing_terms": [],
+      "confidence": "high"
+    },
+    {
       "title_zh": "Artificial Analysis 发布 Search Index：检索质量第一次按全链路成本排名",
       "title_en": "Artificial Analysis Launches Search Index, Ranking Retrieval by Total Task Cost",
       "year": 2026,
@@ -8369,6 +8396,63 @@
       "missing_terms": [],
       "card_summary_zh": "公共 AI 观测站用 2.4 万段真实对话给行业一把共同的尺子，AI 使用第一次可被独立丈量。",
       "summary_en": "Public AI Observatory, built by MIT, Stanford and other institutions, went live — releasing 24,521 consented conversations, 52 models, nearly 100,000 turns and 145 annotation dimensions covering real-world usage from 2023 to 2026."
+    },
+    {
+      "year": 2026,
+      "date": "2026-08-20",
+      "date_precision": "day",
+      "title_zh": "Mistral 发布 Agentic Search——企业检索从召回文本变成核验文档",
+      "title_en": "Mistral Ships Agentic Search: Enterprise Retrieval Becomes Document Verification",
+      "type": "tooling",
+      "importance": 4,
+      "summary_zh": "2026 年 8 月，Mistral 发布 Agentic Search，为已有企业索引加入 search、open、navigate、read、grep 五种工具。模型不再只能依据首次召回的 top-k 文本块作答，而能继续打开文档、定位页码、读取表格、比对多份来源后再回答。官方报告称 FinanceBench 正确率从 26.7% 升至 86%，OfficeQA Pro 较一次性 RAG 提高 45.6 个百分点。",
+      "summary_en": "In August 2026, Mistral released Agentic Search, adding five tools — search, open, navigate, read and grep — to existing enterprise indexes. Instead of answering from first-recalled top-k chunks, the model can open documents, locate pages, read tables and cross-check multiple sources before answering; Mistral reports FinanceBench accuracy rising from 26.7% to 86%, and OfficeQA Pro improving by 45.6 points over one-shot RAG.",
+      "why_it_matters_en": "This moves the object of enterprise-RAG optimization from chunks, embeddings and rerankers to a full retrieve-inspect-verify workflow. For cross-document questions over filings, contracts and scanned PDFs, retrieval stops being context feeding and becomes a tool layer the model can operate repeatedly, leaving evidence trails.",
+      "card_summary_zh": "Agentic Search 把企业检索从一次召回变成多步核验，复杂文档问答的准确率上限被重新定义。",
+      "card_summary_en": "Agentic Search turns enterprise retrieval from one-shot recall into multi-step verification, redefining the accuracy ceiling for complex document QA.",
+      "tags": [
+        "检索",
+        "RAG",
+        "企业应用",
+        "Agent"
+      ],
+      "source_name": "Mistral AI",
+      "source_url": "https://mistral.ai/news/agentic-search/",
+      "related_terms": [
+        "rag",
+        "information-retrieval",
+        "agentic-search"
+      ],
+      "missing_terms": [],
+      "confidence": "high"
+    },
+    {
+      "year": 2026,
+      "date": "2026-08-20",
+      "date_precision": "day",
+      "title_zh": "阿里发布 Qwen-UI-Agent——GUI 智能体开始以真实设备为共同基座",
+      "title_en": "Alibaba Releases Qwen-UI-Agent: GUI Agents Get a Real-Device Foundation",
+      "type": "model",
+      "importance": 4,
+      "summary_zh": "2026 年 8 月，阿里发布 Qwen-UI-Agent：统一覆盖手机、电脑、浏览器和 DeepSearch 的 GUI 智能体基座模型，以 Apache 2.0 开源。它面向真实设备上的屏幕理解与点击、输入、滑动操作，而非只在模拟器中执行；官方报告 MobileWorld 得分 82.1%、真机环境 MobileWorld-Real 达 92.2%，训练评测基于 100 多台真实手机、150 多个应用构成的移动环境。",
+      "summary_en": "In August 2026, Alibaba released Qwen-UI-Agent, a GUI agent foundation model unified across mobile, desktop, browser and DeepSearch, open-sourced under Apache 2.0. It targets on-screen understanding and touch, typing and swiping on real devices rather than simulators; the technical report gives 82.1% on MobileWorld and 92.2% on the real-device MobileWorld-Real, trained and evaluated in a mobile environment of 100+ physical phones and 150+ apps.",
+      "why_it_matters_en": "Most software exposes no API for agents; the screen remains the universal interface of the digital world. Putting mobile, desktop and browser operations into one model with a real-device evaluation regime means agent execution boundaries are expanding from calling tools to operating off-the-shelf software.",
+      "card_summary_zh": "Qwen-UI-Agent 用一个模型统一四类屏幕操作并以真机数据验证，GUI 智能体从单平台演示走向通用基座。",
+      "card_summary_en": "Qwen-UI-Agent unifies four kinds of screen operation in one model validated on real devices, moving GUI agents from single-platform demos to a general foundation.",
+      "tags": [
+        "Agent",
+        "GUI",
+        "开源",
+        "阿里"
+      ],
+      "source_name": "Qwen-UI-Agent Technical Report",
+      "source_url": "https://tongyi-mai.github.io/Qwen-UI-Agent/",
+      "related_terms": [
+        "gui-agent",
+        "qwen"
+      ],
+      "missing_terms": [],
+      "confidence": "high"
     }
   ],
   "timeline": [
@@ -15577,41 +15661,6 @@
       "summary_en": "In 2024, small 7B-14B models leveraged distillation + DPO to surpass GPT-3.5 on multiple tasks, led by Microsoft's Phi-3 mini 3.8B (2024-04), Qwen 2.5 7B Instruct (2024-09), Llama 3.2 1B/3B (2024-09), Mistral NeMo 12B (2024-07), and Google's Gemma 2 2B/9B/27B (2024-06). Capable of running locally on phones, laptops, and edge devices, these models exceeded the quality of 2023's GPT-3.5."
     },
     {
-      "title_zh": "NVIDIA AI 硬件平台化",
-      "title_en": "NVIDIA turns AI hardware into a full platform",
-      "year": 2025,
-      "date": "2025-01",
-      "date_precision": "month",
-      "importance": 5,
-      "type": "compute",
-      "confidence": "high",
-      "summary_zh": "NVIDIA 从 GPU 厂商，逐步变成 AI 计算平台公司：芯片、CUDA、服务器、互联、软件库和开发者生态一起构成底座。\nAI 能力看起来在模型层爆发，底下却是一条算力基础设施线。\nCUDA、AlexNet 的 GPU 训练、V100、A100、H100、Blackwell 和 ProjectDIGITS，都应该放在 NVIDIA 二级时间线里看。",
-      "source_name": "NVIDIA AI",
-      "source_url": "https://www.nvidia.com/en-us/ai/",
-      "related_terms": [
-        "gpu",
-        "data-center",
-        "nvidia",
-        "cuda"
-      ],
-      "missing_terms": [
-        "GPU 集群",
-        "数据中心",
-        "NVIDIA",
-        "CUDA"
-      ],
-      "tags": [
-        "2025",
-        "算力",
-        "NVIDIA",
-        "AI 芯片",
-        "GPU",
-        "数据中心"
-      ],
-      "card_summary_zh": "NVIDIA 从 GPU 厂商，逐步变成 AI 计算平台公司：芯片、CUDA、服务器、互联；理解 NVIDIA，才能理解大模型时代为什么会出现算力竞争、芯片管制。",
-      "summary_en": "NVIDIA has evolved from a GPU manufacturer into an AI computing platform company, with chips, CUDA, servers, interconnects, software libraries, and a developer ecosystem forming its foundation. While AI capabilities appear to explode at the model layer, they are driven by this underlying compute infrastructure. Milestones like CUDA, GPU training for AlexNet, the V100, A100, H100, Blackwell, and ProjectDIGITS should all be viewed within this secondary NVIDIA timeline."
-    },
-    {
       "title_zh": "AI 办公全面嵌入",
       "title_en": "AI Embedded in Productivity Tools",
       "year": 2025,
@@ -15700,6 +15749,41 @@
       ],
       "card_summary_zh": "模型变强之后，行业开始围绕成本、可控性、知识更新、上下文长度和部署位置做取舍。",
       "summary_en": "Quantization, small models, and on-device inference continue to expand the local deployment ecosystem. These milestones trace the shifting engineering pathways of large models. As these models grew more powerful, the industry began making trade-offs around cost, controllability, knowledge updates, context length, and deployment location."
+    },
+    {
+      "title_zh": "NVIDIA AI 硬件平台化",
+      "title_en": "NVIDIA turns AI hardware into a full platform",
+      "year": 2025,
+      "date": "2025-01",
+      "date_precision": "month",
+      "importance": 5,
+      "type": "compute",
+      "confidence": "high",
+      "summary_zh": "NVIDIA 从 GPU 厂商，逐步变成 AI 计算平台公司：芯片、CUDA、服务器、互联、软件库和开发者生态一起构成底座。\nAI 能力看起来在模型层爆发，底下却是一条算力基础设施线。\nCUDA、AlexNet 的 GPU 训练、V100、A100、H100、Blackwell 和 ProjectDIGITS，都应该放在 NVIDIA 二级时间线里看。",
+      "source_name": "NVIDIA AI",
+      "source_url": "https://www.nvidia.com/en-us/ai/",
+      "related_terms": [
+        "gpu",
+        "data-center",
+        "nvidia",
+        "cuda"
+      ],
+      "missing_terms": [
+        "GPU 集群",
+        "数据中心",
+        "NVIDIA",
+        "CUDA"
+      ],
+      "tags": [
+        "2025",
+        "算力",
+        "NVIDIA",
+        "AI 芯片",
+        "GPU",
+        "数据中心"
+      ],
+      "card_summary_zh": "NVIDIA 从 GPU 厂商，逐步变成 AI 计算平台公司：芯片、CUDA、服务器、互联；理解 NVIDIA，才能理解大模型时代为什么会出现算力竞争、芯片管制。",
+      "summary_en": "NVIDIA has evolved from a GPU manufacturer into an AI computing platform company, with chips, CUDA, servers, interconnects, software libraries, and a developer ecosystem forming its foundation. While AI capabilities appear to explode at the model layer, they are driven by this underlying compute infrastructure. Milestones like CUDA, GPU training for AlexNet, the V100, A100, H100, Blackwell, and ProjectDIGITS should all be viewed within this secondary NVIDIA timeline."
     },
     {
       "title_zh": "DeepSeek-R1 发布及技术报告开源",
@@ -16683,6 +16767,33 @@
       "summary_en": "OpenAI updated GPT-5.6 Sol in ChatGPT, touting sharper answers, more reliable factual performance and a more consistent reasoning experience, while expanding free-user access to GPT-5.6 Luna."
     },
     {
+      "year": 2026,
+      "date": "2026-08-18",
+      "date_precision": "day",
+      "title_zh": "Mojo 编译器开源——面向 AI 硬件的语言交出完整工具链",
+      "title_en": "Mojo Compiler Open-Sourced: The AI-Hardware Language Ships Its Full Toolchain",
+      "type": "foundational",
+      "importance": 4,
+      "summary_zh": "2026 年 8 月，Modular 将 Mojo 编译器、工具链和构建所需源代码公开，采用 Apache 2.0 许可证并附 LLVM 例外。此前 Mojo 的标准库已开放，但负责把源码编译为机器代码的核心编译器始终封闭；此次开源使开发者可以从源码构建、审计并 fork 这门面向 CPU、GPU 等异构硬件的语言。",
+      "summary_en": "In August 2026, Modular published the Mojo compiler, toolchain and the sources needed to build it under Apache 2.0 (with an LLVM exception). The standard library had been open before, but the core compiler that turns Mojo source into machine code remained closed; developers can now build, audit and fork the language aimed at CPUs, GPUs and other heterogeneous hardware from source.",
+      "why_it_matters_en": "AI infrastructure depends not only on models but on who controls the compiler layer. Mojo combines Python-like expressiveness, MLIR compilation foundations and GPU-class performance targets; with the compiler open, the language toolchain around AI kernels, inference optimization and heterogeneous hardware finally qualifies as public infrastructure.",
+      "card_summary_zh": "Modular 开源 Mojo 编译器：面向 AI 硬件的语言从可用但不可审计，变成可阅读、可构建、可 fork 的公共基础设施。",
+      "card_summary_en": "Modular open-sourced the Mojo compiler, turning an AI-hardware language that was usable but unauditable into readable, buildable, forkable public infrastructure.",
+      "tags": [
+        "开源",
+        "编译器",
+        "编程语言",
+        "GPU"
+      ],
+      "source_name": "Modular Blog",
+      "source_url": "https://www.modular.com/blog/mojo-open-source",
+      "related_terms": [
+        "mojo"
+      ],
+      "missing_terms": [],
+      "confidence": "high"
+    },
+    {
       "title_zh": "Artificial Analysis 发布 Search Index：检索质量第一次按全链路成本排名",
       "title_en": "Artificial Analysis Launches Search Index, Ranking Retrieval by Total Task Cost",
       "year": 2026,
@@ -16735,9 +16846,66 @@
       "missing_terms": [],
       "card_summary_zh": "公共 AI 观测站用 2.4 万段真实对话给行业一把共同的尺子，AI 使用第一次可被独立丈量。",
       "summary_en": "Public AI Observatory, built by MIT, Stanford and other institutions, went live — releasing 24,521 consented conversations, 52 models, nearly 100,000 turns and 145 annotation dimensions covering real-world usage from 2023 to 2026."
+    },
+    {
+      "year": 2026,
+      "date": "2026-08-20",
+      "date_precision": "day",
+      "title_zh": "Mistral 发布 Agentic Search——企业检索从召回文本变成核验文档",
+      "title_en": "Mistral Ships Agentic Search: Enterprise Retrieval Becomes Document Verification",
+      "type": "tooling",
+      "importance": 4,
+      "summary_zh": "2026 年 8 月，Mistral 发布 Agentic Search，为已有企业索引加入 search、open、navigate、read、grep 五种工具。模型不再只能依据首次召回的 top-k 文本块作答，而能继续打开文档、定位页码、读取表格、比对多份来源后再回答。官方报告称 FinanceBench 正确率从 26.7% 升至 86%，OfficeQA Pro 较一次性 RAG 提高 45.6 个百分点。",
+      "summary_en": "In August 2026, Mistral released Agentic Search, adding five tools — search, open, navigate, read and grep — to existing enterprise indexes. Instead of answering from first-recalled top-k chunks, the model can open documents, locate pages, read tables and cross-check multiple sources before answering; Mistral reports FinanceBench accuracy rising from 26.7% to 86%, and OfficeQA Pro improving by 45.6 points over one-shot RAG.",
+      "why_it_matters_en": "This moves the object of enterprise-RAG optimization from chunks, embeddings and rerankers to a full retrieve-inspect-verify workflow. For cross-document questions over filings, contracts and scanned PDFs, retrieval stops being context feeding and becomes a tool layer the model can operate repeatedly, leaving evidence trails.",
+      "card_summary_zh": "Agentic Search 把企业检索从一次召回变成多步核验，复杂文档问答的准确率上限被重新定义。",
+      "card_summary_en": "Agentic Search turns enterprise retrieval from one-shot recall into multi-step verification, redefining the accuracy ceiling for complex document QA.",
+      "tags": [
+        "检索",
+        "RAG",
+        "企业应用",
+        "Agent"
+      ],
+      "source_name": "Mistral AI",
+      "source_url": "https://mistral.ai/news/agentic-search/",
+      "related_terms": [
+        "rag",
+        "information-retrieval",
+        "agentic-search"
+      ],
+      "missing_terms": [],
+      "confidence": "high"
+    },
+    {
+      "year": 2026,
+      "date": "2026-08-20",
+      "date_precision": "day",
+      "title_zh": "阿里发布 Qwen-UI-Agent——GUI 智能体开始以真实设备为共同基座",
+      "title_en": "Alibaba Releases Qwen-UI-Agent: GUI Agents Get a Real-Device Foundation",
+      "type": "model",
+      "importance": 4,
+      "summary_zh": "2026 年 8 月，阿里发布 Qwen-UI-Agent：统一覆盖手机、电脑、浏览器和 DeepSearch 的 GUI 智能体基座模型，以 Apache 2.0 开源。它面向真实设备上的屏幕理解与点击、输入、滑动操作，而非只在模拟器中执行；官方报告 MobileWorld 得分 82.1%、真机环境 MobileWorld-Real 达 92.2%，训练评测基于 100 多台真实手机、150 多个应用构成的移动环境。",
+      "summary_en": "In August 2026, Alibaba released Qwen-UI-Agent, a GUI agent foundation model unified across mobile, desktop, browser and DeepSearch, open-sourced under Apache 2.0. It targets on-screen understanding and touch, typing and swiping on real devices rather than simulators; the technical report gives 82.1% on MobileWorld and 92.2% on the real-device MobileWorld-Real, trained and evaluated in a mobile environment of 100+ physical phones and 150+ apps.",
+      "why_it_matters_en": "Most software exposes no API for agents; the screen remains the universal interface of the digital world. Putting mobile, desktop and browser operations into one model with a real-device evaluation regime means agent execution boundaries are expanding from calling tools to operating off-the-shelf software.",
+      "card_summary_zh": "Qwen-UI-Agent 用一个模型统一四类屏幕操作并以真机数据验证，GUI 智能体从单平台演示走向通用基座。",
+      "card_summary_en": "Qwen-UI-Agent unifies four kinds of screen operation in one model validated on real devices, moving GUI agents from single-platform demos to a general foundation.",
+      "tags": [
+        "Agent",
+        "GUI",
+        "开源",
+        "阿里"
+      ],
+      "source_name": "Qwen-UI-Agent Technical Report",
+      "source_url": "https://tongyi-mai.github.io/Qwen-UI-Agent/",
+      "related_terms": [
+        "gui-agent",
+        "qwen"
+      ],
+      "missing_terms": [],
+      "confidence": "high"
     }
   ],
-  "total_events": 265,
+  "total_events": 268,
   "card_summary_spec": "CARD-SUMMARY-SPEC.md",
   "edition": "public",
   "source_note": "AI 时间轴公开版 —— 265 个事件全开，深度字段（为何重要 / 背后现场 / 学习路径）在完整版。"
