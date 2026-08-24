@@ -38,19 +38,22 @@ def main():
         for field in DEEP_FIELDS:
             event.pop(field, None)
     # timeline 数组缺英文摘要时，从 events 数组按 (date, title_zh) 回填
+    EN_FIELDS = ["summary_en", "card_summary_en", "why_it_matters_en", "behind_scenes_en"]
     en_lookup = {
-        (e.get("date"), e.get("title_zh")): e.get("summary_en")
+        (e.get("date"), e.get("title_zh")): e
         for e in events
-        if e.get("summary_en")
+        if any(e.get(f) for f in EN_FIELDS)
     }
     filled = 0
     for event in timeline:
-        if not event.get("summary_en"):
-            en = en_lookup.get((event.get("date"), event.get("title_zh")))
-            if en:
-                event["summary_en"] = en
+        src = en_lookup.get((event.get("date"), event.get("title_zh")))
+        if not src:
+            continue
+        for f in EN_FIELDS:
+            if not event.get(f) and src.get(f):
+                event[f] = src[f]
                 filled += 1
-    print(f"  timeline 回填 summary_en: {filled} 条")
+    print(f"  timeline 回填英文字段: {filled} 处")
 
     # 标记版本
     data["edition"] = "public"
