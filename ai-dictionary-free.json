@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-08-21 19:30:54",
+  "generated_at": "2026-08-27 19:10:01",
   "source_note": "AI 词典公开版（深度切分层）—— 1327 条索引全开 + 50 条精选完整卡。完整版含 why_it_matters / memory_hook 等深度字段。",
   "edition": "public",
-  "total_terms": 1329,
+  "total_terms": 1332,
   "sample_terms": 51,
   "terms": [
     {
@@ -18095,7 +18095,46 @@
       "updated_at": "2026-08-21",
       "displayName": "公共AI观测站",
       "is_sample": false
+    },
+    {
+      "id": "test-time-scaling",
+      "term": "Test-Time Scaling",
+      "term_zh": "推理期扩展（2026）",
+      "entry_type": "concept",
+      "category": "提示词与推理",
+      "difficulty": "中级",
+      "definition_short": "推理期扩展是指在模型生成答案时，通过分配更多计算资源（如搜索、反思与自验）来提升复杂推理能力的机制。",
+      "aliases": [],
+      "updated_at": "2026-08-24",
+      "displayName": "推理期扩展",
+      "is_sample": false
+    },
+    {
+      "id": "grpo",
+      "term": "Group Relative Policy Optimization",
+      "term_zh": "群组相对策略优化（2024）",
+      "entry_type": "concept",
+      "category": "模型训练与调优",
+      "difficulty": "高级",
+      "definition_short": "GRPO 是一种节省显存的强化学习算法，通过同一个问题产生的群组回答进行相对打分，省去了传统算法的价值模型。",
+      "aliases": [],
+      "updated_at": "2026-08-24",
+      "displayName": "群组相对策略优化",
+      "is_sample": false
+    },
+    {
+      "id": "lost-in-the-middle",
+      "term": "Lost in the Middle",
+      "term_zh": "迷失中段（2023）",
+      "entry_type": "concept",
+      "category": "数据与检索",
+      "difficulty": "中级",
+      "definition_short": "迷失中段是指长文本大模型容易漏掉或无法有效利用输入材料中间部分信息的性能缺陷。",
+      "aliases": [],
+      "updated_at": "2026-08-24",
+      "displayName": "迷失中段",
+      "is_sample": false
     }
   ],
-  "updated_at": "2026-08-21"
+  "updated_at": "2026-08-24"
 }

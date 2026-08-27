@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-20",
+  "updated_at": "2026-08-24",
   "schema_version": "ai-timeline-v2.1",
   "source_files": {
     "timeline_md_dir": "/Volumes/拓展坞 1T2022/2 Codex-Workspace/Codex-Workspace-Main/32-AI高质量阅读库/05-情报与深读系统/AI精华情报与深读操作台/10-源头网站活文件/_revised/timeline-md-review",
@@ -7224,6 +7224,36 @@
       "behind_scenes_en": "Mistral AI was founded in April 2023 by ex-DeepMind Paris researchers Arthur Mensch, Guillaume Lample, and Timothée Lacroix; its seed round in June 2023 raised €105 million (the largest seed round in French history), and its Series A in December 2023 raised €415 million at a $2 billion valuation.\nWhen Mensch left DeepMind he carried engineering experience with MoE and GQA; Mistral 7B scouted the ground before MoE.\nMistral's later line: Mistral 7B (2023-09) → Mixtral 8x7B (2023-12) → Mixtral 8x22B (2024-04) → Mistral Large (2024-02) → Codestral (2024-05)."
     },
     {
+      "id": "ai-memgpt-2023",
+      "title_zh": "MemGPT 提出：用虚拟内存管理突破大模型上下文极限",
+      "title_en": "MemGPT Proposes Virtual Memory to Bypass LLM Context Limits",
+      "year": 2023,
+      "date": "2023-10-12",
+      "date_precision": "day",
+      "importance": 4,
+      "type": "tooling",
+      "confidence": "high",
+      "summary_zh": "加州大学伯克利分校团队发表 MemGPT 论文，借鉴操作系统虚拟内存设计，将大模型上下文窗口分为活动内存（Active Memory）和回忆内存（Recall Memory），通过工具自动调度换入换出，实现无限上下文智能体。",
+      "card_summary_zh": "MemGPT 借鉴操作系统虚拟内存，通过工具调用在有限窗口内实现无限上下文，奠定了长周期智能体的内存架构。",
+      "card_summary_en": "MemGPT applies virtual memory concepts from operating systems to LLMs, letting agents sustain long-horizon context through tool calls.",
+      "why_it_matters_en": "It pioneered the 'agent as OS' memory paradigm, which remains the default pattern for production-grade long-running agents.",
+      "behind_scenes_en": "Instead of changing transformer architecture, MemGPT uses prompting and function calling to swap context between fast active memory and local storage, bypassing hard context window limits.",
+      "source_name": "UC Berkeley",
+      "source_url": "https://arxiv.org/abs/2310.08560",
+      "related_terms": [
+        "agent",
+        "function-calling",
+        "context-window"
+      ],
+      "tags": [
+        "MemGPT",
+        "智能体内存",
+        "虚拟内存",
+        "论文",
+        "2023"
+      ]
+    },
+    {
       "title_zh": "OpenAI DevDay:GPTs + Assistants API + GPT-4 Turbo",
       "title_en": "OpenAI DevDay: GPTs + Assistants API + GPT-4 Turbo",
       "year": 2023,
@@ -7467,6 +7497,36 @@
       "behind_scenes_en": "The AI Act was proposed by the European Commission in April 2021; Parliament adopted its negotiating position in June 2023, trilogue talks reached consensus in December 2023, and it formally passed on March 13, 2024.\nThe AI Act is the world's first comprehensive AI law.\nIts impact on OpenAI, Google, and Anthropic: GPT-4, Gemini, and Claude all count as Systemic Risk LLMs.\nDownstream effects: the White House AI executive order in May 2024, California SB-1047 in September 2024 (vetoed), and Brazil's AI law in January 2025."
     },
     {
+      "id": "ai-osworld-2024",
+      "title_zh": "OSWorld 智能体基准发布：真实电脑环境成为 GUI Agent 考场",
+      "title_en": "OSWorld Benchmark Released to Evaluate GUI Agents in Real OS Environments",
+      "year": 2024,
+      "date": "2024-04-11",
+      "date_precision": "day",
+      "importance": 4,
+      "type": "data",
+      "confidence": "high",
+      "summary_zh": "清华、港大等团队联合发布 OSWorld，首个在真实操作系统环境（Linux/Windows/macOS）中评估 GUI 智能体完成多步复杂任务能力的评测基准，覆盖截图、鼠标、键盘和界面元素操作。",
+      "card_summary_zh": "OSWorld 为 GUI 智能体提供真实桌面虚拟机考场，让智能体接受截图与键盘鼠标操作考验，成为 Computer Use 的行业评测标准。",
+      "card_summary_en": "OSWorld establishes a real desktop OS playground to evaluate GUI agents via screen screenshots and native mouse/keyboard execution.",
+      "why_it_matters_en": "It became the gold-standard benchmark for Computer Use agents, forcing labs to validate actual task completion rates in non-deterministic OS environments.",
+      "behind_scenes_en": "Moving beyond static sandboxes, OSWorld runs agents on real virtual machines driving actual software like VS Code and Chrome to test exception handling.",
+      "source_name": "OSWorld",
+      "source_url": "https://arxiv.org/abs/2404.07972",
+      "related_terms": [
+        "agent",
+        "computer-use",
+        "evals"
+      ],
+      "tags": [
+        "OSWorld",
+        "GUI智能体",
+        "Computer Use",
+        "评测基准",
+        "2024"
+      ]
+    },
+    {
       "title_zh": "Meta Llama 3 发布:开源 LLM 跨过 GPT-3.5",
       "title_en": "Meta Llama 3 Release: Open-Source LLM Crosses GPT-3.5",
       "year": 2024,
@@ -7634,6 +7694,36 @@
       "card_summary_en": "Meta released Llama 3.1 in three sizes (8B/70B/405B); Llama 3.1 405B marked the first time an open-source LLM caught up with closed-source SOTA.",
       "why_it_matters_en": "Llama 3.1 405B was the first time an open-source LLM caught closed-source SOTA.\nFollowing the line Llama 3.1 405B (2024-07) → Llama 3.3 70B (2024-12, quality equal to 405B) → Llama 4 MoE (2025-04), you can see how the gap between open and closed LLMs narrowed in 2024 from a generational divide to parity.",
       "behind_scenes_en": "Llama 3.1 405B was Meta's core counterattack under dual pressure from GPT-4o (2024-05) and Claude 3.5 Sonnet (2024-06).\n405B inference is expensive: it takes 8 H100s to run FP8, so Meta shipped a quantized FP8 version to lower the barrier.\nAfter Llama 3.1 the open-source community produced many distillations: NV Llama-3.1-Nemotron-70B, Tulu 3, Hermes 3.\nWith Llama 3.1 405B, open-source LLMs for the first time overtook GPT-4o on multiple benchmarks."
+    },
+    {
+      "id": "ai-model-collapse-nature-2024",
+      "title_zh": "《Nature》发表模型崩溃研究：警示合成数据循环训练的致命局限",
+      "title_en": "Nature Publishes Model Collapse Study Warning Against Recursive Synthetic Training",
+      "year": 2024,
+      "date": "2024-07-24",
+      "date_precision": "day",
+      "importance": 5,
+      "type": "research",
+      "confidence": "high",
+      "summary_zh": "牛津、剑桥等机构的研究者在《Nature》发表论文，系统论证了模型在使用前代模型生成的合成数据进行循环训练时，会发生「模型崩溃」，导致多样性退化和低频信息不可逆丢失。",
+      "card_summary_zh": "《Nature》研究指出大模型使用合成数据进行多代循环训练会引发模型崩溃，限定了合成数据的使用边界，确立了人类真实数据的核心地位。",
+      "card_summary_en": "A Nature paper demonstrates model collapse, where LLMs trained recursively on synthetic data suffer irreversible loss of rare tail information.",
+      "why_it_matters_en": "It drew a hard boundary for synthetic data scaling, proving that self-recycling leads to decay unless grounded by human data or formal verifiers.",
+      "behind_scenes_en": "The study cooled down the synthetic data gold rush, proving models decay into gibberish within 5 to 7 loops without new organic human datasets.",
+      "source_name": "Nature",
+      "source_url": "https://www.nature.com/articles/s41586-024-07586-w",
+      "related_terms": [
+        "model-collapse",
+        "synthetic-data",
+        "data-centric-ai"
+      ],
+      "tags": [
+        "模型崩溃",
+        "合成数据",
+        "数据限制",
+        "Nature论文",
+        "2024"
+      ]
     },
     {
       "title_zh": "OpenAI o1:推理模型时代起点",
@@ -8059,7 +8149,8 @@
       "card_summary_zh": "DeepSeek-R1 以开放技术报告和低成本推理震动行业，证明前沿推理能力不必只属于封闭模型。",
       "summary_en": "On January 20, 2025, DeepSeek launched the R1 reasoning model, following up on January 22 with a technical report detailing its post-training, reinforcement learning, distillation, and evaluation. Driven by strong reasoning performance and immense attention, R1 thrust the reasoning model race into the center of global discussion: can models deconstruct, verify, reason through, and correct complex problems? It also delivered a more pragmatic shock—if powerful reasoning models can be built at a lower cost, the economic math of the frontier model race must be recalculated.",
       "card_summary_en": "DeepSeek-R1 shook the industry with its open technical report and low-cost inference, proving frontier-level reasoning need not belong only to closed models.",
-      "why_it_matters_en": "DeepSeek-R1 changed the angle from which the frontier-model race is watched.\nResearchers look at the reasoning route, developers look at deployment and cost, and the industry watches how far China's open-source, high-value-for-money model route can go."
+      "why_it_matters_en": "DeepSeek-R1 changed the angle from which the frontier-model race is watched.\nResearchers look at the reasoning route, developers look at deployment and cost, and the industry watches how far China's open-source, high-value-for-money model route can go.",
+      "behind_scenes_en": "On January 20, 2025, DeepSeek released the R1 reasoning model, and on January 22, it published the technical report, detailing its additional training, reinforcement learning, distillation, and evaluation. With its strong reasoning performance and high level of attention, R1 pushed the competition over reasoning models to the center of global discussion: whether a model can break down, verify, deduce, and correct complex problems. It also delivered a more practical jolt—if a powerful reasoning model can be built at a lower cost, the economics of the frontier model race will have to be recalculated.\n\nThe viral spread of R1 did not stem solely from leaderboards, but from the question: \"Must reasoning capabilities rely on expensive, closed-source models?\" The simultaneous release of the technical report, open weights, and highly competitive API pricing enabled developers worldwide to personally deploy, distill, and verify this approach. It also marked the first time a Chinese model entered the center of global discussion through the combined impact of its methodology, cost, and openness."
     },
     {
       "title_zh": "Vibe Coding 概念提出",
@@ -8228,7 +8319,8 @@
       "card_summary_zh": "Codex 从代码补全走向云端代理：它能读取仓库、运行测试并并行处理任务，软件开发开始进入委托模式。",
       "summary_en": "Between April and May 2025, OpenAI evolved Codex from a standalone model into a complete cloud-based software engineering agent product line, linking models, tool calls, sandboxes, testing, and human review into a unified engineering pipeline that reads repositories, plans changes, runs commands, modifies files, and verifies results. Under this workflow, humans define the goals and boundaries, while the agent ingests the project, breaks down tasks, executes the edits, and runs checks before handing the results back for human review.",
       "card_summary_en": "Codex went from code completion to cloud agent: it reads repositories, runs tests, and handles tasks in parallel, moving software development into delegation mode.",
-      "why_it_matters_en": "Codex moved coding agents from demo capability to product lines, turning AI programming from one-off conversations into sustained engineering collaboration.\nPermissions, security, testing, handoffs, and traceability will matter more and more."
+      "why_it_matters_en": "Codex moved coding agents from demo capability to product lines, turning AI programming from one-off conversations into sustained engineering collaboration.\nPermissions, security, testing, handoffs, and traceability will matter more and more.",
+      "behind_scenes_en": "In April-May 2025, OpenAI advanced Codex from a model to a complete cloud-based software engineering Agent product line: reading repositories, planning changes, running commands, modifying files, and verifying results, linking the model, tool calls, sandboxes, testing, and human review into a single engineering pipeline. Humans set the goals and boundaries, while the Agent reads the project, breaks down tasks, executes the modifications, runs checks, and then hands the results back to humans for review.\n\nThe key change for Codex was shifting the work from a chat window to an isolated cloud environment. The agent can read repositories, run commands and tests, and then hand the modifications back to humans for review; this requires the product to simultaneously handle permissions, network access, logging, failure recovery, and code ownership. As a result, programming assistants have evolved from \"completing the next line\" to \"taking on the next task.\""
     },
     {
       "title_zh": "2025 前沿模型与 Agent 集中显形",
@@ -8271,7 +8363,8 @@
       "card_summary_zh": "模型不再只回答问题，而是开始浏览、编码、调用工具并持续执行，2025 成为 Agent 从概念走向工作流的一年。",
       "summary_en": "In 2025, a flurry of frontier models, reasoning models, and AI agents arrived, pushing AI past the chat window and into workflow execution. The year’s releases converged on a singular path: models that reason better, tools that collaborate more effectively, and products that mirror real-world work. For users, the shift was unmistakable—AI was moving from answering questions to taking on tasks.",
       "card_summary_en": "Models stopped merely answering questions and began browsing, coding, calling tools, and executing continuously, making 2025 the year agents moved from concept to workflow.",
-      "why_it_matters_en": "It gathers the frontier names most worth seeing first in 2025 into one place, letting the timeline present the main battlefield of contemporary AI before unfolding the details."
+      "why_it_matters_en": "It gathers the frontier names most worth seeing first in 2025 into one place, letting the timeline present the main battlefield of contemporary AI before unfolding the details.",
+      "behind_scenes_en": "In 2025, frontier models, reasoning models, and AI agents emerged in rapid succession, as AI continued to move beyond the chat window and into workflow execution. Many of the year's releases centered around a single direction: models must reason better, tools must collaborate better, and products must align closer to real-world work. The shift visible to users was AI transitioning from \"answering questions\" to \"taking on tasks.\"\n\nThis milestone was not marked by a single product launch, but rather served as a chronological signpost of the year's shifting direction: browsers, terminals, code repositories, enterprise applications, and long-term memory began to be integrated around the models. Vendors no longer just showcased Q&A benchmark scores, but instead demonstrated whether agents could operate continuously in complex environments. It is best viewed as a defining chapter of an era, rather than product news from any single company."
     },
     {
       "title_zh": "AlphaEvolve 发布",
@@ -8560,7 +8653,8 @@
       "card_summary_zh": "Co-Scientist 用多个专门 Agent 共同提出、批评和筛选假设，AI 开始参与科学研究的完整推理循环。",
       "summary_en": "In May 2026, Google DeepMind unveiled Co-Scientist, an AI scientific collaboration system that brings multi-agent research assistants into the public demonstration phase. Rather than acting as a single assistant, systems like Co-Scientist push AI into multi-role collaboration across the research workflow—formulating hypotheses, searching literature, designing experiments, and challenging one another. Its significance lies in exploring whether scientific research can be broken down into discrete steps that multiple AI agents can help drive forward.",
       "card_summary_en": "Co-Scientist let specialist agents propose, critique, and filter hypotheses together.",
-      "why_it_matters_en": "It shows AI upgrading from single-model question answering to multi-agent collaboration, coming closer to real research and the division of labor in complex tasks."
+      "why_it_matters_en": "It shows AI upgrading from single-model question answering to multi-agent collaboration, coming closer to real research and the division of labor in complex tasks.",
+      "behind_scenes_en": "In May 2026, Google DeepMind unveiled its AI scientific research collaboration system, Co-Scientist, signaling that the field of multi-agent scientific research assistant systems has entered the public demonstration stage. Systems like Co-Scientist push AI from a single assistant toward multi-role collaboration within the scientific research process: proposing hypotheses, searching literature, designing experiments, and challenging one another. Its significance lies in exploring whether scientific research work can be broken down into multiple steps that agents can help advance.\n\nRather than having a single model play the role of a scientist on its own, Co-Scientist distributes generation, criticism, ranking, and validation among multiple agents, with human researchers setting the problems and checking the results. This structure draws on peer discussions in real scientific research, yet it still relies on high-quality tools, experimental feedback, and expert judgment."
     },
     {
       "title_zh": "MiniMax-M3 开源发布",
@@ -9197,7 +9291,8 @@
         "agentic-search"
       ],
       "missing_terms": [],
-      "confidence": "high"
+      "confidence": "high",
+      "behind_scenes_en": "The evaluation found stronger retrieval costs more per request but suppressed model token consumption enough to bring total task cost down; wherever retrieval can replace reasoning steps, the money moves from the model to the retrieval stack."
     },
     {
       "year": 2026,
@@ -9225,7 +9320,8 @@
         "qwen"
       ],
       "missing_terms": [],
-      "confidence": "high"
+      "confidence": "high",
+      "behind_scenes_en": "The evaluation found stronger retrieval costs more per request but suppressed model token consumption enough to bring total task cost down; wherever retrieval can replace reasoning steps, the money moves from the model to the retrieval stack."
     }
   ],
   "timeline": [
@@ -16447,6 +16543,36 @@
       "behind_scenes_en": "Mistral AI was founded in April 2023 by ex-DeepMind Paris researchers Arthur Mensch, Guillaume Lample, and Timothée Lacroix; its seed round in June 2023 raised €105 million (the largest seed round in French history), and its Series A in December 2023 raised €415 million at a $2 billion valuation.\nWhen Mensch left DeepMind he carried engineering experience with MoE and GQA; Mistral 7B scouted the ground before MoE.\nMistral's later line: Mistral 7B (2023-09) → Mixtral 8x7B (2023-12) → Mixtral 8x22B (2024-04) → Mistral Large (2024-02) → Codestral (2024-05)."
     },
     {
+      "id": "ai-memgpt-2023",
+      "title_zh": "MemGPT 提出：用虚拟内存管理突破大模型上下文极限",
+      "title_en": "MemGPT Proposes Virtual Memory to Bypass LLM Context Limits",
+      "year": 2023,
+      "date": "2023-10-12",
+      "date_precision": "day",
+      "importance": 4,
+      "type": "tooling",
+      "confidence": "high",
+      "summary_zh": "加州大学伯克利分校团队发表 MemGPT 论文，借鉴操作系统虚拟内存设计，将大模型上下文窗口分为活动内存（Active Memory）和回忆内存（Recall Memory），通过工具自动调度换入换出，实现无限上下文智能体。",
+      "card_summary_zh": "MemGPT 借鉴操作系统虚拟内存，通过工具调用在有限窗口内实现无限上下文，奠定了长周期智能体的内存架构。",
+      "card_summary_en": "MemGPT applies virtual memory concepts from operating systems to LLMs, letting agents sustain long-horizon context through tool calls.",
+      "why_it_matters_en": "It pioneered the 'agent as OS' memory paradigm, which remains the default pattern for production-grade long-running agents.",
+      "behind_scenes_en": "Instead of changing transformer architecture, MemGPT uses prompting and function calling to swap context between fast active memory and local storage, bypassing hard context window limits.",
+      "source_name": "UC Berkeley",
+      "source_url": "https://arxiv.org/abs/2310.08560",
+      "related_terms": [
+        "agent",
+        "function-calling",
+        "context-window"
+      ],
+      "tags": [
+        "MemGPT",
+        "智能体内存",
+        "虚拟内存",
+        "论文",
+        "2023"
+      ]
+    },
+    {
       "title_zh": "OpenAI DevDay:GPTs + Assistants API + GPT-4 Turbo",
       "title_en": "OpenAI DevDay: GPTs + Assistants API + GPT-4 Turbo",
       "year": 2023,
@@ -16690,6 +16816,36 @@
       "behind_scenes_en": "The AI Act was proposed by the European Commission in April 2021; Parliament adopted its negotiating position in June 2023, trilogue talks reached consensus in December 2023, and it formally passed on March 13, 2024.\nThe AI Act is the world's first comprehensive AI law.\nIts impact on OpenAI, Google, and Anthropic: GPT-4, Gemini, and Claude all count as Systemic Risk LLMs.\nDownstream effects: the White House AI executive order in May 2024, California SB-1047 in September 2024 (vetoed), and Brazil's AI law in January 2025."
     },
     {
+      "id": "ai-osworld-2024",
+      "title_zh": "OSWorld 智能体基准发布：真实电脑环境成为 GUI Agent 考场",
+      "title_en": "OSWorld Benchmark Released to Evaluate GUI Agents in Real OS Environments",
+      "year": 2024,
+      "date": "2024-04-11",
+      "date_precision": "day",
+      "importance": 4,
+      "type": "data",
+      "confidence": "high",
+      "summary_zh": "清华、港大等团队联合发布 OSWorld，首个在真实操作系统环境（Linux/Windows/macOS）中评估 GUI 智能体完成多步复杂任务能力的评测基准，覆盖截图、鼠标、键盘和界面元素操作。",
+      "card_summary_zh": "OSWorld 为 GUI 智能体提供真实桌面虚拟机考场，让智能体接受截图与键盘鼠标操作考验，成为 Computer Use 的行业评测标准。",
+      "card_summary_en": "OSWorld establishes a real desktop OS playground to evaluate GUI agents via screen screenshots and native mouse/keyboard execution.",
+      "why_it_matters_en": "It became the gold-standard benchmark for Computer Use agents, forcing labs to validate actual task completion rates in non-deterministic OS environments.",
+      "behind_scenes_en": "Moving beyond static sandboxes, OSWorld runs agents on real virtual machines driving actual software like VS Code and Chrome to test exception handling.",
+      "source_name": "OSWorld",
+      "source_url": "https://arxiv.org/abs/2404.07972",
+      "related_terms": [
+        "agent",
+        "computer-use",
+        "evals"
+      ],
+      "tags": [
+        "OSWorld",
+        "GUI智能体",
+        "Computer Use",
+        "评测基准",
+        "2024"
+      ]
+    },
+    {
       "title_zh": "Meta Llama 3 发布:开源 LLM 跨过 GPT-3.5",
       "title_en": "Meta Llama 3 Release: Open-Source LLM Crosses GPT-3.5",
       "year": 2024,
@@ -16857,6 +17013,36 @@
       "card_summary_en": "Meta released Llama 3.1 in three sizes (8B/70B/405B); Llama 3.1 405B marked the first time an open-source LLM caught up with closed-source SOTA.",
       "why_it_matters_en": "Llama 3.1 405B was the first time an open-source LLM caught closed-source SOTA.\nFollowing the line Llama 3.1 405B (2024-07) → Llama 3.3 70B (2024-12, quality equal to 405B) → Llama 4 MoE (2025-04), you can see how the gap between open and closed LLMs narrowed in 2024 from a generational divide to parity.",
       "behind_scenes_en": "Llama 3.1 405B was Meta's core counterattack under dual pressure from GPT-4o (2024-05) and Claude 3.5 Sonnet (2024-06).\n405B inference is expensive: it takes 8 H100s to run FP8, so Meta shipped a quantized FP8 version to lower the barrier.\nAfter Llama 3.1 the open-source community produced many distillations: NV Llama-3.1-Nemotron-70B, Tulu 3, Hermes 3.\nWith Llama 3.1 405B, open-source LLMs for the first time overtook GPT-4o on multiple benchmarks."
+    },
+    {
+      "id": "ai-model-collapse-nature-2024",
+      "title_zh": "《Nature》发表模型崩溃研究：警示合成数据循环训练的致命局限",
+      "title_en": "Nature Publishes Model Collapse Study Warning Against Recursive Synthetic Training",
+      "year": 2024,
+      "date": "2024-07-24",
+      "date_precision": "day",
+      "importance": 5,
+      "type": "research",
+      "confidence": "high",
+      "summary_zh": "牛津、剑桥等机构的研究者在《Nature》发表论文，系统论证了模型在使用前代模型生成的合成数据进行循环训练时，会发生「模型崩溃」，导致多样性退化和低频信息不可逆丢失。",
+      "card_summary_zh": "《Nature》研究指出大模型使用合成数据进行多代循环训练会引发模型崩溃，限定了合成数据的使用边界，确立了人类真实数据的核心地位。",
+      "card_summary_en": "A Nature paper demonstrates model collapse, where LLMs trained recursively on synthetic data suffer irreversible loss of rare tail information.",
+      "why_it_matters_en": "It drew a hard boundary for synthetic data scaling, proving that self-recycling leads to decay unless grounded by human data or formal verifiers.",
+      "behind_scenes_en": "The study cooled down the synthetic data gold rush, proving models decay into gibberish within 5 to 7 loops without new organic human datasets.",
+      "source_name": "Nature",
+      "source_url": "https://www.nature.com/articles/s41586-024-07586-w",
+      "related_terms": [
+        "model-collapse",
+        "synthetic-data",
+        "data-centric-ai"
+      ],
+      "tags": [
+        "模型崩溃",
+        "合成数据",
+        "数据限制",
+        "Nature论文",
+        "2024"
+      ]
     },
     {
       "title_zh": "OpenAI o1:推理模型时代起点",
@@ -17282,7 +17468,8 @@
       "card_summary_zh": "DeepSeek-R1 以开放技术报告和低成本推理震动行业，证明前沿推理能力不必只属于封闭模型。",
       "summary_en": "On January 20, 2025, DeepSeek launched the R1 reasoning model, following up on January 22 with a technical report detailing its post-training, reinforcement learning, distillation, and evaluation. Driven by strong reasoning performance and immense attention, R1 thrust the reasoning model race into the center of global discussion: can models deconstruct, verify, reason through, and correct complex problems? It also delivered a more pragmatic shock—if powerful reasoning models can be built at a lower cost, the economic math of the frontier model race must be recalculated.",
       "card_summary_en": "DeepSeek-R1 shook the industry with its open technical report and low-cost inference, proving frontier-level reasoning need not belong only to closed models.",
-      "why_it_matters_en": "DeepSeek-R1 changed the angle from which the frontier-model race is watched.\nResearchers look at the reasoning route, developers look at deployment and cost, and the industry watches how far China's open-source, high-value-for-money model route can go."
+      "why_it_matters_en": "DeepSeek-R1 changed the angle from which the frontier-model race is watched.\nResearchers look at the reasoning route, developers look at deployment and cost, and the industry watches how far China's open-source, high-value-for-money model route can go.",
+      "behind_scenes_en": "On January 20, 2025, DeepSeek released the R1 reasoning model, and on January 22, it published the technical report, detailing its additional training, reinforcement learning, distillation, and evaluation. With its strong reasoning performance and high level of attention, R1 pushed the competition over reasoning models to the center of global discussion: whether a model can break down, verify, deduce, and correct complex problems. It also delivered a more practical jolt—if a powerful reasoning model can be built at a lower cost, the economics of the frontier model race will have to be recalculated.\n\nThe viral spread of R1 did not stem solely from leaderboards, but from the question: \"Must reasoning capabilities rely on expensive, closed-source models?\" The simultaneous release of the technical report, open weights, and highly competitive API pricing enabled developers worldwide to personally deploy, distill, and verify this approach. It also marked the first time a Chinese model entered the center of global discussion through the combined impact of its methodology, cost, and openness."
     },
     {
       "title_zh": "Vibe Coding 概念提出",
@@ -17451,7 +17638,8 @@
       "card_summary_zh": "Codex 从代码补全走向云端代理：它能读取仓库、运行测试并并行处理任务，软件开发开始进入委托模式。",
       "summary_en": "Between April and May 2025, OpenAI evolved Codex from a standalone model into a complete cloud-based software engineering agent product line, linking models, tool calls, sandboxes, testing, and human review into a unified engineering pipeline that reads repositories, plans changes, runs commands, modifies files, and verifies results. Under this workflow, humans define the goals and boundaries, while the agent ingests the project, breaks down tasks, executes the edits, and runs checks before handing the results back for human review.",
       "card_summary_en": "Codex went from code completion to cloud agent: it reads repositories, runs tests, and handles tasks in parallel, moving software development into delegation mode.",
-      "why_it_matters_en": "Codex moved coding agents from demo capability to product lines, turning AI programming from one-off conversations into sustained engineering collaboration.\nPermissions, security, testing, handoffs, and traceability will matter more and more."
+      "why_it_matters_en": "Codex moved coding agents from demo capability to product lines, turning AI programming from one-off conversations into sustained engineering collaboration.\nPermissions, security, testing, handoffs, and traceability will matter more and more.",
+      "behind_scenes_en": "In April-May 2025, OpenAI advanced Codex from a model to a complete cloud-based software engineering Agent product line: reading repositories, planning changes, running commands, modifying files, and verifying results, linking the model, tool calls, sandboxes, testing, and human review into a single engineering pipeline. Humans set the goals and boundaries, while the Agent reads the project, breaks down tasks, executes the modifications, runs checks, and then hands the results back to humans for review.\n\nThe key change for Codex was shifting the work from a chat window to an isolated cloud environment. The agent can read repositories, run commands and tests, and then hand the modifications back to humans for review; this requires the product to simultaneously handle permissions, network access, logging, failure recovery, and code ownership. As a result, programming assistants have evolved from \"completing the next line\" to \"taking on the next task.\""
     },
     {
       "title_zh": "2025 前沿模型与 Agent 集中显形",
@@ -17494,7 +17682,8 @@
       "card_summary_zh": "模型不再只回答问题，而是开始浏览、编码、调用工具并持续执行，2025 成为 Agent 从概念走向工作流的一年。",
       "summary_en": "In 2025, a flurry of frontier models, reasoning models, and AI agents arrived, pushing AI past the chat window and into workflow execution. The year’s releases converged on a singular path: models that reason better, tools that collaborate more effectively, and products that mirror real-world work. For users, the shift was unmistakable—AI was moving from answering questions to taking on tasks.",
       "card_summary_en": "Models stopped merely answering questions and began browsing, coding, calling tools, and executing continuously, making 2025 the year agents moved from concept to workflow.",
-      "why_it_matters_en": "It gathers the frontier names most worth seeing first in 2025 into one place, letting the timeline present the main battlefield of contemporary AI before unfolding the details."
+      "why_it_matters_en": "It gathers the frontier names most worth seeing first in 2025 into one place, letting the timeline present the main battlefield of contemporary AI before unfolding the details.",
+      "behind_scenes_en": "In 2025, frontier models, reasoning models, and AI agents emerged in rapid succession, as AI continued to move beyond the chat window and into workflow execution. Many of the year's releases centered around a single direction: models must reason better, tools must collaborate better, and products must align closer to real-world work. The shift visible to users was AI transitioning from \"answering questions\" to \"taking on tasks.\"\n\nThis milestone was not marked by a single product launch, but rather served as a chronological signpost of the year's shifting direction: browsers, terminals, code repositories, enterprise applications, and long-term memory began to be integrated around the models. Vendors no longer just showcased Q&A benchmark scores, but instead demonstrated whether agents could operate continuously in complex environments. It is best viewed as a defining chapter of an era, rather than product news from any single company."
     },
     {
       "title_zh": "AlphaEvolve 发布",
@@ -17783,7 +17972,8 @@
       "card_summary_zh": "Co-Scientist 用多个专门 Agent 共同提出、批评和筛选假设，AI 开始参与科学研究的完整推理循环。",
       "summary_en": "In May 2026, Google DeepMind unveiled Co-Scientist, an AI scientific collaboration system that brings multi-agent research assistants into the public demonstration phase. Rather than acting as a single assistant, systems like Co-Scientist push AI into multi-role collaboration across the research workflow—formulating hypotheses, searching literature, designing experiments, and challenging one another. Its significance lies in exploring whether scientific research can be broken down into discrete steps that multiple AI agents can help drive forward.",
       "card_summary_en": "Co-Scientist let specialist agents propose, critique, and filter hypotheses together.",
-      "why_it_matters_en": "It shows AI upgrading from single-model question answering to multi-agent collaboration, coming closer to real research and the division of labor in complex tasks."
+      "why_it_matters_en": "It shows AI upgrading from single-model question answering to multi-agent collaboration, coming closer to real research and the division of labor in complex tasks.",
+      "behind_scenes_en": "In May 2026, Google DeepMind unveiled its AI scientific research collaboration system, Co-Scientist, signaling that the field of multi-agent scientific research assistant systems has entered the public demonstration stage. Systems like Co-Scientist push AI from a single assistant toward multi-role collaboration within the scientific research process: proposing hypotheses, searching literature, designing experiments, and challenging one another. Its significance lies in exploring whether scientific research work can be broken down into multiple steps that agents can help advance.\n\nRather than having a single model play the role of a scientist on its own, Co-Scientist distributes generation, criticism, ranking, and validation among multiple agents, with human researchers setting the problems and checking the results. This structure draws on peer discussions in real scientific research, yet it still relies on high-quality tools, experimental feedback, and expert judgment."
     },
     {
       "title_zh": "MiniMax-M3 开源发布",
@@ -18420,7 +18610,8 @@
         "agentic-search"
       ],
       "missing_terms": [],
-      "confidence": "high"
+      "confidence": "high",
+      "behind_scenes_en": "The evaluation found stronger retrieval costs more per request but suppressed model token consumption enough to bring total task cost down; wherever retrieval can replace reasoning steps, the money moves from the model to the retrieval stack."
     },
     {
       "year": 2026,
@@ -18448,10 +18639,11 @@
         "qwen"
       ],
       "missing_terms": [],
-      "confidence": "high"
+      "confidence": "high",
+      "behind_scenes_en": "The evaluation found stronger retrieval costs more per request but suppressed model token consumption enough to bring total task cost down; wherever retrieval can replace reasoning steps, the money moves from the model to the retrieval stack."
     }
   ],
-  "total_events": 268,
+  "total_events": 271,
   "card_summary_spec": "CARD-SUMMARY-SPEC.md",
   "edition": "public",
   "source_note": "AI 时间轴公开版 —— 265 个事件全开，深度字段（为何重要 / 背后现场 / 学习路径）在完整版。"
