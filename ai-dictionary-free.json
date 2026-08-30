@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-08-27 19:10:01",
+  "generated_at": "2026-08-30 14:29:56",
   "source_note": "AI 词典公开版（深度切分层）—— 1327 条索引全开 + 50 条精选完整卡。完整版含 why_it_matters / memory_hook 等深度字段。",
   "edition": "public",
-  "total_terms": 1332,
+  "total_terms": 1333,
   "sample_terms": 51,
   "terms": [
     {
@@ -18133,6 +18133,19 @@
       "aliases": [],
       "updated_at": "2026-08-24",
       "displayName": "迷失中段",
+      "is_sample": false
+    },
+    {
+      "id": "agentic-ontology",
+      "term": "Agentic Ontology",
+      "term_zh": "智能体本体构建（2026）",
+      "entry_type": "concept",
+      "category": "Agent 与自动化",
+      "difficulty": "中级",
+      "definition_short": "智能体本体构建是指利用 AI 智能体自动提取、校验并反思迭代以构建结构化知识体系的方法论。",
+      "aliases": [],
+      "updated_at": "2026-08-24",
+      "displayName": "智能体本体构建",
       "is_sample": false
     }
   ],

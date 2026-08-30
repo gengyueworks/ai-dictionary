@@ -8617,6 +8617,36 @@
       "behind_scenes_en": "Opus 4.8 continued the Constitutional-AI-plus-long-horizon-tool-calling route Anthropic established with Claude 4 Opus from 2025, adding large amounts of RL data drawn from multi-step agent trajectories on the training side, and introducing context-compression plus mid-run checkpoint mechanisms on the engineering side to suppress drift across hours-long tasks. Internally Anthropic defined this generation as reliability ahead of peak capability, standing in deliberate contrast to the benchmark-chasing lines of OpenAI's GPT-5 and Google's Gemini 2.5 Pro."
     },
     {
+      "id": "ai-shiji-kb-2026",
+      "title_zh": "《史记》开源知识库发布：验证智能体本体构建新范式",
+      "title_en": "Shiji Knowledge Base Released, Validating Agentic Ontology Paradigm",
+      "year": 2026,
+      "date": "2026-05-14",
+      "date_precision": "day",
+      "importance": 3,
+      "type": "application",
+      "confidence": "high",
+      "summary_zh": "鲍捷正式发布《史记》知识库（shiji-kb），用 AI 智能体将整个《史记》57万字转换为包含 1.4 万个实体、12.6 万次标注和 3,198 个历史事件的交互式知识图谱。项目未用传统代码，完全由 Agent 读写「SKILL」指令并历经 5 轮反思修正构建，验证了「智能体本体构建」的可行性。",
+      "card_summary_zh": "《史记》开源知识库发布，展示如何利用 AI 智能体与结构化指令（SKILL）在短时间内构建大规模高精度古籍知识图谱。",
+      "card_summary_en": "The Shiji Knowledge Base is released, demonstrating how autonomous agents and structured instructions (SKILLs) can build massive ancient texts into KGs.",
+      "why_it_matters_en": "It provides a reusable framework for digital humanities and agentic knowledge engineering, scaling ancient texts into verified structured networks.",
+      "behind_scenes_en": "Driven by a Butler agent executing 12k runs, the system leveraged multi-layer reflections (workflow, schema, audit) to prune 20k annotation anomalies.",
+      "source_name": "GitHub",
+      "source_url": "https://github.com/baojie/shiji-kb",
+      "related_terms": [
+        "agent",
+        "rag",
+        "evals"
+      ],
+      "tags": [
+        "史记知识库",
+        "知识图谱",
+        "智能体本体",
+        "数字人文",
+        "2026"
+      ]
+    },
+    {
       "title_zh": "Co-Scientist 公开",
       "title_en": "Co-Scientist Announced",
       "year": 2026,
@@ -17936,6 +17966,36 @@
       "behind_scenes_en": "Opus 4.8 continued the Constitutional-AI-plus-long-horizon-tool-calling route Anthropic established with Claude 4 Opus from 2025, adding large amounts of RL data drawn from multi-step agent trajectories on the training side, and introducing context-compression plus mid-run checkpoint mechanisms on the engineering side to suppress drift across hours-long tasks. Internally Anthropic defined this generation as reliability ahead of peak capability, standing in deliberate contrast to the benchmark-chasing lines of OpenAI's GPT-5 and Google's Gemini 2.5 Pro."
     },
     {
+      "id": "ai-shiji-kb-2026",
+      "title_zh": "《史记》开源知识库发布：验证智能体本体构建新范式",
+      "title_en": "Shiji Knowledge Base Released, Validating Agentic Ontology Paradigm",
+      "year": 2026,
+      "date": "2026-05-14",
+      "date_precision": "day",
+      "importance": 3,
+      "type": "application",
+      "confidence": "high",
+      "summary_zh": "鲍捷正式发布《史记》知识库（shiji-kb），用 AI 智能体将整个《史记》57万字转换为包含 1.4 万个实体、12.6 万次标注和 3,198 个历史事件的交互式知识图谱。项目未用传统代码，完全由 Agent 读写「SKILL」指令并历经 5 轮反思修正构建，验证了「智能体本体构建」的可行性。",
+      "card_summary_zh": "《史记》开源知识库发布，展示如何利用 AI 智能体与结构化指令（SKILL）在短时间内构建大规模高精度古籍知识图谱。",
+      "card_summary_en": "The Shiji Knowledge Base is released, demonstrating how autonomous agents and structured instructions (SKILLs) can build massive ancient texts into KGs.",
+      "why_it_matters_en": "It provides a reusable framework for digital humanities and agentic knowledge engineering, scaling ancient texts into verified structured networks.",
+      "behind_scenes_en": "Driven by a Butler agent executing 12k runs, the system leveraged multi-layer reflections (workflow, schema, audit) to prune 20k annotation anomalies.",
+      "source_name": "GitHub",
+      "source_url": "https://github.com/baojie/shiji-kb",
+      "related_terms": [
+        "agent",
+        "rag",
+        "evals"
+      ],
+      "tags": [
+        "史记知识库",
+        "知识图谱",
+        "智能体本体",
+        "数字人文",
+        "2026"
+      ]
+    },
+    {
       "title_zh": "Co-Scientist 公开",
       "title_en": "Co-Scientist Announced",
       "year": 2026,
@@ -18643,7 +18703,7 @@
       "behind_scenes_en": "The evaluation found stronger retrieval costs more per request but suppressed model token consumption enough to bring total task cost down; wherever retrieval can replace reasoning steps, the money moves from the model to the retrieval stack."
     }
   ],
-  "total_events": 271,
+  "total_events": 272,
   "card_summary_spec": "CARD-SUMMARY-SPEC.md",
   "edition": "public",
   "source_note": "AI 时间轴公开版 —— 265 个事件全开，深度字段（为何重要 / 背后现场 / 学习路径）在完整版。"
